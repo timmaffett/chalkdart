@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4a702dba-bbfa-4b7e-8e9f-0cb10995ef8f" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1qoRslzPtLEU7sDMw3XOg3yYU4e" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4a702dba-bbfa-4b7e-8e9f-0cb10995ef8f" name="Default Changelist" comment="" />
+      <created>1617744164289</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1617744164289</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="307" y="165" width="1165" height="705" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1617744223996">
+      <screen x="0" y="0" width="1707" height="1027" />
+    </state>
+    <state x="307" y="165" width="1165" height="705" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1707.1027/1898.-1097.1920.1040/-22.-1080.1920.1040@0.0.1707.1027" timestamp="1617744223996" />
+  </component>
+</project>
