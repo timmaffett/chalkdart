@@ -1,4 +1,5 @@
 library chalkdart;
+
 /*
   @author: tim maffett
 */
@@ -18,7 +19,7 @@ import 'dart:math';
 // Most of these routines are based on javascript code that I have ported to dart
 // (from https://www.npmjs.com/package/color-convert )
 //  github: https://github.com/Qix-/color-convert/
-//   and more specifically 
+//   and more specifically
 //          https://github.com/Qix-/color-convert/blob/master/conversions.js
 //
 class ColorUtils {
@@ -44,9 +45,10 @@ class ColorUtils {
   }
 
   static List<int> hsl2rgb(num h, num s, num l) {
-    if( s<=1 && l<=1 ) {
-      s *=100; // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
-      l *=100; 
+    if (s <= 1 && l <= 1) {
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
+      s *= 100;
+      l *= 100;
     }
     h = h / 360;
     s = s / 100;
@@ -96,9 +98,10 @@ class ColorUtils {
   }
 
   static List<int> hsv2rgb(num h, num s, num v) {
-    if( s<=1 && v<=1 ) {
-      s *=100; // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
-      v *=100; 
+    if (s <= 1 && v <= 1) {
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
+      s *= 100;
+      v *= 100;
     }
     h = h / 60;
     s = s / 100;
@@ -130,9 +133,10 @@ class ColorUtils {
 
   // http://dev.w3.org/csswg/css-color/#hwb-to-rgb
   static List<int> hwb2rgb(num h, num whiteness, num blackness) {
-    if( whiteness<=1 && blackness<=1 ) {
-      whiteness *=100; // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 whiteness then you need to pass it like that and not as 1 in to 100 scale)
-      blackness *=100; 
+    if (whiteness <= 1 && blackness <= 1) {
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 whiteness then you need to pass it like that and not as 1 in to 100 scale)
+      whiteness *= 100;
+      blackness *= 100;
     }
     h = h / 360;
     var wh = whiteness / 100;
@@ -198,11 +202,12 @@ class ColorUtils {
   }
 
   static List<int> cmyk2rgb(num c, num m, num y, num k) {
-    if( c<=1 && m<=1 && y<=1 && k<=1  ) {
-      c *=100; // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 then you need to pass it like that and not as 1 in to 100 scale)
-      m *=100; 
-      y *=100; 
-      k *=100; 
+    if (c <= 1 && m <= 1 && y <= 1 && k <= 1) {
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 then you need to pass it like that and not as 1 in to 100 scale)
+      c *= 100;
+      m *= 100;
+      y *= 100;
+      k *= 100;
     }
     c = c / 100;
     m = m / 100;
@@ -217,10 +222,11 @@ class ColorUtils {
   }
 
   static List<int> xyz2rgb(num x, num y, num z) {
-    if( x<=1 && y<=1 && z<=1  ) {
-      x *=100; // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 then you need to pass it like that and not as 1 in to 100 scale)
-      y *=100; 
-      z *=100; 
+    if (x <= 1 && y <= 1 && z <= 1) {
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 then you need to pass it like that and not as 1 in to 100 scale)
+      x *= 100;
+      y *= 100;
+      z *= 100;
     }
     x = x / 100;
     y = y / 100;
@@ -280,7 +286,7 @@ class ColorUtils {
     var str = arg.toString();
     var hexstuff = RegExp('[a-f0-9]{6}|[a-f0-9]{3}', caseSensitive: false);
     var match = hexstuff.firstMatch(str);
-    if (match == null ) {
+    if (match == null) {
       return [0, 0, 0];
     }
 
@@ -301,22 +307,29 @@ class ColorUtils {
   }
 
   /// Add RGB color to the colorKeywords[] map that is used for dynamic lookup of colors by name.
-  static void addColorKeywordRgb( String colorname, int red, int green, int blue ) {
-    int colorInt = 0xff000000 | ((red&0xff)<<16) | ((green&0xff)<<8) | (blue&0xff);
-    colorKeywords[colorname.toLowerCase().replaceAll(' ','')] = colorInt;
+  static void addColorKeywordRgb(
+      String colorname, int red, int green, int blue) {
+    int colorInt = 0xff000000 |
+        ((red & 0xff) << 16) |
+        ((green & 0xff) << 8) |
+        (blue & 0xff);
+    colorKeywords[colorname.toLowerCase().replaceAll(' ', '')] = colorInt;
   }
 
   /// Add hex color (string or int) to the colorKeywords[] map that is used for dynamic lookup of colors by name.
-  static void addColorKeywordHex( String colorname, dynamic hex ) {
+  static void addColorKeywordHex(String colorname, dynamic hex) {
     var rgb = hex2rgb(hex);
-    int colorInt = 0xff000000 | ((rgb[0].toInt()&0xff)<<16) | ((rgb[1].toInt()&0xff)<<8) | (rgb[2].toInt()&0xff);
-    colorKeywords[colorname.toLowerCase().replaceAll(' ','')] = colorInt;
+    int colorInt = 0xff000000 |
+        ((rgb[0].toInt() & 0xff) << 16) |
+        ((rgb[1].toInt() & 0xff) << 8) |
+        (rgb[2].toInt() & 0xff);
+    colorKeywords[colorname.toLowerCase().replaceAll(' ', '')] = colorInt;
   }
 
   ///Lookup colorname keyword in colorKeywords map and return BLACK if the color is not found
   ///returns color as RGB int
   static int colorFromKeyword(String keyword) {
-    keyword = keyword.toLowerCase().replaceAll(' ','');
+    keyword = keyword.toLowerCase().replaceAll(' ', '');
     return colorKeywords.containsKey(keyword)
         ? colorKeywords[keyword]!
         : colorKeywords['black']!;
@@ -325,7 +338,7 @@ class ColorUtils {
   ///Lookup colorname keyword in colorKeywords map and return BLACK if the color is not found
   ///returns color as a num array of [red,green,blue]
   static List<num> rgbFromKeyword(String keyword) {
-    keyword = keyword.toLowerCase().replaceAll(' ','');
+    keyword = keyword.toLowerCase().replaceAll(' ', '');
     var rgb = colorKeywords.containsKey(keyword)
         ? colorKeywords[keyword]!
         : colorKeywords['black']!;
@@ -337,7 +350,7 @@ class ColorUtils {
   ///    https://en.wikipedia.org/wiki/X11_color_names
   /// and CSS color names (derived from X11 color names):
   ///    https://www.w3.org/wiki/CSS/Properties/color/keywords
-  /// (these are the same as the css color list (except for X11 has 'rebeccapurple' 
+  /// (these are the same as the css color list (except for X11 has 'rebeccapurple'
   ///      and css colors used 'lightGoldenrodYellow' and X11 uses 'lightGoldenrod')) - so we include both
   /// A map of X11/CSS color keywords and their 6-digit hexadecimal RGB values
   static final Map<String, int> colorKeywords = <String, int>{
@@ -411,7 +424,7 @@ class ColorUtils {
     'lightblue': 0xADD8E6,
     'lightcoral': 0xF08080,
     'lightcyan': 0xE0FFFF,
-    'lightgoldenrod': 0xFAFAD2,  //x11 name
+    'lightgoldenrod': 0xFAFAD2, //x11 name
     'lightgoldenrodyellow': 0xFAFAD2, // css name
     'lightgray': 0xD3D3D3,
     'lightgreen': 0x90EE90,

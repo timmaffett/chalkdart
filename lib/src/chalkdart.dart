@@ -22,7 +22,6 @@ import 'colorutils.dart';
   https://en.wikipedia.org/wiki/X11_color_names
 */
 
-
 class Chalk {
   /// ANSI Color level support for terminal - default to 3 (full color) because IntelliJ/AndroidStudio and VSCode report NOT having full color
   /// support depsite supporting level 3.  This is really only here for flexibility.
@@ -52,13 +51,12 @@ class Chalk {
   }
 
   static String Function(int) _wrapAnsi256([int offset = 0]) {
-    return (int code) =>
-    '\u001B[${38 + offset};5;${code}m';
+    return (int code) => '\u001B[${38 + offset};5;${code}m';
   }
 
   static String Function(int, int, int) _wrapAnsi16m([int offset = 0]) {
     return (int red, int green, int blue) =>
-    '\u001B[${38 + offset};2;$red;$green;${blue}m';
+        '\u001B[${38 + offset};2;$red;$green;${blue}m';
   }
 
   static const String _ansiClose = '\u001B[39m';
@@ -67,13 +65,14 @@ class Chalk {
 
   static final String Function(int) _ansi256 = _wrapAnsi256();
   static final String Function(int, int, int) _ansi16m = _wrapAnsi16m();
-  static final String Function(int) _bgAnsi256 = _wrapAnsi256(_ANSI_BACKGROUND_OFFSET);
+  static final String Function(int) _bgAnsi256 =
+      _wrapAnsi256(_ANSI_BACKGROUND_OFFSET);
   static final String Function(int, int, int) _bgAnsi16m =
-    _wrapAnsi16m(_ANSI_BACKGROUND_OFFSET);
+      _wrapAnsi16m(_ANSI_BACKGROUND_OFFSET);
   static final String Function(int) _underlineAnsi256 =
-    _wrapAnsi256(_ANSI_UNDERLINE_OFFSET);
+      _wrapAnsi256(_ANSI_UNDERLINE_OFFSET);
   static final String Function(int, int, int) _underlineAnsi16m =
-    _wrapAnsi16m(_ANSI_UNDERLINE_OFFSET);
+      _wrapAnsi16m(_ANSI_UNDERLINE_OFFSET);
 
   Chalk? _parent;
   String _open = '';
@@ -106,8 +105,11 @@ class Chalk {
   /// more detailed dump of the guts, following parent links and dumping
   @override
   String toStringAll({int level = 0}) {
-    String thisOne = "[$level] Chalk(open:'${_open.replaceAll('\u001B', 'ESC')}',close:'${_close.replaceAll('\u001B', 'ESC')}')";
-    if (level == 0) thisOne += "[$level] ALL Chalk(open:'${_openAll.replaceAll('\u001B', 'ESC')}',close:'${_closeAll.replaceAll('\u001B', 'ESC')}')";
+    String thisOne =
+        "[$level] Chalk(open:'${_open.replaceAll('\u001B', 'ESC')}',close:'${_close.replaceAll('\u001B', 'ESC')}')";
+    if (level == 0)
+      thisOne +=
+          "[$level] ALL Chalk(open:'${_openAll.replaceAll('\u001B', 'ESC')}',close:'${_closeAll.replaceAll('\u001B', 'ESC')}')";
     String parentStr = '';
     if (_parent != null) {
       level++;
@@ -252,7 +254,7 @@ class Chalk {
   Chalk bgHex(dynamic hex) => onHex(hex);
 
   /// Returns a Chalk with the foreground color set to the color represented by the
-  /// passed in color keyword.  
+  /// passed in color keyword.
   /// This accepts all of the standard X11/CSS color names, and the user can extend the list
   /// of accepted color keywords using the addColorKeywordRgb() and addColorKeywordHex() methods
   Chalk keyword(String colorKeyword) {
@@ -261,7 +263,7 @@ class Chalk {
   }
 
   /// Returns a Chalk with the background color set to the color represented by the
-  /// passed in color keyword.  
+  /// passed in color keyword.
   /// This accepts all of the standard X11/CSS color names, and the user can extend the list
   /// of accepted color keywords using the addColorKeywordRgb() and addColorKeywordHex() methods
   Chalk onKeyword(String colorKeyword) {
@@ -276,18 +278,21 @@ class Chalk {
   Chalk rgb(num red, num green, num blue) => _makeRGBChalk(red, green, blue);
 
   /// Create Chalk with a background color with the specified RGB values
-  Chalk onRgb(num red, num green, num blue) => _makeRGBChalk(red, green, blue, bg: true);
+  Chalk onRgb(num red, num green, num blue) =>
+      _makeRGBChalk(red, green, blue, bg: true);
 
   /// Alternate name for onRgb() (provided for legacy compatibility with JS Chalk)
   Chalk bgRgb(num red, num green, num blue) => onRgb(red, green, blue);
 
   /// Create Chalk with a foreground color with the specified RGB values
   /// (forces using ANSI 16m SGR codes, even if [level] is not 3)
-  Chalk rgb16m(num red, num green, num blue) => _makeRGBChalk(red, green, blue, force16M: true);
+  Chalk rgb16m(num red, num green, num blue) =>
+      _makeRGBChalk(red, green, blue, force16M: true);
 
   /// Create Chalk with a background color with the specified RGB values
   /// (forces using ANSI 16m SGR codes, even if [level] is not 3)
-  Chalk onRgb16m(num red, num green, num blue) => _makeRGBChalk(red, green, blue, bg: true, force16M: true);
+  Chalk onRgb16m(num red, num green, num blue) =>
+      _makeRGBChalk(red, green, blue, bg: true, force16M: true);
 
   /// Alternate name for onRgb16m() (provided for legacy compatibility with JS Chalk)
   Chalk bgRgb16m(num red, num green, num blue) => onRgb16m(red, green, blue);
@@ -318,7 +323,8 @@ class Chalk {
   }
 
   /// Alternate name for onHsl() (provided for legacy compatibility with JS Chalk)
-  Chalk bgHsl(num hue, num saturation, num lightness) => onHsl(hue, saturation, lightness);
+  Chalk bgHsl(num hue, num saturation, num lightness) =>
+      onHsl(hue, saturation, lightness);
 
   /// https://en.wikipedia.org/wiki/HSL_and_HSV
   Chalk hsv(num hue, num saturation, num value) {
@@ -333,7 +339,8 @@ class Chalk {
   }
 
   /// Alternate name for onHsv() (provided for legacy compatibility with JS Chalk)
-  Chalk bgHsv(num hue, num saturation, num value) => onHsv(hue, saturation, value);
+  Chalk bgHsv(num hue, num saturation, num value) =>
+      onHsv(hue, saturation, value);
 
   /// https://en.wikipedia.org/wiki/HWB_color_model
   Chalk hwb(num hue, num whiteness, num blackness) {
@@ -348,7 +355,8 @@ class Chalk {
   }
 
   /// Alternate name for onHwb() (provided for legacy compatibility with JS Chalk)
-  Chalk bgHwb(num hue, num whiteness, num blackness) => onHwb(hue, whiteness, blackness);
+  Chalk bgHwb(num hue, num whiteness, num blackness) =>
+      onHwb(hue, whiteness, blackness);
 
   /// https://en.wikipedia.org/wiki/CIE_1931_color_space
   Chalk xyz(num x, num y, num z) {
@@ -779,15 +787,15 @@ class Chalk {
   /// pretty much anything.  List<> and Function closures are handled
   String call(dynamic arg0,
       [dynamic arg1,
-        dynamic arg2,
-        dynamic arg3,
-        dynamic arg4,
-        dynamic arg5,
-        dynamic arg6,
-        dynamic arg7,
-        dynamic arg8,
-        dynamic arg9,
-        dynamic arg10]) {
+      dynamic arg2,
+      dynamic arg3,
+      dynamic arg4,
+      dynamic arg5,
+      dynamic arg6,
+      dynamic arg7,
+      dynamic arg8,
+      dynamic arg9,
+      dynamic arg10]) {
     arg0 = _fixArg(arg0);
     if (arg1 != null) {
       arg0 = <dynamic>[
@@ -858,7 +866,7 @@ class Chalk {
     var rgb = ColorUtils.rgbFromKeyword(methodName);
 
     Chalk thisColor =
-    _makeRGBChalk(rgb[0], rgb[1], rgb[2], bg: backgroundColor);
+        _makeRGBChalk(rgb[0], rgb[1], rgb[2], bg: backgroundColor);
 
     if (invocation.positionalArguments.length > 0) {
       // send all the args in and chalk them up like a other normal methods would with call()
@@ -874,7 +882,8 @@ class Chalk {
   /// ie.
   ///      Chalk.addColorKeywordRgb('myfavorite', 0x64, 0x95, 0xED );
   ///      chalk.color.myfavorite('This is my favorite color');
-  static void addColorKeywordRgb(String colorname, int red, int green, int blue) {
+  static void addColorKeywordRgb(
+      String colorname, int red, int green, int blue) {
     ColorUtils.addColorKeywordRgb(colorname, red, green, blue);
   }
 
@@ -888,7 +897,6 @@ class Chalk {
   static void addColorKeywordHex(String colorname, dynamic hex) {
     ColorUtils.addColorKeywordHex(colorname, hex);
   }
-
 
 // BEGIN GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart
 
@@ -1789,7 +1797,7 @@ class Chalk {
   // END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart
 }
 
-  /// global instance of chalk used for base call.
+/// global instance of chalk used for base call.
 /// this can be set to a specific Chalk instance that would then serve as basis for all calls
 Chalk chalk = Chalk();
 
@@ -1855,9 +1863,7 @@ class StringUtils {
     int endIndex = 0;
     String returnValue = '';
     do {
-      returnValue += string.substring(endIndex, index) +
-          substring +
-          replacer;
+      returnValue += string.substring(endIndex, index) + substring + replacer;
       endIndex = index + substringLength;
       index = string.indexOf(substring, endIndex);
     } while (index != -1);
@@ -1867,13 +1873,12 @@ class StringUtils {
   }
 
   static String stringEncaseCRLFWithFirstIndex(
-    String string, String prefix, String postfix, int index) {
+      String string, String prefix, String postfix, int index) {
     int endIndex = 0;
     String returnValue = '';
     do {
-      bool gotCR = (index>=1) && (string[index - 1] == '\r');
-      returnValue += string.substring(
-              endIndex, (gotCR ? index - 1 : index) ) +
+      bool gotCR = (index >= 1) && (string[index - 1] == '\r');
+      returnValue += string.substring(endIndex, (gotCR ? index - 1 : index)) +
           prefix +
           (gotCR ? '\r\n' : '\n') +
           postfix;

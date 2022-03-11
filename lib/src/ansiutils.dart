@@ -4,22 +4,21 @@ library chalkdart;
   @author: tim maffett
 */
 
-
-// ansi regex from 
+// ansi regex from
 class AnsiUtils {
   static final String pattern = [
-		'[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
-		'(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
-	].join('|');
+    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
+  ].join('|');
 
-	static final RegExp ansiRegex = RegExp(pattern);
+  static final RegExp ansiRegex = RegExp(pattern);
 
-  static String stripAnsi( String source ) {
-    return source.replaceAll( ansiRegex, '' );
+  static String stripAnsi(String source) {
+    return source.replaceAll(ansiRegex, '');
   }
 
-  static bool hasAnsi( String source ) {
-    return ansiRegex.hasMatch( source );
+  static bool hasAnsi(String source) {
+    return ansiRegex.hasMatch(source);
   }
 
   /*

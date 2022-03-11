@@ -58,7 +58,8 @@ void main() {
 
   Chalk chalk = Chalk();
 
-  print( chalk.cornflowerBlue.onBisque( "            Chalk'Dart example program           " ) );
+  print(chalk.cornflowerBlue
+      .onBisque("            Chalk'Dart example program           "));
 
   print('supportsAnsiColor = $dartSupportsAnsiColor');
   print('usedAnsiInclude = $chalkUsedAnsiInclude');
@@ -67,13 +68,12 @@ void main() {
   Chalk.useFullResetToClose = true;
 
   chalk = Chalk.Instance(level: 3);
-  
+
   print(chalk.green('I am a green line ' +
       chalk.blue.underline.bold('with a blue bold underline substring ') +
       chalk.reset('') +
       chalk.red.overline.italic('with a red italic overline substring') +
       ' that becomes green again!'));
-
 
   print(chalk.x11.purple([
     'I am a purple line',
@@ -111,8 +111,15 @@ void main() {
       'biz',
       'baz'));
 
-
-  print(chalk.joinWith(',').red(['Hello', 'World!', 'Foo', 'bar', 'biz', 'baz', '(This Array joined with ",")']));
+  print(chalk.joinWith(',').red([
+    'Hello',
+    'World!',
+    'Foo',
+    'bar',
+    'biz',
+    'baz',
+    '(This Array joined with ",")'
+  ]));
 
   print(chalk.x11.orangeRed('Hello', chalk.underline('World!'), 'Foo', 'bar',
       chalk.blue('biz'), 'baz'));
@@ -124,13 +131,11 @@ void main() {
   print(chalk.blue('Hello', 'World!', chalk.red, 45, 45.6, true,
       {'mymap': 23.4}, 'Foo', 'bar', 'biz', 'baz'));
 
-
   var demolines = ChalkDartCharts.demo();
   print('\n\nChalkDart colorLevel 2 DEMO:');
   for (var i = 0; i < demolines.length; i++) {
     print(demolines[i]);
   }
-
 
 /*
   Chalk.colorLevel = 3;
@@ -149,18 +154,18 @@ void main() {
   }
   */
 
-  var chalkNL = chalk.wrap( '\n', '' );
+  var chalkNL = chalk.wrap('\n', '');
 
   //Chalk chalk = Chalk();
   //PieceOfChalk chalk = PieceOfChalk();
-  print('SGR (Select Graphic Rendition) parameters test (see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR )');
+  print(
+      'SGR (Select Graphic Rendition) parameters test (see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR )');
   print(chalk.red('Testing Chalk`Dart!!!  red'));
   print(chalk.red.dim('Testing Chalk`Dart!!! DIM DIM red') +
       chalk.blue(' then back to blue'));
 
   print(chalk.blue.dim('Testing Chalk`Dart!!! DIM blue') +
       chalk.blue(' then back to blue'));
-
 
   print(chalk.yellow.dim('Testing Chalk`Dart!!! DIM yellow') +
       chalk.yellow(' then back to yellow'));
@@ -177,16 +182,18 @@ void main() {
   print(chalk.magenta.onGrey('Testing Chalk`Dart!!! ' +
       chalk.inverse('THIS IS INVERTED COLOR') +
       ' of magenta.onGrey'));
-    print(chalk.white.onGrey('Testing Chalk`Dart!!! ' +
-      chalk.inverse('THIS IS (${chalk.inverse('(THIS IS NESTED INVERTED COLOR)')})  INVERTED COLOR') +
+  print(chalk.white.onGrey('Testing Chalk`Dart!!! ' +
+      chalk.inverse(
+          'THIS IS (${chalk.inverse('(THIS IS NESTED INVERTED COLOR)')})  INVERTED COLOR') +
       ' of magenta.onGrey'));
   print(chalkNL.onBrightGreen.redBright.strikethrough(
       'Testing Chalk`Dart!!!  onGreenBright.redBright.strikethrough'));
-  print(chalkNL.red.onCyan.overline('Testing Chalk`Dart!!! OVERLINE red.onCyan'));
-
+  print(
+      chalkNL.red.onCyan.overline('Testing Chalk`Dart!!! OVERLINE red.onCyan'));
 
   print(chalk.blueBright.onGreen('Testing Chalk`Dart!!! blueBright.onGreen'));
-  print(chalk.blue.x11.onDarkSalmon('Testing Chalk`Dart!!! blue.x11.onDarkSalmon'));
+  print(chalk.blue.x11
+      .onDarkSalmon('Testing Chalk`Dart!!! blue.x11.onDarkSalmon'));
   print(
       chalk.bgYellowBright.blue('Testing Chalk`Dart!!! .bgBrightYellow.blue'));
   print(chalk.yellow.onBlack('Testing Chalk`Dart!!! yellow.onBlack'));
@@ -206,18 +213,21 @@ void main() {
   print(chalk.yellow.underlineRgb16m(255, 0, 255).underline.overline.strikethrough(
       'Testing Chalk`Dart!!! yellow WITH magenta overline underline AND strikethrough\n'));
 
+  print(chalkNL.x11.slateblue.onWhite(() =>
+          'Testing Chalk`Dart With Closures - This is return from closure #1!!! DIM blue') +
+      chalk.white.x11.onPurple(
+          () => ' and this is the return from closure #2 then back to blue'));
 
-  print(chalkNL.x11.slateblue.onWhite( ()=>'Testing Chalk`Dart With Closures - This is return from closure #1!!! DIM blue') +
-      chalk.white.x11.onPurple( ()=>' and this is the return from closure #2 then back to blue' ));
-
-  print(chalk.joinWith('\n').x11.goldenrod.onBlack( [
-      'These will all have a \n after each line from joinWith()',
-      ()=>chalk.onBlue('Array of Closures #1 Testing Chalk`Dart With Closures - This is return from closure #1!!! DIM blue'),
-      ()=>chalk.brightBlue('Array of Closures #2 and this is the return from closure #2 then back to blue'),
-      ()=>chalk.red('This closure called chalk and makes this red'),
-      ()=>chalk.white.onBlue('And this closure ${chalk.black.onYellow("Nest calls to chalk")} inside the closure'),
-    ] ) );
-
+  print(chalk.joinWith('\n').x11.goldenrod.onBlack([
+    'These will all have a \n after each line from joinWith()',
+    () => chalk.onBlue(
+        'Array of Closures #1 Testing Chalk`Dart With Closures - This is return from closure #1!!! DIM blue'),
+    () => chalk.brightBlue(
+        'Array of Closures #2 and this is the return from closure #2 then back to blue'),
+    () => chalk.red('This closure called chalk and makes this red'),
+    () => chalk.white.onBlue(
+        'And this closure ${chalk.black.onYellow("Nest calls to chalk")} inside the closure'),
+  ]));
 
 /*
   print(chalk.blue
@@ -253,45 +263,58 @@ void main() {
       //.onGreyscale(0.05)
       .ansiSgr(21, 24)('21 to 24 double underline'));
 
-if( includeFonts ) {
-  String fontTestString = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@#\$\%^&*()_+\'\"`~";
-  String ligatureTest = chalk.blue("\n" + "--> ~~> *** != !== <||| |||> ++ .= >= <= ~= *= /= ");
-  String ligatureTest2 = chalk.brightBlue("<<-----<<-----||----->>----->> <===<===||===>===> >---||---< \n  <==<==||==>==> /===/===//===/===/ //===:===!===//" +
-                                               "|---<>>-----|| ||-----<< \/ /\ <> <~> </>" );
-  // Combine styled and normal strings
+  if (includeFonts) {
+    String fontTestString =
+        "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@#\$\%^&*()_+\'\"`~";
+    String ligatureTest =
+        chalk.blue("\n" + "--> ~~> *** != !== <||| |||> ++ .= >= <= ~= *= /= ");
+    String ligatureTest2 = chalk.brightBlue(
+        "<<-----<<-----||----->>----->> <===<===||===>===> >---||---< \n  <==<==||==>==> /===/===//===/===/ //===:===!===//" +
+            "|---<>>-----|| ||-----<< \/ /\ <> <~> </>");
+    // Combine styled and normal strings
     print(chalk.reset.blue('Hello BLUE font 1') +
-      ' World' +
-      chalk.reset.red('! font 3 RED'));
+        ' World' +
+        chalk.reset.red('! font 3 RED'));
 
     //chalk = chalk.font6;
 
-    print(chalk.reset.font1.white( "FONT 1  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
+    print(chalk.reset.font1
+        .white("FONT 1  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 
-    print(chalk.reset.font2.white( "FONT 2  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
+    print(chalk.reset.font2
+        .white("FONT 2  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 
-    print(chalk.reset.font3.white( "FONT 3  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
+    print(chalk.reset.font3
+        .white("FONT 3  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 
-    print(chalk.reset.font4.white( "FONT 4  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
+    print(chalk.reset.font4
+        .white("FONT 4  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 
-    print(chalk.reset.font5.white( "FONT 5  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
+    print(chalk.reset.font5
+        .white("FONT 5  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 
-    print(chalk.reset.font6.white( "FONT 6  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
-    outputThePowerSymbols( chalk.font6 );
-    print(chalk.reset.font6.blueBright( "  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>" ));
+    print(chalk.reset.font6
+        .white("FONT 6  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+    outputThePowerSymbols(chalk.font6);
+    print(chalk.reset.font6.blueBright(
+        "  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-    print(chalk.reset.font7.white( "FONT 7  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
-    print(chalk.reset.font7.white( "  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>" ));
+    print(chalk.reset.font7
+        .white("FONT 7  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+    print(chalk.reset.font7.white(
+        "  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-    outputThePowerSymbols( chalk.font7 );
-    print(chalk.reset.font8.white( "FONT 8  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
+    outputThePowerSymbols(chalk.font7);
+    print(chalk.reset.font8
+        .white("FONT 8  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 
-    print(chalk.reset.font9.white( "FONT 9  ", fontTestString, ligatureTest, '\n', ligatureTest2 ));
-    print(chalk.reset.font9.blue( "  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>" ));
+    print(chalk.reset.font9
+        .white("FONT 9  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+    print(chalk.reset.font9
+        .blue("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-    print(chalk.reset.font10.white( "FONT 10  -extra wide font - no ligatures ",fontTestString ));
-  
-
-
+    print(chalk.reset.font10
+        .white("FONT 10  -extra wide font - no ligatures ", fontTestString));
 
     print(chalk.reset.blue.font1('Hello BLUE font 1') +
         ' World' +
@@ -306,35 +329,14 @@ if( includeFonts ) {
         .hsl(210, 1, 0.5)
         //.onGreyscale(.6)
         .font2('Hello world! Font 2'));
-    print(chalk
-        .hsl(240, 1, 0.5)
-        .onGreyscale(.7)
-        .font3('Hello world! Font 3'));
-    print(chalk
-            .hsl(270, 1, 0.5)
-            .onGreyscale(.1)
-            .font4('Hello world! Font 4') +
+    print(chalk.hsl(240, 1, 0.5).onGreyscale(.7).font3('Hello world! Font 3'));
+    print(chalk.hsl(270, 1, 0.5).onGreyscale(.1).font4('Hello world! Font 4') +
         chalk.font3(' (on same line) Hello world! Font 3'));
-    print(chalk
-        .hsl(300, 1, 0.5)
-        .onGreyscale(.2)
-        .font5('Hello world! Font 5'));
-    print(chalk
-        .hsl(330, 1, 0.5)
-        .onGreyscale(.3)
-        .font6('Hello world! Font 6'));
-    print(chalk
-        .hsl(0, 1, 0.5)
-        .onGreyscale(.4)
-        .font7('Hello world! Font 7'));
-    print(chalk
-        .hsl(30, 1, 0.5)
-        .onGreyscale(.5)
-        .font8('Hello world! Font 8'));
-    print(chalk
-        .hsl(60, 1, 0.5)
-        .onGreyscale(.5)
-        .font9('Hello world! Font 9'));
+    print(chalk.hsl(300, 1, 0.5).onGreyscale(.2).font5('Hello world! Font 5'));
+    print(chalk.hsl(330, 1, 0.5).onGreyscale(.3).font6('Hello world! Font 6'));
+    print(chalk.hsl(0, 1, 0.5).onGreyscale(.4).font7('Hello world! Font 7'));
+    print(chalk.hsl(30, 1, 0.5).onGreyscale(.5).font8('Hello world! Font 8'));
+    print(chalk.hsl(60, 1, 0.5).onGreyscale(.5).font9('Hello world! Font 9'));
     print(chalk
         .hsl(90, 1, 0.5)
         .onGreyscale(.5)
@@ -356,23 +358,22 @@ if( includeFonts ) {
       .hsl(120, 1, 0.5)
       .onGrey
       //.underlineRgb16m(0, 255, 0)
-      .overline('TIMTEST Hello world! .underlineRgb16m KILL STYLE on Android green text on magenta with green OVERLINE'));
+      .overline(
+          'TIMTEST Hello world! .underlineRgb16m KILL STYLE on Android green text on magenta with green OVERLINE'));
 
   print(chalk
       .hsl(120, 1, 0.5)
       .onGrey
-  //.underlineRgb(0, 255, 0)
-      .overline('TIMTEST Hello world! .underlineRgb KILL STYLE on Android green text on magenta with green OVERLINE'));
-
+      //.underlineRgb(0, 255, 0)
+      .overline(
+          'TIMTEST Hello world! .underlineRgb KILL STYLE on Android green text on magenta with green OVERLINE'));
 
   print('\n');
-  print(chalk.overline
-      .brightWhite
-      .underlineRgb16m(0, 255, 0)
-      ('Hello world! bright white w/ green OVERLINE'));
+  print(chalk.overline.brightWhite.underlineRgb16m(0, 255, 0)(
+      'Hello world! bright white w/ green OVERLINE'));
   print('\n');
 
-Chalk chalkWithReset = chalk.reset;
+  Chalk chalkWithReset = chalk.reset;
 /*
   print(chalk.blueBright.onWhite
       .ansiSgr('4:1', '4:0')('ECMA-48 sub-parameters/VTE52 codes: alt solid underline Hello world!'));
@@ -385,15 +386,20 @@ Chalk chalkWithReset = chalk.reset;
   print(chalk.blueBright.bgBrightWhite
       .ansiSgr('4:5', '4:0')('ECMA-48 sub-parameters/VTE52 codes: Dashed underline Hello world!'));
 */
-  print(chalkWithReset.brightBlue('this is ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
-  print(chalkWithReset.brightBlue('this is ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
+  print(chalkWithReset.brightBlue(
+      'this is ${chalk.red.superscript('red superscript text')} and back to regular text'));
+  print(chalkWithReset.brightBlue(
+      'this is ${chalk.yellow.subscript('yellow subscript text')} and back to regular text'));
 
-  print(chalkWithReset.underlined.brightBlue('this is underlined ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
-  print(chalkWithReset.underlined.brightBlue('this is underlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
+  print(chalkWithReset.underlined.brightBlue(
+      'this is underlined ${chalk.red.superscript('red superscript text')} and back to regular text'));
+  print(chalkWithReset.underlined.brightBlue(
+      'this is underlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text'));
 
-  print(chalkWithReset.overlined.brightBlue('this is overlined ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
-  print(chalkWithReset.overlined.brightBlue('this is overlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
-
+  print(chalkWithReset.overlined.brightBlue(
+      'this is overlined ${chalk.red.superscript('red superscript text')} and back to regular text'));
+  print(chalkWithReset.overlined.brightBlue(
+      'this is overlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text'));
 
   print(chalkWithReset.color
       .orange('Yay for red on dynamically called orange colored text!'));
@@ -490,120 +496,125 @@ Chalk chalkWithReset = chalk.reset;
     print(demolines[i]);
   }
   print('\n\n');
-  demolines = ChalkDartCharts.dumpLabChart( 60 );
+  demolines = ChalkDartCharts.dumpLabChart(60);
   for (var i = 0; i < demolines.length; i++) {
     print(demolines[i]);
   }
   print('\n\n');
-  demolines = ChalkDartCharts.dumpLabChart( 75 );
+  demolines = ChalkDartCharts.dumpLabChart(75);
   for (var i = 0; i < demolines.length; i++) {
     print(demolines[i]);
   }
 
   print('\n\n');
-  demolines = ChalkDartCharts.dumpLabChart( 85 );
+  demolines = ChalkDartCharts.dumpLabChart(85);
   for (var i = 0; i < demolines.length; i++) {
     print(demolines[i]);
   }
-
-
-
 }
 
-void outputThePowerSymbols( Chalk chalk ) {
-  powerlineSettings.forEach( (key,value) {
+void outputThePowerSymbols(Chalk chalk) {
+  powerlineSettings.forEach((key, value) {
     print(makeAPowerLinePrompt(chalk, key));
-  } );
+  });
 }
 
 int powerLineCalls = 0;
-String makeAPowerLinePrompt( Chalk chalk, String name ) {
+String makeAPowerLinePrompt(Chalk chalk, String name) {
   powerLineCalls++;
-  Map<String,String> item = powerlineSettings[name];
+  Map<String, String> item = powerlineSettings[name];
 
   String extraindent = '';
-  for(var i=0;i<powerLineCalls;i++) extraindent += ' ';
+  for (var i = 0; i < powerLineCalls; i++) extraindent += ' ';
 
   String lock = (item['lock'] ?? '');
-  String network =  (item['network'] ?? '');
-  String separator =  (item['separator'] ?? '');
-  String separator_thin =  (item['separator_thin'] ?? '');
+  String network = (item['network'] ?? '');
+  String separator = (item['separator'] ?? '');
+  String separator_thin = (item['separator_thin'] ?? '');
 
-  String out = chalk.onYellow.color.orange("  "+extraindent+lock) + 
-          chalk.onKeyword("orange").color.orangered("  "+extraindent+chalk.inverse(network)) + 
-          chalk.onKeyword("orangered").red("  "+extraindent+chalk.inverse(separator)) +
-          chalk.onRed("  "+extraindent ) + chalk.red(separator) + '  ' + chalk.color.orangeRed(separator_thin);
+  String out = chalk.onYellow.color.orange("  " + extraindent + lock) +
+      chalk
+          .onKeyword("orange")
+          .color
+          .orangered("  " + extraindent + chalk.inverse(network)) +
+      chalk
+          .onKeyword("orangered")
+          .red("  " + extraindent + chalk.inverse(separator)) +
+      chalk.onRed("  " + extraindent) +
+      chalk.red(separator) +
+      '  ' +
+      chalk.color.orangeRed(separator_thin);
   return out;
 }
 
+Map<String, dynamic> powerlineSettings = {
+  //# original
+  'patchedoriginal': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0B0',
+    'separator_thin': '\uE0B1'
+  },
+  //# angly 1
+  'patchedangly 1': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0B8',
+    'separator_thin': '\uE0B9'
+  },
+  //# angly 2
+  'patched angly 2': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0BC',
+    'separator_thin': '\uE0BD'
+  },
 
-Map<String,dynamic> powerlineSettings = {
-        //# original
-        'patchedoriginal': {
-                'lock': '\uE0A2',
-                'network': '\uE0A2',
-                'separator': '\uE0B0',
-                'separator_thin': '\uE0B1'
-        },
-        //# angly 1
-        'patchedangly 1': {
-                'lock': '\uE0A2',
-                'network': '\uE0A2',
-                'separator': '\uE0B8',
-                'separator_thin': '\uE0B9'
-        },
-        //# angly 2
-        'patched angly 2': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0BC',
-        	'separator_thin': '\uE0BD'
-        },
-        ///# curvy
-        'patchedcurvy': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0B4',
-        	'separator_thin': '\uE0B5'
-        },
-        //# flames (flamey)
-        'patchedflames (flamey)': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0C0',
-        	'separator_thin': '\uE0C1'
-        },
-        //# lego (blocky)
-        'patchedlego (blocky)': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0CE',
-        	'separator_thin': '\uE0CF'
-        },
-        //# lego (blocky)
-        'patchedlego (blocky2)': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0D0',
-        	'separator_thin': '\uE0D1'
-        },
-        //# pixelated blocks 2 (large) random fade (pixey)
-        'patchedpixelated blocks 2 (large) random fade (pixey)': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0C4',
-        	'separator_thin': '\uE0C6'
-        },
-        'patched hex': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0CC',
-        	'separator_thin': '\uE0CD'
-        },
-        'patched fireish': {
-        	'lock': '\uE0A2',
-        	'network': '\uE0A2',
-        	'separator': '\uE0C8',
-        	'separator_thin': '\uE0CA'
-        },
+  ///# curvy
+  'patchedcurvy': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0B4',
+    'separator_thin': '\uE0B5'
+  },
+  //# flames (flamey)
+  'patchedflames (flamey)': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0C0',
+    'separator_thin': '\uE0C1'
+  },
+  //# lego (blocky)
+  'patchedlego (blocky)': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0CE',
+    'separator_thin': '\uE0CF'
+  },
+  //# lego (blocky)
+  'patchedlego (blocky2)': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0D0',
+    'separator_thin': '\uE0D1'
+  },
+  //# pixelated blocks 2 (large) random fade (pixey)
+  'patchedpixelated blocks 2 (large) random fade (pixey)': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0C4',
+    'separator_thin': '\uE0C6'
+  },
+  'patched hex': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0CC',
+    'separator_thin': '\uE0CD'
+  },
+  'patched fireish': {
+    'lock': '\uE0A2',
+    'network': '\uE0A2',
+    'separator': '\uE0C8',
+    'separator_thin': '\uE0CA'
+  },
 };

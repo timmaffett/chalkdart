@@ -6,10 +6,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('A group of tests', () {
-
-    setUp(() {
-      
-    });
+    setUp(() {});
 
     test('AnsiUtils tests', () {
       expect(AnsiUtils.hasAnsi('\u001B[4mcake\u001B[0m'), isTrue);
@@ -17,8 +14,6 @@ void main() {
     });
   });
 }
-
-
 
 /*
 

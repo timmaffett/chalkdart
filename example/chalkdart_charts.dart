@@ -153,8 +153,7 @@ class ChalkDartCharts {
 
     Chalk.useFullResetToClose = false;
     final len = chalk.strip(out[0]).length;
-    out.insert(
-        0, chalk.black.onWhite(center(chalk.bold('HWB Tables'), len)));
+    out.insert(0, chalk.black.onWhite(center(chalk.bold('HWB Tables'), len)));
 
     return out;
   }
@@ -169,14 +168,14 @@ class ChalkDartCharts {
       for (num b = 0; b <= 1; b += .20) {
         if (w == 0) {
           if (b == 0) hb.write(chalk.black.onWhite(r'W \ B'));
-          hb.write(chalk.black.onWhite(
-              _padWithSpace((b * 100).toStringAsFixed(0) + '% ', 5)));
+          hb.write(chalk.black
+              .onWhite(_padWithSpace((b * 100).toStringAsFixed(0) + '% ', 5)));
         }
         if (b == 0) {
           sb.write(chalk.black
               .onWhite(_padWithSpace((w).toStringAsFixed(0) + '% ', 5)));
         }
-        sb.write(chalk.onHwb(hue, w*100, b*100)('     '));
+        sb.write(chalk.onHwb(hue, w * 100, b * 100)('     '));
       }
       if (w == 0) out.add(hb.toString());
 
@@ -226,8 +225,7 @@ class ChalkDartCharts {
     }
 
     final len = chalk.strip(out[0]).length;
-    out.insert(
-        0, chalk.black.onWhite(center(chalk.bold('HSL Tables'), len)));
+    out.insert(0, chalk.black.onWhite(center(chalk.bold('HSL Tables'), len)));
 
     return out;
   }
@@ -275,14 +273,13 @@ class ChalkDartCharts {
           if (firstCol && !secondHalf) {
             hb.write(chalk.bold.black.onWhite(r'L \ S'));
           }
-          hb.write(
-              chalk.bold.black.onWhite(center(getColumnHeader(s), 5)));
+          hb.write(chalk.bold.black.onWhite(center(getColumnHeader(s), 5)));
         }
         if (firstCol && !secondHalf) {
           sb.write(chalk.bold.black.onWhite(center(getRowHeader(l), 5)));
           firstCol = false;
         }
-        sb.write(chalk.onHsl(hue, s*100, l*100)('     '));
+        sb.write(chalk.onHsl(hue, s * 100, l * 100)('     '));
       }
       if (l == 1) out.add(hb.toString());
 
@@ -291,8 +288,7 @@ class ChalkDartCharts {
 
     final len = chalk.strip(out[firstLine]).length;
     out.insert(firstLine, chalk.black.onWhite(center(titleLine, len)));
-    out.insert(
-        firstLine + 1, chalk.black.onWhite(center(titleLine2, len)));
+    out.insert(firstLine + 1, chalk.black.onWhite(center(titleLine2, len)));
     return out;
   }
 
@@ -387,8 +383,7 @@ class ChalkDartCharts {
     }
 
     final len = chalk.strip(out[0]).length;
-    out.insert(
-        0, chalk.black.onWhite(center(chalk.bold('HSV Tables'), len)));
+    out.insert(0, chalk.black.onWhite(center(chalk.bold('HSV Tables'), len)));
 
     return out;
   }
@@ -443,7 +438,7 @@ class ChalkDartCharts {
           sb.write(chalk.bold.black.onWhite(center(getRowHeader(v), 5)));
           firstCol = false;
         }
-        sb.write(chalk.onHsv(hue, s*100, v*100)('     '));
+        sb.write(chalk.onHsv(hue, s * 100, v * 100)('     '));
       }
       if (v == 1) out.add(hb.toString());
 
@@ -453,8 +448,7 @@ class ChalkDartCharts {
     final len = chalk.strip(out[firstLine]).length;
     out.insert(firstLine, chalk.black.onWhite(center(titleLine, len)));
     if (titleLine2 != '') {
-      out.insert(
-          firstLine + 1, chalk.black.onWhite(center(titleLine2, len)));
+      out.insert(firstLine + 1, chalk.black.onWhite(center(titleLine2, len)));
     }
     return out;
   }
@@ -468,26 +462,27 @@ class ChalkDartCharts {
     return "${''.padLeft(iLeft, ' ')}$s${''.padRight(iRight, ' ')}";
   }
 
-  static List<String> dumpLabChart( int l ) {
+  static List<String> dumpLabChart(int l) {
     List<String> lines = [];
     StringBuffer sb = StringBuffer();
 
-    final b_range=108;
-    final a_range=100;
-    final w=100;
+    final b_range = 108;
+    final a_range = 100;
+    final w = 100;
     //int h=13;
-    final b_step = 6;//((b_range*2)/h).floor();
-    final a_step = ((a_range*2)/w).floor();
-    final chartWidth = w+1+6+6;
-  
-    lines.add(chalk.bold.black.onWhite("${center('L.a.b. Chart for L(ightness) = $l', chartWidth)}"));
+    final b_step = 6; //((b_range*2)/h).floor();
+    final a_step = ((a_range * 2) / w).floor();
+    final chartWidth = w + 1 + 6 + 6;
+
+    lines.add(chalk.bold.black
+        .onWhite("${center('L.a.b. Chart for L(ightness) = $l', chartWidth)}"));
 
     lines.add(chalk.bold.black.onWhite(center('Yellow', chartWidth)));
     lines.add(chalk.bold.black.onWhite(center('+b', chartWidth)));
     lines.add(chalk.bold.black.onWhite(center('+$b_range', chartWidth)));
 
-    for (var b = b_range; b >= -b_range; b -= b_step ) {
-      for (var a = -a_range; a <= a_range; a += a_step ) {
+    for (var b = b_range; b >= -b_range; b -= b_step) {
+      for (var a = -a_range; a <= a_range; a += a_step) {
         if (a == -a_range) {
           if (b == b_step) {
             sb.write(chalk.bold.black.onWhite('  -a  '));
@@ -499,8 +494,9 @@ class ChalkDartCharts {
             sb.write(chalk.black.onWhite('      '));
           }
         }
-        sb.write(chalk.bold.black.onLab(l,a,b)(
-            (b == 0) ? (a == 0 ? '+' : chalk.strikethrough('-')) : (a == 0 ? '|' : ' ')));
+        sb.write(chalk.bold.black.onLab(l, a, b)((b == 0)
+            ? (a == 0 ? '+' : chalk.strikethrough('-'))
+            : (a == 0 ? '|' : ' ')));
         if (a == a_range) {
           if (b == b_step) {
             sb.write(chalk.bold.black.onWhite('  +a  '));
@@ -519,7 +515,7 @@ class ChalkDartCharts {
     lines.add(chalk.bold.black.onWhite(center('Blue', chartWidth)));
     lines.add(chalk.bold.black.onWhite(center('-b', chartWidth)));
     lines.add(chalk.bold.black.onWhite(center('(${-b_range})', chartWidth)));
-    
+
     return lines;
   }
 }
