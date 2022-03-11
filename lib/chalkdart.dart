@@ -9,7 +9,6 @@ import 'src/supports_ansi.dart'
 
 export 'src/chalkdart.dart';
 export 'src/colorutils.dart';
-export 'src/chalkdart_charts.dart';
 
 bool ansiColorDisabled = !supportsAnsiColor;
 

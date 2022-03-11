@@ -2,60 +2,69 @@
   @author: tim maffett
 */
 import 'package:chalkdart/chalkdart.dart';
-import 'package:chalkdart/src/chalkdart_charts.dart';
+import 'chalkdart_charts.dart';
 
 /*
 League Mono  (the variable version) supports   CSS font-stretch: 200%, so you can make it wide
-https://www.theleagueofmoveabletype.com/league-mono   download the font package here
-   within the archive you are looking for the variable font 
-       'LeagueMono-2.300\variable\TTF\LeagueMono-VF.ttf'
-github ( https://github.com/theleagueof/league-mono  )
+  https://www.theleagueofmoveabletype.com/league-mono   download the font package here
+    within the archive you are looking for the variable font 
+        'LeagueMono-2.300\variable\TTF\LeagueMono-VF.ttf'
+  github ( https://github.com/theleagueof/league-mono  )
 
 Cascadia Code and other fonts found here:
-https://github.com/microsoft/cascadia-code/releases
-main github:  https://github.com/microsoft/cascadia-code
-and more information about the fonts and ligatures
-https://docs.microsoft.com/en-us/windows/terminal/cascadia-code
-CSS Font Family: 'Cascadia Code', 'Cascadia Mono', 'Cascadia Code PL', 'Cascadia Mono PL'
-Information on PowerLine Extra Characters (PL versions of Cascadia fonts)
-https://github.com/ryanoasis/powerline-extra-symbols
+  https://github.com/microsoft/cascadia-code/releases
+  main github:  https://github.com/microsoft/cascadia-code
+  and more information about the fonts and ligatures
+  https://docs.microsoft.com/en-us/windows/terminal/cascadia-code
+  CSS Font Family: 'Cascadia Code', 'Cascadia Mono', 'Cascadia Code PL', 'Cascadia Mono PL'
+  Information on PowerLine Extra Characters (PL versions of Cascadia fonts)
+  https://github.com/ryanoasis/powerline-extra-symbols
 
 JetBrains Mono
-https://www.jetbrains.com/lp/mono/?ref=betterwebtype
-looking for variable font
-'C:\src\fonts\LeagueMono-2.300\variable\TTF\LeagueMono-VF.ttf'
-css font-family  'JetBrains Mono Thin'
-Using Customize UI extension you can place custom CSS in settings.json and you need to add this:
+  https://www.jetbrains.com/lp/mono/?ref=betterwebtype
+  looking for variable font
+  'C:\src\fonts\LeagueMono-2.300\variable\TTF\LeagueMono-VF.ttf'
+  css font-family  'JetBrains Mono Thin'
+  Using Customize UI extension you can place custom CSS in settings.json and you need to add this:
 
-Lots more 'Nerd' fonts to try
-https://github.com/ryanoasis/nerd-fonts
-
-
+Lots more 'Nerd' fonts (with various features)
+  https://github.com/ryanoasis/nerd-fonts
 
 
-"customizeUI.stylesheet": {
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-1" : "font-family: Verdana,Arial,sans-serif;",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-2" : "font-family: Georgia,'Times New Roman',serif; ",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-3" : "font-family: 'Cascadia Code', Papyrus,Impact,fantasy; ",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-4" : "font-family: 'Cascadia Mono', 'Apple Chancery','Lucida Calligraphy',cursive;",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-5" : "font-family: 'Courier New', 'Courier', monospace;",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-6" : "font-size: 16px; padding: 0px; font-family: 'Cascadia Code PL', 'Segoe WPC', 'Segoe UI',-apple-system, BlinkMacSystemFont, system-ui, 'Ubuntu', 'Droid Sans', sans-serif;",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-7" : "font-family: 'Cascadia Mono PL', Menlo, Monaco, Consolas,'Droid Sans Mono', 'Inconsolata', 'Courier New', monospace, 'Droid Sans Fallback';",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-8" : "font-size: 14px; padding: 0px; font-family: 'Cascadia Code PL' var(--monaco-monospace-font), 'SF Mono', Monaco, Menlo, Consolas, 'Ubuntu Mono', 'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-9" : "font-family: var(--vscode-editor-font-family), 'SF Mono', Monaco, Menlo, Consolas, 'Ubuntu Mono', 'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;",
-    ".monaco-workbench .repl .repl-tree .output.expression .code-font-10" : "font-stretch: ultra-expanded; font-weight: bold; font-family: 'League Mono', 'F25 BlackletterTypewriter', UnifrakturCook, Luminari, Apple Chancery, fantasy, Papyrus;",
-  },
+When using VSCode it is possible to Enable full font support for the 10 fonts
+by installing the extension "Customize UI" and adding the following to your VSCode settings.json
+file.
+For the value for each of these CSS selectors you place the font-family of the font you want to use.
+In the example below I have including using some of the fonts listed above. 
+
+Add this to VSCode settings.json, after enabling the "Customize UI" extension:
+
+    "customizeUI.stylesheet": {
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-1" : "font-family: Verdana,Arial,sans-serif;",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-2" : "font-style: italic; font-size: 16px; padding: 0px; font-family: 'Cascadia Code PL', Georgia,'Times New Roman',serif; ",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-3" : "font-family: 'Segoe WPC', 'Segoe UI', Papyrus, Impact,fantasy; ",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-4" : "font-family: 'Cascadia Mono', 'Apple Chancery','Lucida Calligraphy',cursive;",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-5" : "font-family: 'Courier New', 'Courier', monospace;",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-6" : "font-size: 16px; padding: 0px; font-family: 'Cascadia Code PL', 'Segoe WPC', 'Segoe UI',-apple-system, BlinkMacSystemFont, system-ui, 'Ubuntu', 'Droid Sans', sans-serif;",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-7" : "font-family: 'Cascadia Mono PL', Menlo, Monaco, Consolas,'Droid Sans Mono', 'Inconsolata', 'Courier New', monospace, 'Droid Sans Fallback';",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-8" : "font-size: 14px; padding: 0px; font-family: 'Cascadia Code PL' var(--monaco-monospace-font), 'SF Mono', Monaco, Menlo, Consolas, 'Ubuntu Mono', 'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-9" : "font-size: 16px; font-family: 'JetBrains Mono';", //"font-family: 'JetBrains Mono', var(--vscode-editor-font-family), 'SF Mono', Monaco, Menlo, Consolas, 'Ubuntu Mono', 'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;",
+        ".monaco-workbench .repl .repl-tree .output.expression .code-font-10" : "font-stretch: ultra-expanded; font-weight: bold; font-family: 'League Mono', 'F25 BlackletterTypewriter', UnifrakturCook, Luminari, Apple Chancery, fantasy, Papyrus;",
+    },
 
 */
 void main() {
   final includeFonts = true;
 
+  Chalk chalk = Chalk();
+
+  print( chalk.cornflowerBlue.onBisque( "            Chalk'Dart example program           " ) );
 
   print('supportsAnsiColor = $dartSupportsAnsiColor');
   print('usedAnsiInclude = $chalkUsedAnsiInclude');
 
-  Chalk.colorLevel = 3;
-  //Chalk.useFullResetToClose = true;
+  Chalk.ansiColorLevelForNewInstances = 3;
+  Chalk.useFullResetToClose = true;
 
   chalk = Chalk.Instance(level: 3);
   
@@ -115,11 +124,13 @@ void main() {
   print(chalk.blue('Hello', 'World!', chalk.red, 45, 45.6, true,
       {'mymap': 23.4}, 'Foo', 'bar', 'biz', 'baz'));
 
+
   var demolines = ChalkDartCharts.demo();
   print('\n\nChalkDart colorLevel 2 DEMO:');
   for (var i = 0; i < demolines.length; i++) {
     print(demolines[i]);
   }
+
 
 /*
   Chalk.colorLevel = 3;
@@ -199,9 +210,10 @@ void main() {
   print(chalkNL.x11.slateblue.onWhite( ()=>'Testing Chalk`Dart With Closures - This is return from closure #1!!! DIM blue') +
       chalk.white.x11.onPurple( ()=>' and this is the return from closure #2 then back to blue' ));
 
-  print(chalkNL.joinWith('\n').x11.goldenrod.onBlack( [
-      ()=>'Array of Closures #1 Testing Chalk`Dart With Closures - This is return from closure #1!!! DIM blue',
-      ()=>'Array of Closures #2 and this is the return from closure #2 then back to blue',
+  print(chalk.joinWith('\n').x11.goldenrod.onBlack( [
+      'These will all have a \n after each line from joinWith()',
+      ()=>chalk.onBlue('Array of Closures #1 Testing Chalk`Dart With Closures - This is return from closure #1!!! DIM blue'),
+      ()=>chalk.brightBlue('Array of Closures #2 and this is the return from closure #2 then back to blue'),
       ()=>chalk.red('This closure called chalk and makes this red'),
       ()=>chalk.white.onBlue('And this closure ${chalk.black.onYellow("Nest calls to chalk")} inside the closure'),
     ] ) );
@@ -339,6 +351,20 @@ if( includeFonts ) {
       .onMagenta
       .underlineRgb16m(0, 255, 0)
       .overline('Hello world! green text on magenta with green OVERLINE'));
+
+  print(chalk
+      .hsl(120, 1, 0.5)
+      .onGrey
+      //.underlineRgb16m(0, 255, 0)
+      .overline('TIMTEST Hello world! .underlineRgb16m KILL STYLE on Android green text on magenta with green OVERLINE'));
+
+  print(chalk
+      .hsl(120, 1, 0.5)
+      .onGrey
+  //.underlineRgb(0, 255, 0)
+      .overline('TIMTEST Hello world! .underlineRgb KILL STYLE on Android green text on magenta with green OVERLINE'));
+
+
   print('\n');
   print(chalk.overline
       .brightWhite
@@ -346,7 +372,7 @@ if( includeFonts ) {
       ('Hello world! bright white w/ green OVERLINE'));
   print('\n');
 
-chalk = chalk.reset;
+Chalk chalkWithReset = chalk.reset;
 /*
   print(chalk.blueBright.onWhite
       .ansiSgr('4:1', '4:0')('ECMA-48 sub-parameters/VTE52 codes: alt solid underline Hello world!'));
@@ -359,23 +385,23 @@ chalk = chalk.reset;
   print(chalk.blueBright.bgBrightWhite
       .ansiSgr('4:5', '4:0')('ECMA-48 sub-parameters/VTE52 codes: Dashed underline Hello world!'));
 */
-  print(chalk.brightBlue('this is ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
-  print(chalk.brightBlue('this is ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
+  print(chalkWithReset.brightBlue('this is ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
+  print(chalkWithReset.brightBlue('this is ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
 
-  print(chalk.underlined.brightBlue('this is underlined ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
-  print(chalk.underlined.brightBlue('this is underlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
+  print(chalkWithReset.underlined.brightBlue('this is underlined ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
+  print(chalkWithReset.underlined.brightBlue('this is underlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
 
-  print(chalk.overlined.brightBlue('this is overlined ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
-  print(chalk.overlined.brightBlue('this is overlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
+  print(chalkWithReset.overlined.brightBlue('this is overlined ${chalk.red.superscript('red superscript text')} and back to regular text' ) );
+  print(chalkWithReset.overlined.brightBlue('this is overlined ${chalk.yellow.subscript('yellow subscript text')} and back to regular text' ) );
 
 
-  print(chalk.color
+  print(chalkWithReset.color
       .orange('Yay for red on dynamically called orange colored text!'));
-  print(chalk.color.chartreuse.onCornflowerblue(
+  print(chalkWithReset.color.chartreuse.onCornflowerblue(
       'Yay for lightskyblue on cornflowerblue colored text!'));
-  print(chalk.underline.csscolor.peachpuff
+  print(chalkWithReset.underline.csscolor.peachpuff
       .onPurple('Yay for underline.color.peachpuff.onPurple colored text!'));
-  print(chalk.doubleUnderline.x11.MediumSlateBlue.bgMediumVioletRed(
+  print(chalkWithReset.doubleUnderline.x11.MediumSlateBlue.bgMediumVioletRed(
       'Yay for x11.MediumSlateBlue.bgMediumVioletRed colored DOUBLE UNDERLINED text!'));
 
   var testtim = "Super Way";
@@ -415,15 +441,29 @@ chalk = chalk.reset;
       ' that becomes green again!'));
 
   // use in multiline string and in templating
-  print('''t
+  print('''
       CPU: ${chalk.red('90%')}
       RAM: ${chalk.green('40%')}
       DISK: ${chalk.yellow('70%')}
    ''');
 
-  chalk.level = 3;
-  chalk = chalk.font8;
-//chalk = Chalk.Instance(level: 3).font8;
+  chalk = Chalk.Instance(level: 3).font8;
+  //Chalk.DEBUG_CODES = true;
+  //chalk = chalk.reset;
+/*
+  print( "one that doesnt work: "+chalk.toStringAll() );
+  String outStr = chalk.black.onYellow(ChalkDartCharts.center(chalk.bold('Test Background'), 80))+'END';
+  print( outStr );
+  print("DEBUG='${Chalk.makePrintableForDebug( outStr )}'" );
+  //Chalk.DEBUG_CODES = false;
+  chalk = Chalk.Instance(level: 3);
+  //Chalk.DEBUG_CODES = true;
+  print( "one that works: "+chalk.toStringAll() );
+  outStr = chalk.black.onYellow(ChalkDartCharts.center(chalk.bold('Test Background'), 80))+'END';
+  print( outStr );
+  print("DEBUG='${Chalk.makePrintableForDebug( outStr )}'" );
+  //Chalk.DEBUG_CODES = false;
+*/
 
   //Chalk.DEBUG_CODES = true;
   demolines = ChalkDartCharts.dumpAllHWBTables();
