@@ -1,11 +1,11 @@
 <img src="https://raw.githubusercontent.com/timmaffett/chalkdart/713b6657ffc00f699c8eba234fe30374049d5f13/media/chalkdart.svg" width="100%">
 
 ##### vscode debug console
-<img src="media/ABasic.png" width="100%">
+<img src="https://github.com/timmaffett/chalkdart/raw/master/media/ABasic.png" width="100%">
 
 ##### windows terminal
 
-<img src="media/AChalkDart2.png" width="100%">
+<img src="https://github.com/timmaffett/chalkdart/raw/master/media/AChalkDart2.png" width="100%">
 
 
 ## Console/Terminal text coloring and styling library for Dart.
@@ -1834,8 +1834,8 @@ If you're on Windows, do yourself a favor and use [Windows Terminal](https://git
 ## Other examples
 
 ##### Charts from chalkdart_example.dart output to windows terminal
-<img src="media/Ansi0.png" width="100%">
-<img src="media/Ansi1.png" width="100%">
+<img src="https://github.com/timmaffett/chalkdart/raw/master/media/Ansi0.png" width="100%">
+<img src="https://github.com/timmaffett/chalkdart/raw/master/media/Ansi1.png" width="100%">
 
-<img src="media/AWindowsTerminal.png" width="100%">
-<img src="media/AChalkDart2_chart2.png" width="100%">
+<img src="https://github.com/timmaffett/chalkdart/raw/master/media/AWindowsTerminal.png" width="100%">
+<img src="https://github.com/timmaffett/chalkdart/raw/master/media/AChalkDart2_chart2.png" width="100%">
