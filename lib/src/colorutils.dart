@@ -19,7 +19,7 @@ import 'dart:math';
 /// Many of these routines are based on work by Heather Arthur and javascript code
 /// that I have ported to dart from:
 ///    https://github.com/Qix-/color-convert/blob/master/conversions.js
-/// 
+///
 class ColorUtils {
   static int rgbToAnsi256(int red, int green, int blue) {
     // We use the extended greyscale palette here, with the exception of
@@ -276,7 +276,7 @@ class ColorUtils {
 
   static List<int> xyz2rgb(num x, num y, num z) {
     if (x <= 1 && y <= 1 && z <= 1) {
-      // if both <=1 we assume that are 0-1 range, NOTE that means if 
+      // if both <=1 we assume that are 0-1 range, NOTE that means if
       // you REALLY want (0.01 then you need to pass it like that and
       // not as 1 in to 100 scale)
       x *= 100;

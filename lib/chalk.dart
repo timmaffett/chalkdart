@@ -30,7 +30,7 @@ final bool dartSupportsAnsiColor = supportsAnsiColor;
 final bool ansiColorDisabled = !supportsAnsiColor;
 
 /// Read only, informational only.
-/// Name of the ansi include file used `supports_ansi.dart` is the default, 
+/// Name of the ansi include file used `supports_ansi.dart` is the default,
 /// or the dart.libary.io version `supports_ansi_io.dart`
 /// or the dart.library.html version `supports_ansi_web.dart`.
 final String chalkUsedAnsiInclude = usedAnsiInclude;

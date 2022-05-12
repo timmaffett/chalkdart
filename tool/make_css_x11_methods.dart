@@ -74,7 +74,7 @@ List<String> dumpColorMethods() {
   List<String> out = [];
 
   out.add(
-'// BEGIN GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /tool/makeX11EntryPoints.dart');
+      '// BEGIN GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /tool/makeX11EntryPoints.dart');
 
   out.add('''
 import 'chalk.dart';
@@ -94,7 +94,7 @@ import 'chalk.dart';
 extension ChalkX11 on Chalk {''');
 
   colorKeywords.forEach((colorKeyword, hexColorValue) {
-    if(colorKeyword.startsWith('@')) return; // skip ansi colors
+    if (colorKeyword.startsWith('@')) return; // skip ansi colors
     num red = (hexColorValue >> 16) & 0xFF;
     num green = (hexColorValue >> 8) & 0xFF;
     num blue = hexColorValue & 0xFF;
@@ -130,7 +130,7 @@ extension ChalkX11 on Chalk {''');
 
   out.add('');
   out.add(
-'''// END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart
+      '''// END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart
 ''');
 
   return out;

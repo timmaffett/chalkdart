@@ -59,10 +59,10 @@ void main() {
 
   Chalk chalk = Chalk();
 
-print('''
+  print('''
 CPU: ${chalk.red(344)}%
 RAM: ${chalk.green((0.47 * 100))}%
-DISK: ${chalk.rgb(255,131,0)((0.76 * 100))}%
+DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
 ''');
 
   print(chalk.cornflowerBlue
@@ -236,10 +236,11 @@ DISK: ${chalk.rgb(255,131,0)((0.76 * 100))}%
         'And this closure ${chalk.black.onYellow("Nest calls to chalk")} inside the closure'),
   ]));
 
-  print(chalk.lightGoldenrodYellow.onCornflowerBlue('Hey There using X11 extensions'));
+  print(chalk.lightGoldenrodYellow
+      .onCornflowerBlue('Hey There using X11 extensions'));
   // otherwise you must use the dynamic loolup method off of the color or css methods.
-  print(chalk.color.lightGoldenrodYellow.onCornflowerBlue('Hey There using dynamic lookup via .color'));
- 
+  print(chalk.color.lightGoldenrodYellow
+      .onCornflowerBlue('Hey There using dynamic lookup via .color'));
 
 /*
   print(chalk.blue

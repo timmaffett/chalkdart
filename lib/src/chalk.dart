@@ -10,8 +10,8 @@ import 'colorutils.dart';
 ///    https://en.wikipedia.org/wiki/ANSI_escape_code .
 /// References with detailed explainations of the various color models
 /// included here:
-///    https://en.wikipedia.org/wiki/HSL_and_HSV and 
-///    https://en.wikipedia.org/wiki/HWB_color_model 
+///    https://en.wikipedia.org/wiki/HSL_and_HSV and
+///    https://en.wikipedia.org/wiki/HWB_color_model
 /// The complete history of the X11 color names (later used in css/svg also)
 ///    https://en.wikipedia.org/wiki/X11_color_names .
 class Chalk {
@@ -318,7 +318,7 @@ class Chalk {
       _makeUnderlineChalk(red, green, blue, force16M: true);
 
   /// Creates chalk with foreground color defined from HSL (Hue, Saturation
-  /// and Lightness) color space parameters. 
+  /// and Lightness) color space parameters.
   /// https://en.wikipedia.org/wiki/HSL_and_HSV
   Chalk hsl(num hue, num saturation, num lightness) {
     var rgb = ColorUtils.hsl2rgb(hue, saturation, lightness);
@@ -326,7 +326,7 @@ class Chalk {
   }
 
   /// Creates chalk with background color defined from HSL (Hue, Saturation
-  /// and Lightness) color space parameters. 
+  /// and Lightness) color space parameters.
   /// https://en.wikipedia.org/wiki/HSL_and_HSV
   Chalk onHsl(num hue, num saturation, num lightness) {
     var rgb = ColorUtils.hslTorgb(hue, saturation, lightness);
@@ -338,7 +338,7 @@ class Chalk {
       onHsl(hue, saturation, lightness);
 
   /// Creates chalk with foreground color defined from HSV (Hue, Saturation
-  /// and Value) color space parameters. 
+  /// and Value) color space parameters.
   /// https://en.wikipedia.org/wiki/HSL_and_HSV
   Chalk hsv(num hue, num saturation, num value) {
     var rgb = ColorUtils.hsv2rgb(hue, saturation, value);
@@ -346,7 +346,7 @@ class Chalk {
   }
 
   /// Creates chalk with background color defined from HSV (Hue, Saturation
-  /// and Value) color space parameters. 
+  /// and Value) color space parameters.
   /// https://en.wikipedia.org/wiki/HSL_and_HSV
   Chalk onHsv(num hue, num saturation, num value) {
     var rgb = ColorUtils.hsv2rgb(hue, saturation, value);
@@ -358,7 +358,7 @@ class Chalk {
       onHsv(hue, saturation, value);
 
   /// Creates chalk with foreground color defined from HWB (Hue, Whiteness
-  /// and Blackness) color space parameters. 
+  /// and Blackness) color space parameters.
   /// https://en.wikipedia.org/wiki/HWB_color_model
   Chalk hwb(num hue, num whiteness, num blackness) {
     var rgb = ColorUtils.hwbTorgb(hue, whiteness, blackness);
@@ -366,7 +366,7 @@ class Chalk {
   }
 
   /// Creates chalk with background color defined from HWB (Hue, Whiteness
-  /// and Blackness) color space parameters. 
+  /// and Blackness) color space parameters.
   /// https://en.wikipedia.org/wiki/HWB_color_model
   Chalk onHwb(num hue, num whiteness, num blackness) {
     var rgb = ColorUtils.hwb2rgb(hue, whiteness, blackness);
@@ -378,7 +378,7 @@ class Chalk {
       onHwb(hue, whiteness, blackness);
 
   /// Creates chalk with foreground color defined from
-  /// XYZ color space parameters. 
+  /// XYZ color space parameters.
   /// https://en.wikipedia.org/wiki/CIE_1931_color_space
   Chalk xyz(num x, num y, num z) {
     var rgb = ColorUtils.xyz2rgb(x, y, z);
@@ -386,7 +386,7 @@ class Chalk {
   }
 
   /// Creates chalk with background color defined from
-  /// XYZ color space parameters. 
+  /// XYZ color space parameters.
   /// https://en.wikipedia.org/wiki/CIE_1931_color_space
   Chalk onXyz(num x, num y, num z) {
     var rgb = ColorUtils.xyz2rgb(x, y, z);
@@ -397,8 +397,8 @@ class Chalk {
   Chalk bgXyz(num x, num y, num z) => onXyz(x, y, z);
 
   /// Creates chalk with foreground color defined from
-  /// lab color space parameters. 
-   /// https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB
+  /// lab color space parameters.
+  /// https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB
   Chalk lab(num l, num a, num b) {
     var xyz = ColorUtils.lab2xyz(l, a, b);
     var rgb = ColorUtils.xyz2rgb(xyz[0], xyz[1], xyz[2]);
@@ -406,8 +406,8 @@ class Chalk {
   }
 
   /// Creates chalk with background color defined from
-  /// lab color space parameters. 
-   /// https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB
+  /// lab color space parameters.
+  /// https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB
   Chalk onLab(num l, num a, num b) {
     var xyz = ColorUtils.lab2xyz(l, a, b);
     var rgb = ColorUtils.xyz2rgb(xyz[0], xyz[1], xyz[2]);
@@ -418,12 +418,12 @@ class Chalk {
   Chalk bgLab(num l, num a, num b) => onLab(l, a, b);
 
   /// Creates chalk with the foreground color specified by
-  /// the ansi color escape code. 
+  /// the ansi color escape code.
   /// https://en.wikipedia.org/wiki/ANSI_escape_code
   Chalk ansi(int ansicode) => _makeAnsiChalk(ansicode);
 
   /// Creates chalk with the background color specified by
-  /// the ansi color escape code. 
+  /// the ansi color escape code.
   /// https://en.wikipedia.org/wiki/ANSI_escape_code
   Chalk onAnsi(int ansicode) => _makeAnsiChalk(ansicode, true);
 
@@ -807,7 +807,7 @@ class Chalk {
   ///   (this is the equivalent of `chalk.keyword('cornflowerblue')('same things using keyword()'`)
   dynamic get x11 => color;
 
-  /// Specify string to use for joining multiple arguments or Lists. 
+  /// Specify string to use for joining multiple arguments or Lists.
   /// Default is ' ' (single space).
   Chalk joinWith(String joinWith) {
     var chalk = _createStyler('', '', this);
@@ -933,7 +933,7 @@ class Chalk {
   /// print(chalk.csscolor.lightskyblue('Yay for lightskyblue colored text!'));
   /// Background:
   /// https://github.com/dart-lang/sdk/blob/master/docs/language/informal/nosuchmethod-forwarding.md
-  ///   Good stuff.  
+  ///   Good stuff.
   @override
   dynamic noSuchMethod(Invocation invocation) {
     // memberName will toString() like 'Symbol("orange")', so just get the name
@@ -984,7 +984,7 @@ class Chalk {
 }
 
 /// This _StringUtils class handles heavy lifting for Chalk() on string
-/// it's custom operations. 
+/// it's custom operations.
 class _StringUtils {
   static String stringReplaceAll(
       String string, String substring, String replacer) {
