@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the Chalk class from the chalk library, for the Dart programming language.">
+  <title>Chalk class - chalk library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">chalkdart</a></li>
+    <li><a href="../chalk/chalk-library.html">chalk</a></li>
+    <li class="self-crumb">Chalk class</li>
+  </ol>
+  <div class="self-name">Chalk</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">Chalk</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Chalk - A Library for printing styled text to the console using ANSI
+control sequences.
+Documentation of the ANSI code system:
+<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">https://en.wikipedia.org/wiki/ANSI_escape_code</a> .
+References with detailed explainations of the various color models
+included here:
+   <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">https://en.wikipedia.org/wiki/HSL_and_HSV</a> and
+   <a href="https://en.wikipedia.org/wiki/HWB_color_model">https://en.wikipedia.org/wiki/HWB_color_model</a>
+The complete history of the X11 color names (later used in css/svg also)
+   <a href="https://en.wikipedia.org/wiki/X11_color_names">https://en.wikipedia.org/wiki/X11_color_names</a> .</p>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+
+        
+        
+
+
+        <dt>Available Extensions</dt>
+        <dd><ul class="comma-separated clazz-relationships">
+          <li><a href="../chalk_x11/ChalkX11.html">ChalkX11</a></li>
+        </ul></dd>
+
+        
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="Chalk" class="callable">
+          <span class="name"><a href="../chalk/Chalk/Chalk.html">Chalk</a></span><span class="signature">()</span>
+        </dt>
+        <dd>
+          Factory function typically used for creating new 'root' instances of Chalk
+(root instances start with no style)
+            <div class="constructor-modifier features">factory</div>
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="bgBlack" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBlack.html">bgBlack</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBlack.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBlackBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBlackBright.html">bgBlackBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightBlack.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBlue" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBlue.html">bgBlue</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBlue.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBlueBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBlueBright.html">bgBlueBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightBlue.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightBlack" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightBlack.html">bgBrightBlack</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightBlack.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightBlue" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightBlue.html">bgBrightBlue</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightBlue.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightCyan" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightCyan.html">bgBrightCyan</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightCyan.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightGreen" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightGreen.html">bgBrightGreen</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightGreen.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightMagenta" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightMagenta.html">bgBrightMagenta</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightMagenta.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightRed" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightRed.html">bgBrightRed</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightRed.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightWhite" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightWhite.html">bgBrightWhite</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightWhite.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgBrightYellow" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgBrightYellow.html">bgBrightYellow</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightYellow.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgCyan" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgCyan.html">bgCyan</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onCyan.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgCyanBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgCyanBright.html">bgCyanBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightCyan.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgGray" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgGray.html">bgGray</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onGray.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgGreen" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgGreen.html">bgGreen</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onGreen.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgGreenBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgGreenBright.html">bgGreenBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightGreen.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgGrey" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgGrey.html">bgGrey</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onGrey.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgMagenta" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgMagenta.html">bgMagenta</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onMagenta.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgMagentaBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgMagentaBright.html">bgMagentaBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightMagenta.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgRed" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgRed.html">bgRed</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onRed.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgRedBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgRedBright.html">bgRedBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightRed.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgWhite" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgWhite.html">bgWhite</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onWhite.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgWhiteBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgWhiteBright.html">bgWhiteBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightWhite.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgYellow" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgYellow.html">bgYellow</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onYellow.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bgYellowBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/bgYellowBright.html">bgYellowBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Legacy api, provided only for backwards compatability, use onBrightYellow.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="black" class="property">
+  <span class="name"><a href="../chalk/Chalk/black.html">black</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Set foreground color to one of the base 16 xterm colors
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="blackBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/blackBright.html">blackBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="blackletter" class="property">
+  <span class="name"><a href="../chalk/Chalk/blackletter.html">blackletter</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  blackletter - alternate name for font10, ANSI/ECMA-48 spec refers to font10 specifically as a blackletter or Fraktur (Gothic) font.
+(Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="blink" class="property">
+  <span class="name"><a href="../chalk/Chalk/blink.html">blink</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  blink - Make text blink. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="blue" class="property">
+  <span class="name"><a href="../chalk/Chalk/blue.html">blue</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="blueBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/blueBright.html">blueBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="bold" class="property">
+  <span class="name"><a href="../chalk/Chalk/bold.html">bold</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  bold - Make text bold.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightBlack" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightBlack.html">brightBlack</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  8 more 'bright' versions of the lower 8 colors
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightBlue" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightBlue.html">brightBlue</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightCyan" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightCyan.html">brightCyan</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightGreen" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightGreen.html">brightGreen</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightMagenta" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightMagenta.html">brightMagenta</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightRed" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightRed.html">brightRed</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightWhite" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightWhite.html">brightWhite</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="brightYellow" class="property">
+  <span class="name"><a href="../chalk/Chalk/brightYellow.html">brightYellow</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="color" class="property">
+  <span class="name"><a href="../chalk/Chalk/color.html">color</a></span>
+  <span class="signature">&#8594; dynamic</span> 
+
+</dt>
+<dd>
+  Follow this method with any standard CSS/SVG/X11 color name (remove spaces from name)
+The case/capitalizatiom of the color name is not important.
+color returns chalk as 'dynamic' so that CSS/SVG/X11 color names can 'dynamically' be
+accessed as virtual methods.
+ie.  <code>chalk.color.cornflowerblue('works like this')</code>
+  (this is the equivalent of <code>chalk.keyword('cornflowerblue')('same things using keyword()'</code>)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="csscolor" class="property">
+  <span class="name"><a href="../chalk/Chalk/csscolor.html">csscolor</a></span>
+  <span class="signature">&#8594; dynamic</span> 
+
+</dt>
+<dd>
+  Follow this method with any standard CSS/SVG/X11 color name (remove spaces from name)
+The case/capitalizatiom of the color name is not important.
+alias for <a href="../chalk/Chalk/color.html">color</a> - alternate method name to use for to get dynamic for virtual color methods
+ie.  <code>chalk.csscolor.cornflowerblue('works like this')</code>
+  (this is the equivalent of <code>chalk.keyword('cornflowerblue')('same things using keyword()'</code>)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="cyan" class="property">
+  <span class="name"><a href="../chalk/Chalk/cyan.html">cyan</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="cyanBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/cyanBright.html">cyanBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="dim" class="property">
+  <span class="name"><a href="../chalk/Chalk/dim.html">dim</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  dim - Emitting only a small amount of light.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="doubleUnderline" class="property">
+  <span class="name"><a href="../chalk/Chalk/doubleUnderline.html">doubleUnderline</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  doubleUnderline - alternate for doubleunderline
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="doubleunderline" class="property">
+  <span class="name"><a href="../chalk/Chalk/doubleunderline.html">doubleunderline</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  doubleunderline - Make text double underlined. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="doubleunderlined" class="property">
+  <span class="name"><a href="../chalk/Chalk/doubleunderlined.html">doubleunderlined</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font1" class="property">
+  <span class="name"><a href="../chalk/Chalk/font1.html">font1</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 1. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font2" class="property">
+  <span class="name"><a href="../chalk/Chalk/font2.html">font2</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 2. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font3" class="property">
+  <span class="name"><a href="../chalk/Chalk/font3.html">font3</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 3. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font4" class="property">
+  <span class="name"><a href="../chalk/Chalk/font4.html">font4</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 4. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font5" class="property">
+  <span class="name"><a href="../chalk/Chalk/font5.html">font5</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 5. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font6" class="property">
+  <span class="name"><a href="../chalk/Chalk/font6.html">font6</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 6. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font7" class="property">
+  <span class="name"><a href="../chalk/Chalk/font7.html">font7</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 7. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font8" class="property">
+  <span class="name"><a href="../chalk/Chalk/font8.html">font8</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 8. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font9" class="property">
+  <span class="name"><a href="../chalk/Chalk/font9.html">font9</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 9. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="font10" class="property">
+  <span class="name"><a href="../chalk/Chalk/font10.html">font10</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  Alternative font 10. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="gray" class="property">
+  <span class="name"><a href="../chalk/Chalk/gray.html">gray</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="green" class="property">
+  <span class="name"><a href="../chalk/Chalk/green.html">green</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="greenBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/greenBright.html">greenBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="grey" class="property">
+  <span class="name"><a href="../chalk/Chalk/grey.html">grey</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features">read-only, inherited</div>
+
+</dd>
+
+        <dt id="hidden" class="property">
+  <span class="name"><a href="../chalk/Chalk/hidden.html">hidden</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  hidden - Prints the text, but makes it invisible. (still copy and pasteable)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="inverse" class="property">
+  <span class="name"><a href="../chalk/Chalk/inverse.html">inverse</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  inverse- Inverse background and foreground colors.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="invert" class="property">
+  <span class="name"><a href="../chalk/Chalk/invert.html">invert</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  invert- alternate for inverse() - Inverse background and foreground colors.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="italic" class="property">
+  <span class="name"><a href="../chalk/Chalk/italic.html">italic</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  italic - Make text italic. (VSCode debug console supports,some other terminals)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="level" class="property">
+  <span class="name"><a href="../chalk/Chalk/level.html">level</a></span>
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd>
+  ANSI Color level support for this chalk instance - this will effect what colors
+this chalk instance can use.
+  <div class="features">read / write</div>
+
+</dd>
+
+        <dt id="magenta" class="property">
+  <span class="name"><a href="../chalk/Chalk/magenta.html">magenta</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="magentaBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/magentaBright.html">magentaBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="normal" class="property">
+  <span class="name"><a href="../chalk/Chalk/normal.html">normal</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  normal - Text with all attributes off
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBlack" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBlack.html">onBlack</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  chalkdart favors 'onXXXXX' style of specifying background colors because it makes
+chained methods list read better as a sentence (<code>it's the Dart way</code>).
+We include original Chalk 'bgXXXX' method names for users that prefer that scheme
+and for legacy compatability with original JS Chalk.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBlue" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBlue.html">onBlue</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightBlack" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightBlack.html">onBrightBlack</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightBlue" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightBlue.html">onBrightBlue</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightCyan" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightCyan.html">onBrightCyan</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightGreen" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightGreen.html">onBrightGreen</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightMagenta" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightMagenta.html">onBrightMagenta</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightRed" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightRed.html">onBrightRed</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightWhite" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightWhite.html">onBrightWhite</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onBrightYellow" class="property">
+  <span class="name"><a href="../chalk/Chalk/onBrightYellow.html">onBrightYellow</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onCyan" class="property">
+  <span class="name"><a href="../chalk/Chalk/onCyan.html">onCyan</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onGray" class="property">
+  <span class="name"><a href="../chalk/Chalk/onGray.html">onGray</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onGreen" class="property">
+  <span class="name"><a href="../chalk/Chalk/onGreen.html">onGreen</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onGrey" class="property">
+  <span class="name"><a href="../chalk/Chalk/onGrey.html">onGrey</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onMagenta" class="property">
+  <span class="name"><a href="../chalk/Chalk/onMagenta.html">onMagenta</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onRed" class="property">
+  <span class="name"><a href="../chalk/Chalk/onRed.html">onRed</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onWhite" class="property">
+  <span class="name"><a href="../chalk/Chalk/onWhite.html">onWhite</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="onYellow" class="property">
+  <span class="name"><a href="../chalk/Chalk/onYellow.html">onYellow</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="overline" class="property">
+  <span class="name"><a href="../chalk/Chalk/overline.html">overline</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  overline - Make text overlined. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="overlined" class="property">
+  <span class="name"><a href="../chalk/Chalk/overlined.html">overlined</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="rapidblink" class="property">
+  <span class="name"><a href="../chalk/Chalk/rapidblink.html">rapidblink</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  rapidblink - Make text blink rapidly (&gt;150 times per minute). (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="red" class="property">
+  <span class="name"><a href="../chalk/Chalk/red.html">red</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  make foreground red <span style="background:red;">&nbsp;&nbsp;&nbsp;</span>
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="redBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/redBright.html">redBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="reset" class="property">
+  <span class="name"><a href="../chalk/Chalk/reset.html">reset</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  reset - Resets the current color chain.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features">read-only, inherited</div>
+
+</dd>
+
+        <dt id="strikethrough" class="property">
+  <span class="name"><a href="../chalk/Chalk/strikethrough.html">strikethrough</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  strikethrough - Puts a horizontal line through the center of the text. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="subscript" class="property">
+  <span class="name"><a href="../chalk/Chalk/subscript.html">subscript</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  subscript - Subscript text. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="superscript" class="property">
+  <span class="name"><a href="../chalk/Chalk/superscript.html">superscript</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  superscript - Superscript text. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="underline" class="property">
+  <span class="name"><a href="../chalk/Chalk/underline.html">underline</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  underline - Make text underline. (Not widely supported)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="underlined" class="property">
+  <span class="name"><a href="../chalk/Chalk/underlined.html">underlined</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="visible" class="property">
+  <span class="name"><a href="../chalk/Chalk/visible.html">visible</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  visible - Prints the text only when Chalk has a color level &gt; 0. Can be useful for things that are purely cosmetic.
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="white" class="property">
+  <span class="name"><a href="../chalk/Chalk/white.html">white</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="whiteBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/whiteBright.html">whiteBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="x11" class="property">
+  <span class="name"><a href="../chalk/Chalk/x11.html">x11</a></span>
+  <span class="signature">&#8594; dynamic</span> 
+
+</dt>
+<dd>
+  Follow this method with any standard CSS/SVG/X11 color name (remove spaces from name)
+The case/capitalizatiom of the color name is not important.
+alias for <a href="../chalk/Chalk/color.html">color</a> - alternate method name to use for to get dynamic for virtual color methods
+ie.  <code>chalk.x11.cornflowerblue('works like this')</code>
+  (this is the equivalent of <code>chalk.keyword('cornflowerblue')('same things using keyword()'</code>)
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="yellow" class="property">
+  <span class="name"><a href="../chalk/Chalk/yellow.html">yellow</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+        <dt id="yellowBright" class="property">
+  <span class="name"><a href="../chalk/Chalk/yellowBright.html">yellowBright</a></span>
+  <span class="signature">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features">read-only</div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="ansi" class="callable">
+  <span class="name"><a href="../chalk/Chalk/ansi.html">ansi</a></span><span class="signature">(<wbr><span class="parameter" id="ansi-param-ansicode"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">ansicode</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with the foreground color specified by
+the ansi color escape code.
+<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">https://en.wikipedia.org/wiki/ANSI_escape_code</a>
+  
+
+</dd>
+
+        <dt id="ansi256" class="callable">
+  <span class="name"><a href="../chalk/Chalk/ansi256.html">ansi256</a></span><span class="signature">(<wbr><span class="parameter" id="ansi256-param-ansicode256"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">ansicode256</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">https://en.wikipedia.org/wiki/ANSI_escape_code</a>
+  
+
+</dd>
+
+        <dt id="ansiSgr" class="callable">
+  <span class="name"><a href="../chalk/Chalk/ansiSgr.html">ansiSgr</a></span><span class="signature">(<wbr><span class="parameter" id="ansiSgr-param-openCode"><span class="type-annotation">dynamic</span> <span class="parameter-name">openCode</span>, </span><span class="parameter" id="ansiSgr-param-closeCode"><span class="type-annotation">dynamic</span> <span class="parameter-name">closeCode</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">https://en.wikipedia.org/wiki/ANSI_escape_code</a>
+  
+
+</dd>
+
+        <dt id="bgAnsi" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgAnsi.html">bgAnsi</a></span><span class="signature">(<wbr><span class="parameter" id="bgAnsi-param-ansicode"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">ansicode</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onAnsi() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="bgAnsi256" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgAnsi256.html">bgAnsi256</a></span><span class="signature">(<wbr><span class="parameter" id="bgAnsi256-param-ansicode256"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">ansicode256</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onAnsi256() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="bgGreyscale" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgGreyscale.html">bgGreyscale</a></span><span class="signature">(<wbr><span class="parameter" id="bgGreyscale-param-greyscale"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">greyscale</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onGreyscale() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="bgHex" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgHex.html">bgHex</a></span><span class="signature">(<wbr><span class="parameter" id="bgHex-param-hex"><span class="type-annotation">dynamic</span> <span class="parameter-name">hex</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onHex() (provided for legacy compatibility with JS Chalk).
+  
+
+</dd>
+
+        <dt id="bgHsl" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgHsl.html">bgHsl</a></span><span class="signature">(<wbr><span class="parameter" id="bgHsl-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="bgHsl-param-saturation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">saturation</span>, </span><span class="parameter" id="bgHsl-param-lightness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">lightness</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onHsl() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="bgHsv" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgHsv.html">bgHsv</a></span><span class="signature">(<wbr><span class="parameter" id="bgHsv-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="bgHsv-param-saturation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">saturation</span>, </span><span class="parameter" id="bgHsv-param-value"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onHsv() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="bgHwb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgHwb.html">bgHwb</a></span><span class="signature">(<wbr><span class="parameter" id="bgHwb-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="bgHwb-param-whiteness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">whiteness</span>, </span><span class="parameter" id="bgHwb-param-blackness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blackness</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onHwb() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="bgKeyword" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgKeyword.html">bgKeyword</a></span><span class="signature">(<wbr><span class="parameter" id="bgKeyword-param-keyword"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">keyword</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onKeyword() (provided for legacy compatibility with JS Chalk).
+  
+
+</dd>
+
+        <dt id="bgLab" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgLab.html">bgLab</a></span><span class="signature">(<wbr><span class="parameter" id="bgLab-param-l"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">l</span>, </span><span class="parameter" id="bgLab-param-a"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">a</span>, </span><span class="parameter" id="bgLab-param-b"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">b</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onLab() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="bgRgb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgRgb.html">bgRgb</a></span><span class="signature">(<wbr><span class="parameter" id="bgRgb-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="bgRgb-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="bgRgb-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onRgb() (provided for legacy compatibility with JS Chalk).
+  
+
+</dd>
+
+        <dt id="bgRgb16m" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgRgb16m.html">bgRgb16m</a></span><span class="signature">(<wbr><span class="parameter" id="bgRgb16m-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="bgRgb16m-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="bgRgb16m-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onRgb16m() (provided for legacy compatibility with JS Chalk).
+  
+
+</dd>
+
+        <dt id="bgXyz" class="callable">
+  <span class="name"><a href="../chalk/Chalk/bgXyz.html">bgXyz</a></span><span class="signature">(<wbr><span class="parameter" id="bgXyz-param-x"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">x</span>, </span><span class="parameter" id="bgXyz-param-y"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">y</span>, </span><span class="parameter" id="bgXyz-param-z"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">z</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Alternate name for onXyz() (provided for legacy compatibility with JS Chalk)
+  
+
+</dd>
+
+        <dt id="call" class="callable">
+  <span class="name"><a href="../chalk/Chalk/call.html">call</a></span><span class="signature">(<wbr><span class="parameter" id="call-param-arg0"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg0</span>, </span><span class="parameter" id="call-param-arg1">[<span class="type-annotation">dynamic</span> <span class="parameter-name">arg1</span>, </span><span class="parameter" id="call-param-arg2"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg2</span>, </span><span class="parameter" id="call-param-arg3"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg3</span>, </span><span class="parameter" id="call-param-arg4"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg4</span>, </span><span class="parameter" id="call-param-arg5"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg5</span>, </span><span class="parameter" id="call-param-arg6"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg6</span>, </span><span class="parameter" id="call-param-arg7"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg7</span>, </span><span class="parameter" id="call-param-arg8"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg8</span>, </span><span class="parameter" id="call-param-arg9"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg9</span>, </span><span class="parameter" id="call-param-arg10"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg10</span>, </span><span class="parameter" id="call-param-arg11"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg11</span>, </span><span class="parameter" id="call-param-arg12"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg12</span>, </span><span class="parameter" id="call-param-arg13"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg13</span>, </span><span class="parameter" id="call-param-arg14"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg14</span>, </span><span class="parameter" id="call-param-arg15"><span class="type-annotation">dynamic</span> <span class="parameter-name">arg15</span>]</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Handles the generic Chalk(....) calls with up to 15 arguements that can
+be a mixtured of pretty much anything.  List&lt;&gt; and Function closures are handled
+  
+
+</dd>
+
+        <dt id="greyscale" class="callable">
+  <span class="name"><a href="../chalk/Chalk/greyscale.html">greyscale</a></span><span class="signature">(<wbr><span class="parameter" id="greyscale-param-greyscale"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">greyscale</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="hex" class="callable">
+  <span class="name"><a href="../chalk/Chalk/hex.html">hex</a></span><span class="signature">(<wbr><span class="parameter" id="hex-param-hex"><span class="type-annotation">dynamic</span> <span class="parameter-name">hex</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns a Chalk with the foreground color set to the passed in RGB Hex code.
+This dynamically accepts color hex codes as integer codes (0xAABBCC) or (0xABC)
+or as strings ('#AABBCC') or ('#ABC')
+  
+
+</dd>
+
+        <dt id="hsl" class="callable">
+  <span class="name"><a href="../chalk/Chalk/hsl.html">hsl</a></span><span class="signature">(<wbr><span class="parameter" id="hsl-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="hsl-param-saturation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">saturation</span>, </span><span class="parameter" id="hsl-param-lightness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">lightness</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with foreground color defined from HSL (Hue, Saturation
+and Lightness) color space parameters.
+<a href="https://en.wikipedia.org/wiki/HSL_and_HSV">https://en.wikipedia.org/wiki/HSL_and_HSV</a>
+  
+
+</dd>
+
+        <dt id="hsv" class="callable">
+  <span class="name"><a href="../chalk/Chalk/hsv.html">hsv</a></span><span class="signature">(<wbr><span class="parameter" id="hsv-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="hsv-param-saturation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">saturation</span>, </span><span class="parameter" id="hsv-param-value"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with foreground color defined from HSV (Hue, Saturation
+and Value) color space parameters.
+<a href="https://en.wikipedia.org/wiki/HSL_and_HSV">https://en.wikipedia.org/wiki/HSL_and_HSV</a>
+  
+
+</dd>
+
+        <dt id="hwb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/hwb.html">hwb</a></span><span class="signature">(<wbr><span class="parameter" id="hwb-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="hwb-param-whiteness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">whiteness</span>, </span><span class="parameter" id="hwb-param-blackness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blackness</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with foreground color defined from HWB (Hue, Whiteness
+and Blackness) color space parameters.
+<a href="https://en.wikipedia.org/wiki/HWB_color_model">https://en.wikipedia.org/wiki/HWB_color_model</a>
+  
+
+</dd>
+
+        <dt id="joinWith" class="callable">
+  <span class="name"><a href="../chalk/Chalk/joinWith.html">joinWith</a></span><span class="signature">(<wbr><span class="parameter" id="joinWith-param-joinWith"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">joinWith</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Specify string to use for joining multiple arguments or Lists.
+Default is ' ' (single space).
+  
+
+</dd>
+
+        <dt id="keyword" class="callable">
+  <span class="name"><a href="../chalk/Chalk/keyword.html">keyword</a></span><span class="signature">(<wbr><span class="parameter" id="keyword-param-colorKeyword"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">colorKeyword</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns a Chalk with the foreground color set to the color represented by the
+passed in color keyword.
+This accepts all of the standard X11/CSS/SVG color names, and the user can extend the list
+of accepted color keywords using the addColorKeywordRgb() and addColorKeywordHex() methods
+  
+
+</dd>
+
+        <dt id="lab" class="callable">
+  <span class="name"><a href="../chalk/Chalk/lab.html">lab</a></span><span class="signature">(<wbr><span class="parameter" id="lab-param-l"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">l</span>, </span><span class="parameter" id="lab-param-a"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">a</span>, </span><span class="parameter" id="lab-param-b"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">b</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with foreground color defined from
+lab color space parameters.
+<a href="https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB">https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB</a>
+  
+
+</dd>
+
+        <dt id="makeRGBChalk" class="callable">
+  <span class="name"><a href="../chalk/Chalk/makeRGBChalk.html">makeRGBChalk</a></span><span class="signature">(<wbr><span class="parameter" id="makeRGBChalk-param-nred"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">nred</span>, </span><span class="parameter" id="makeRGBChalk-param-ngreen"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">ngreen</span>, </span><span class="parameter" id="makeRGBChalk-param-nblue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">nblue</span>, </span><span class="parameter" id="makeRGBChalk-param-bg">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">bg</span> = <span class="default-value">false</span>, </span><span class="parameter" id="makeRGBChalk-param-force16M"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">force16M</span> = <span class="default-value">false</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable">
+  <span class="name"><a href="../chalk/Chalk/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd>
+  This noSuchMethod() handler is called for all unknown methods called
+on our Chalk object. Thisd allows using user defined colors and x11
+colors as 'pseudo' methods.
+dynamic chalk2 = Chalk();
+print(chalk2.orange('Yay for red on yellow colored text!'));
+print(chalk.csscolor.lightskyblue('Yay for lightskyblue colored text!'));
+Background:
+<a href="https://github.com/dart-lang/sdk/blob/master/docs/language/informal/nosuchmethod-forwarding.md">https://github.com/dart-lang/sdk/blob/master/docs/language/informal/nosuchmethod-forwarding.md</a>
+  Good stuff.
+  <div class="features">override</div>
+
+</dd>
+
+        <dt id="onAnsi" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onAnsi.html">onAnsi</a></span><span class="signature">(<wbr><span class="parameter" id="onAnsi-param-ansicode"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">ansicode</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with the background color specified by
+the ansi color escape code.
+<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">https://en.wikipedia.org/wiki/ANSI_escape_code</a>
+  
+
+</dd>
+
+        <dt id="onAnsi256" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onAnsi256.html">onAnsi256</a></span><span class="signature">(<wbr><span class="parameter" id="onAnsi256-param-ansicode256"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">ansicode256</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">https://en.wikipedia.org/wiki/ANSI_escape_code</a>
+  
+
+</dd>
+
+        <dt id="onGreyscale" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onGreyscale.html">onGreyscale</a></span><span class="signature">(<wbr><span class="parameter" id="onGreyscale-param-greyscale"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">greyscale</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="onHex" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onHex.html">onHex</a></span><span class="signature">(<wbr><span class="parameter" id="onHex-param-hex"><span class="type-annotation">dynamic</span> <span class="parameter-name">hex</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns a Chalk with the background color set to the passed in RGB Hex code.
+This dynamically accepts color hex codes as integer codes (0xAABBCC) or (0xABC)
+or as strings ('#AABBCC') or ('#ABC')
+  
+
+</dd>
+
+        <dt id="onHsl" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onHsl.html">onHsl</a></span><span class="signature">(<wbr><span class="parameter" id="onHsl-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="onHsl-param-saturation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">saturation</span>, </span><span class="parameter" id="onHsl-param-lightness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">lightness</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with background color defined from HSL (Hue, Saturation
+and Lightness) color space parameters.
+<a href="https://en.wikipedia.org/wiki/HSL_and_HSV">https://en.wikipedia.org/wiki/HSL_and_HSV</a>
+  
+
+</dd>
+
+        <dt id="onHsv" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onHsv.html">onHsv</a></span><span class="signature">(<wbr><span class="parameter" id="onHsv-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="onHsv-param-saturation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">saturation</span>, </span><span class="parameter" id="onHsv-param-value"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with background color defined from HSV (Hue, Saturation
+and Value) color space parameters.
+<a href="https://en.wikipedia.org/wiki/HSL_and_HSV">https://en.wikipedia.org/wiki/HSL_and_HSV</a>
+  
+
+</dd>
+
+        <dt id="onHwb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onHwb.html">onHwb</a></span><span class="signature">(<wbr><span class="parameter" id="onHwb-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span><span class="parameter" id="onHwb-param-whiteness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">whiteness</span>, </span><span class="parameter" id="onHwb-param-blackness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blackness</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with background color defined from HWB (Hue, Whiteness
+and Blackness) color space parameters.
+<a href="https://en.wikipedia.org/wiki/HWB_color_model">https://en.wikipedia.org/wiki/HWB_color_model</a>
+  
+
+</dd>
+
+        <dt id="onKeyword" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onKeyword.html">onKeyword</a></span><span class="signature">(<wbr><span class="parameter" id="onKeyword-param-colorKeyword"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">colorKeyword</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns a Chalk with the background color set to the color represented by the
+passed in color keyword.
+This accepts all of the standard X11/CSS/SVG color names, and the user can extend the list
+of accepted color keywords using the addColorKeywordRgb() and addColorKeywordHex() methods
+  
+
+</dd>
+
+        <dt id="onLab" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onLab.html">onLab</a></span><span class="signature">(<wbr><span class="parameter" id="onLab-param-l"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">l</span>, </span><span class="parameter" id="onLab-param-a"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">a</span>, </span><span class="parameter" id="onLab-param-b"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">b</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with background color defined from
+lab color space parameters.
+<a href="https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB">https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB</a>
+  
+
+</dd>
+
+        <dt id="onRgb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onRgb.html">onRgb</a></span><span class="signature">(<wbr><span class="parameter" id="onRgb-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="onRgb-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="onRgb-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Create Chalk with a background color with the specified RGB values.
+  
+
+</dd>
+
+        <dt id="onRgb16m" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onRgb16m.html">onRgb16m</a></span><span class="signature">(<wbr><span class="parameter" id="onRgb16m-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="onRgb16m-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="onRgb16m-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Create Chalk with a background color with the specified RGB values
+(forces using ANSI 16m SGR codes, even if <a href="../chalk/Chalk/level.html">level</a> is not 3).
+  
+
+</dd>
+
+        <dt id="onXyz" class="callable">
+  <span class="name"><a href="../chalk/Chalk/onXyz.html">onXyz</a></span><span class="signature">(<wbr><span class="parameter" id="onXyz-param-x"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">x</span>, </span><span class="parameter" id="onXyz-param-y"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">y</span>, </span><span class="parameter" id="onXyz-param-z"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">z</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with background color defined from
+XYZ color space parameters.
+<a href="https://en.wikipedia.org/wiki/CIE_1931_color_space">https://en.wikipedia.org/wiki/CIE_1931_color_space</a>
+  
+
+</dd>
+
+        <dt id="rgb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/rgb.html">rgb</a></span><span class="signature">(<wbr><span class="parameter" id="rgb-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="rgb-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="rgb-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Create Chalk with a foreground color with the specified RGB values.
+  
+
+</dd>
+
+        <dt id="rgb16m" class="callable">
+  <span class="name"><a href="../chalk/Chalk/rgb16m.html">rgb16m</a></span><span class="signature">(<wbr><span class="parameter" id="rgb16m-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="rgb16m-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="rgb16m-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Create Chalk with a foreground color with the specified RGB values
+(forces using ANSI 16m SGR codes, even if <a href="../chalk/Chalk/level.html">level</a> is not 3).
+  
+
+</dd>
+
+        <dt id="strip" class="callable">
+  <span class="name"><a href="../chalk/Chalk/strip.html">strip</a></span><span class="signature">(<wbr><span class="parameter" id="strip-param-target"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">target</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Strip all ANSI SGR commands from the target string and return the 'stripped'
+result string.
+  
+
+</dd>
+
+        <dt id="toString" class="callable">
+  <span class="name"><a href="../chalk/Chalk/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  most useful for debugging to dump the guts
+  <div class="features">override</div>
+
+</dd>
+
+        <dt id="toStringWalkUp" class="callable">
+  <span class="name"><a href="../chalk/Chalk/toStringWalkUp.html">toStringWalkUp</a></span><span class="signature">(<wbr><span class="parameter" id="toStringWalkUp-param-level">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">level</span> = <span class="default-value">0</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  more detailed dump of the guts, following parent links and dumping
+  
+
+</dd>
+
+        <dt id="underlineRgb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/underlineRgb.html">underlineRgb</a></span><span class="signature">(<wbr><span class="parameter" id="underlineRgb-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="underlineRgb-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="underlineRgb-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Create Chalk with an underline of the the specified RGB color
+WARNING: on some consoles without support for this, such as Android Studio,
+using this will prevent ALL styles of the Chalk from appearing
+  
+
+</dd>
+
+        <dt id="underlineRgb16m" class="callable">
+  <span class="name"><a href="../chalk/Chalk/underlineRgb16m.html">underlineRgb16m</a></span><span class="signature">(<wbr><span class="parameter" id="underlineRgb16m-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="underlineRgb16m-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="underlineRgb16m-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Create Chalk with an underline of the the specified RGB color
+(forces using ANSI 16m SGR codes, even if <a href="../chalk/Chalk/level.html">level</a> is not 3)
+WARNING: on some consoles without support for this, such as Android Studio,
+using this will prevent ALL styles of the Chalk from appearing
+  
+
+</dd>
+
+        <dt id="wrap" class="callable">
+  <span class="name"><a href="../chalk/Chalk/wrap.html">wrap</a></span><span class="signature">(<wbr><span class="parameter" id="wrap-param-prefix"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">prefix</span>, </span><span class="parameter" id="wrap-param-suffix"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">suffix</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Wrap this chalk with specified prefix and suffix strings.
+  
+
+</dd>
+
+        <dt id="xyz" class="callable">
+  <span class="name"><a href="../chalk/Chalk/xyz.html">xyz</a></span><span class="signature">(<wbr><span class="parameter" id="xyz-param-x"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">x</span>, </span><span class="parameter" id="xyz-param-y"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">y</span>, </span><span class="parameter" id="xyz-param-z"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">z</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates chalk with foreground color defined from
+XYZ color space parameters.
+<a href="https://en.wikipedia.org/wiki/CIE_1931_color_space">https://en.wikipedia.org/wiki/CIE_1931_color_space</a>
+  
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features">inherited</div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section class="summary offset-anchor" id="static-properties">
+    <h2>Static Properties</h2>
+
+    <dl class="properties">
+        <dt id="ansiColorLevelForNewInstances" class="property">
+  <span class="name"><a href="../chalk/Chalk/ansiColorLevelForNewInstances.html">ansiColorLevelForNewInstances</a></span>
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd>
+  ANSI Color level support for terminal - default to 3 (full color) because
+IntelliJ/AndroidStudio and VSCode report NOT having full color support
+despite supporting level 3.  This is really only here for flexibility.
+  <div class="features">read / write</div>
+
+</dd>
+
+        <dt id="noZeroToOneScaling" class="property">
+  <span class="name"><a href="../chalk/Chalk/noZeroToOneScaling.html">noZeroToOneScaling</a></span>
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+
+</dt>
+<dd>
+  Set to true to prevent scaling of rgb values when all 3 fall between 0&lt;=r,g,b&lt;=1.0
+  <div class="features">read / write</div>
+
+</dd>
+
+        <dt id="useFullResetToClose" class="property">
+  <span class="name"><a href="../chalk/Chalk/useFullResetToClose.html">useFullResetToClose</a></span>
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> 
+
+</dt>
+<dd>
+  Use full resets to close attributes (reset all attributes with SGR 0) ON EACH call to Chalk()
+(Not usually desired, this will reset all attributes, but some terminals, like VSCode,
+need this because buggy implementations)
+(Update:  I have fixed and extended the VSCode support for ANSI control sequences to be complete
+and bug free.  All features of Chalk'Dart are now completely supported.
+This is now all available in production version of VSCode - timmaffett)
+  <div class="features">read / write</div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section class="summary offset-anchor" id="static-methods">
+    <h2>Static Methods</h2>
+    <dl class="callables">
+        <dt id="addColorKeywordHex" class="callable">
+  <span class="name"><a href="../chalk/Chalk/addColorKeywordHex.html">addColorKeywordHex</a></span><span class="signature">(<wbr><span class="parameter" id="addColorKeywordHex-param-colorname"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">colorname</span>, </span><span class="parameter" id="addColorKeywordHex-param-hex"><span class="type-annotation">dynamic</span> <span class="parameter-name">hex</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Add Hex color (string or int) to the colorKeywords[] map that is used for dynamic lookup of colors by name.
+Colors added thid way can be used directly follwing the Chalk color/csscolor/x11 methods.
+ie.
+Chalk.addColorKeywordHex('myfavorite', 0x6495ED ); // using hex int
+chalk.color.myfavorite('This is my favorite color');
+Chalk.addColorKeywordHex('my2ndFavorite', '#6A5ACD' );  // or using string
+chalk.color.my2ndfavorite('This is my 2nd favorite color');
+  
+
+</dd>
+
+        <dt id="addColorKeywordRgb" class="callable">
+  <span class="name"><a href="../chalk/Chalk/addColorKeywordRgb.html">addColorKeywordRgb</a></span><span class="signature">(<wbr><span class="parameter" id="addColorKeywordRgb-param-colorname"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">colorname</span>, </span><span class="parameter" id="addColorKeywordRgb-param-red"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">red</span>, </span><span class="parameter" id="addColorKeywordRgb-param-green"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">green</span>, </span><span class="parameter" id="addColorKeywordRgb-param-blue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">blue</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Add RGB color to the colorKeywords[] map that is used for dynamic lookup of colors by name.
+Colors added thid way can be used directly following the Chalk color/csscolor/x11 methods.
+ie.
+Chalk.addColorKeywordRgb('myfavorite', 0x64, 0x95, 0xED );
+chalk.color.myfavorite('This is my favorite color');
+  
+
+</dd>
+
+        <dt id="Instance" class="callable">
+  <span class="name"><a href="../chalk/Chalk/Instance.html">Instance</a></span><span class="signature">(<wbr><span class="parameter" id="Instance-param-level">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">level</span> = <span class="default-value">-1</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="instance" class="callable">
+  <span class="name"><a href="../chalk/Chalk/instance.html">instance</a></span><span class="signature">(<wbr><span class="parameter" id="instance-param-level">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">level</span> = <span class="default-value">-1</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../chalk/Chalk-class.html">Chalk</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Use to create a new 'root' instance of Chalk, with the option of setting
+the ANSI color level (root instances start with no style).
+  
+
+</dd>
+
+    </dl>
+  </section>
+    
+
+  <section class="summary offset-anchor" id="constants">
+    <h2>Constants</h2>
+
+    <dl class="properties">
+        <dt id="ansiBackgroundOffset" class="constant">
+    <span class="name "><a href="../chalk/Chalk/ansiBackgroundOffset-constant.html">ansiBackgroundOffset</a></span>
+  <span class="signature">&#8594; const <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  This offset can be added to the basic 0-15 ansi color numbers to get background
+versions of those colors.
+  
+
+  <div>
+    <span class="signature"><code>10</code></span>
+  </div>
+</dd>
+
+        <dt id="ansiUnderlineOffset" class="constant">
+    <span class="name "><a href="../chalk/Chalk/ansiUnderlineOffset-constant.html">ansiUnderlineOffset</a></span>
+  <span class="signature">&#8594; const <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  This offset can be added to the basic 0-15 ansi color numbers to get underline
+versions of those colors.
+  
+
+  <div>
+    <span class="signature"><code>20</code></span>
+  </div>
+</dd>
+
+    </dl>
+  </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">chalkdart</a></li>
+  <li><a href="../chalk/chalk-library.html">chalk</a></li>
+  <li class="self-crumb">Chalk class</li>
+</ol>
+
+
+    <h5>chalk library</h5>
+    <ol>
+  <li class="section-title"><a href="../chalk/chalk-library.html#classes">Classes</a></li>
+  <li><a href="../chalk/Chalk-class.html">Chalk</a></li>
+
+
+
+
+  <li class="section-title"><a href="../chalk/chalk-library.html#properties">Properties</a></li>
+  <li><a href="../chalk/ansiColorDisabled.html">ansiColorDisabled</a></li>
+  <li><a href="../chalk/chalk.html">chalk</a></li>
+  <li><a href="../chalk/chalkUsedAnsiInclude.html">chalkUsedAnsiInclude</a></li>
+  <li><a href="../chalk/dartSupportsAnsiColor.html">dartSupportsAnsiColor</a></li>
+
+
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../chalk/Chalk-class.html#constructors">Constructors</a></li>
+          <li><a href="../chalk/Chalk/Chalk.html">Chalk</a></li>
+
+
+    <li class="section-title">
+      <a href="../chalk/Chalk-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../chalk/Chalk/bgBlack.html">bgBlack</a></li>
+    <li><a href="../chalk/Chalk/bgBlackBright.html">bgBlackBright</a></li>
+    <li><a href="../chalk/Chalk/bgBlue.html">bgBlue</a></li>
+    <li><a href="../chalk/Chalk/bgBlueBright.html">bgBlueBright</a></li>
+    <li><a href="../chalk/Chalk/bgBrightBlack.html">bgBrightBlack</a></li>
+    <li><a href="../chalk/Chalk/bgBrightBlue.html">bgBrightBlue</a></li>
+    <li><a href="../chalk/Chalk/bgBrightCyan.html">bgBrightCyan</a></li>
+    <li><a href="../chalk/Chalk/bgBrightGreen.html">bgBrightGreen</a></li>
+    <li><a href="../chalk/Chalk/bgBrightMagenta.html">bgBrightMagenta</a></li>
+    <li><a href="../chalk/Chalk/bgBrightRed.html">bgBrightRed</a></li>
+    <li><a href="../chalk/Chalk/bgBrightWhite.html">bgBrightWhite</a></li>
+    <li><a href="../chalk/Chalk/bgBrightYellow.html">bgBrightYellow</a></li>
+    <li><a href="../chalk/Chalk/bgCyan.html">bgCyan</a></li>
+    <li><a href="../chalk/Chalk/bgCyanBright.html">bgCyanBright</a></li>
+    <li><a href="../chalk/Chalk/bgGray.html">bgGray</a></li>
+    <li><a href="../chalk/Chalk/bgGreen.html">bgGreen</a></li>
+    <li><a href="../chalk/Chalk/bgGreenBright.html">bgGreenBright</a></li>
+    <li><a href="../chalk/Chalk/bgGrey.html">bgGrey</a></li>
+    <li><a href="../chalk/Chalk/bgMagenta.html">bgMagenta</a></li>
+    <li><a href="../chalk/Chalk/bgMagentaBright.html">bgMagentaBright</a></li>
+    <li><a href="../chalk/Chalk/bgRed.html">bgRed</a></li>
+    <li><a href="../chalk/Chalk/bgRedBright.html">bgRedBright</a></li>
+    <li><a href="../chalk/Chalk/bgWhite.html">bgWhite</a></li>
+    <li><a href="../chalk/Chalk/bgWhiteBright.html">bgWhiteBright</a></li>
+    <li><a href="../chalk/Chalk/bgYellow.html">bgYellow</a></li>
+    <li><a href="../chalk/Chalk/bgYellowBright.html">bgYellowBright</a></li>
+    <li><a href="../chalk/Chalk/black.html">black</a></li>
+    <li><a href="../chalk/Chalk/blackBright.html">blackBright</a></li>
+    <li><a href="../chalk/Chalk/blackletter.html">blackletter</a></li>
+    <li><a href="../chalk/Chalk/blink.html">blink</a></li>
+    <li><a href="../chalk/Chalk/blue.html">blue</a></li>
+    <li><a href="../chalk/Chalk/blueBright.html">blueBright</a></li>
+    <li><a href="../chalk/Chalk/bold.html">bold</a></li>
+    <li><a href="../chalk/Chalk/brightBlack.html">brightBlack</a></li>
+    <li><a href="../chalk/Chalk/brightBlue.html">brightBlue</a></li>
+    <li><a href="../chalk/Chalk/brightCyan.html">brightCyan</a></li>
+    <li><a href="../chalk/Chalk/brightGreen.html">brightGreen</a></li>
+    <li><a href="../chalk/Chalk/brightMagenta.html">brightMagenta</a></li>
+    <li><a href="../chalk/Chalk/brightRed.html">brightRed</a></li>
+    <li><a href="../chalk/Chalk/brightWhite.html">brightWhite</a></li>
+    <li><a href="../chalk/Chalk/brightYellow.html">brightYellow</a></li>
+    <li><a href="../chalk/Chalk/color.html">color</a></li>
+    <li><a href="../chalk/Chalk/csscolor.html">csscolor</a></li>
+    <li><a href="../chalk/Chalk/cyan.html">cyan</a></li>
+    <li><a href="../chalk/Chalk/cyanBright.html">cyanBright</a></li>
+    <li><a href="../chalk/Chalk/dim.html">dim</a></li>
+    <li><a href="../chalk/Chalk/doubleUnderline.html">doubleUnderline</a></li>
+    <li><a href="../chalk/Chalk/doubleunderline.html">doubleunderline</a></li>
+    <li><a href="../chalk/Chalk/doubleunderlined.html">doubleunderlined</a></li>
+    <li><a href="../chalk/Chalk/font1.html">font1</a></li>
+    <li><a href="../chalk/Chalk/font2.html">font2</a></li>
+    <li><a href="../chalk/Chalk/font3.html">font3</a></li>
+    <li><a href="../chalk/Chalk/font4.html">font4</a></li>
+    <li><a href="../chalk/Chalk/font5.html">font5</a></li>
+    <li><a href="../chalk/Chalk/font6.html">font6</a></li>
+    <li><a href="../chalk/Chalk/font7.html">font7</a></li>
+    <li><a href="../chalk/Chalk/font8.html">font8</a></li>
+    <li><a href="../chalk/Chalk/font9.html">font9</a></li>
+    <li><a href="../chalk/Chalk/font10.html">font10</a></li>
+    <li><a href="../chalk/Chalk/gray.html">gray</a></li>
+    <li><a href="../chalk/Chalk/green.html">green</a></li>
+    <li><a href="../chalk/Chalk/greenBright.html">greenBright</a></li>
+    <li><a href="../chalk/Chalk/grey.html">grey</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li><a href="../chalk/Chalk/hidden.html">hidden</a></li>
+    <li><a href="../chalk/Chalk/inverse.html">inverse</a></li>
+    <li><a href="../chalk/Chalk/invert.html">invert</a></li>
+    <li><a href="../chalk/Chalk/italic.html">italic</a></li>
+    <li><a href="../chalk/Chalk/level.html">level</a></li>
+    <li><a href="../chalk/Chalk/magenta.html">magenta</a></li>
+    <li><a href="../chalk/Chalk/magentaBright.html">magentaBright</a></li>
+    <li><a href="../chalk/Chalk/normal.html">normal</a></li>
+    <li><a href="../chalk/Chalk/onBlack.html">onBlack</a></li>
+    <li><a href="../chalk/Chalk/onBlue.html">onBlue</a></li>
+    <li><a href="../chalk/Chalk/onBrightBlack.html">onBrightBlack</a></li>
+    <li><a href="../chalk/Chalk/onBrightBlue.html">onBrightBlue</a></li>
+    <li><a href="../chalk/Chalk/onBrightCyan.html">onBrightCyan</a></li>
+    <li><a href="../chalk/Chalk/onBrightGreen.html">onBrightGreen</a></li>
+    <li><a href="../chalk/Chalk/onBrightMagenta.html">onBrightMagenta</a></li>
+    <li><a href="../chalk/Chalk/onBrightRed.html">onBrightRed</a></li>
+    <li><a href="../chalk/Chalk/onBrightWhite.html">onBrightWhite</a></li>
+    <li><a href="../chalk/Chalk/onBrightYellow.html">onBrightYellow</a></li>
+    <li><a href="../chalk/Chalk/onCyan.html">onCyan</a></li>
+    <li><a href="../chalk/Chalk/onGray.html">onGray</a></li>
+    <li><a href="../chalk/Chalk/onGreen.html">onGreen</a></li>
+    <li><a href="../chalk/Chalk/onGrey.html">onGrey</a></li>
+    <li><a href="../chalk/Chalk/onMagenta.html">onMagenta</a></li>
+    <li><a href="../chalk/Chalk/onRed.html">onRed</a></li>
+    <li><a href="../chalk/Chalk/onWhite.html">onWhite</a></li>
+    <li><a href="../chalk/Chalk/onYellow.html">onYellow</a></li>
+    <li><a href="../chalk/Chalk/overline.html">overline</a></li>
+    <li><a href="../chalk/Chalk/overlined.html">overlined</a></li>
+    <li><a href="../chalk/Chalk/rapidblink.html">rapidblink</a></li>
+    <li><a href="../chalk/Chalk/red.html">red</a></li>
+    <li><a href="../chalk/Chalk/redBright.html">redBright</a></li>
+    <li><a href="../chalk/Chalk/reset.html">reset</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li><a href="../chalk/Chalk/strikethrough.html">strikethrough</a></li>
+    <li><a href="../chalk/Chalk/subscript.html">subscript</a></li>
+    <li><a href="../chalk/Chalk/superscript.html">superscript</a></li>
+    <li><a href="../chalk/Chalk/underline.html">underline</a></li>
+    <li><a href="../chalk/Chalk/underlined.html">underlined</a></li>
+    <li><a href="../chalk/Chalk/visible.html">visible</a></li>
+    <li><a href="../chalk/Chalk/white.html">white</a></li>
+    <li><a href="../chalk/Chalk/whiteBright.html">whiteBright</a></li>
+    <li><a href="../chalk/Chalk/x11.html">x11</a></li>
+    <li><a href="../chalk/Chalk/yellow.html">yellow</a></li>
+    <li><a href="../chalk/Chalk/yellowBright.html">yellowBright</a></li>
+
+    <li class="section-title"><a href="../chalk/Chalk-class.html#instance-methods">Methods</a></li>
+    <li><a href="../chalk/Chalk/ansi.html">ansi</a></li>
+    <li><a href="../chalk/Chalk/ansi256.html">ansi256</a></li>
+    <li><a href="../chalk/Chalk/ansiSgr.html">ansiSgr</a></li>
+    <li><a href="../chalk/Chalk/bgAnsi.html">bgAnsi</a></li>
+    <li><a href="../chalk/Chalk/bgAnsi256.html">bgAnsi256</a></li>
+    <li><a href="../chalk/Chalk/bgGreyscale.html">bgGreyscale</a></li>
+    <li><a href="../chalk/Chalk/bgHex.html">bgHex</a></li>
+    <li><a href="../chalk/Chalk/bgHsl.html">bgHsl</a></li>
+    <li><a href="../chalk/Chalk/bgHsv.html">bgHsv</a></li>
+    <li><a href="../chalk/Chalk/bgHwb.html">bgHwb</a></li>
+    <li><a href="../chalk/Chalk/bgKeyword.html">bgKeyword</a></li>
+    <li><a href="../chalk/Chalk/bgLab.html">bgLab</a></li>
+    <li><a href="../chalk/Chalk/bgRgb.html">bgRgb</a></li>
+    <li><a href="../chalk/Chalk/bgRgb16m.html">bgRgb16m</a></li>
+    <li><a href="../chalk/Chalk/bgXyz.html">bgXyz</a></li>
+    <li><a href="../chalk/Chalk/call.html">call</a></li>
+    <li><a href="../chalk/Chalk/greyscale.html">greyscale</a></li>
+    <li><a href="../chalk/Chalk/hex.html">hex</a></li>
+    <li><a href="../chalk/Chalk/hsl.html">hsl</a></li>
+    <li><a href="../chalk/Chalk/hsv.html">hsv</a></li>
+    <li><a href="../chalk/Chalk/hwb.html">hwb</a></li>
+    <li><a href="../chalk/Chalk/joinWith.html">joinWith</a></li>
+    <li><a href="../chalk/Chalk/keyword.html">keyword</a></li>
+    <li><a href="../chalk/Chalk/lab.html">lab</a></li>
+    <li><a href="../chalk/Chalk/makeRGBChalk.html">makeRGBChalk</a></li>
+    <li><a href="../chalk/Chalk/noSuchMethod.html">noSuchMethod</a></li>
+    <li><a href="../chalk/Chalk/onAnsi.html">onAnsi</a></li>
+    <li><a href="../chalk/Chalk/onAnsi256.html">onAnsi256</a></li>
+    <li><a href="../chalk/Chalk/onGreyscale.html">onGreyscale</a></li>
+    <li><a href="../chalk/Chalk/onHex.html">onHex</a></li>
+    <li><a href="../chalk/Chalk/onHsl.html">onHsl</a></li>
+    <li><a href="../chalk/Chalk/onHsv.html">onHsv</a></li>
+    <li><a href="../chalk/Chalk/onHwb.html">onHwb</a></li>
+    <li><a href="../chalk/Chalk/onKeyword.html">onKeyword</a></li>
+    <li><a href="../chalk/Chalk/onLab.html">onLab</a></li>
+    <li><a href="../chalk/Chalk/onRgb.html">onRgb</a></li>
+    <li><a href="../chalk/Chalk/onRgb16m.html">onRgb16m</a></li>
+    <li><a href="../chalk/Chalk/onXyz.html">onXyz</a></li>
+    <li><a href="../chalk/Chalk/rgb.html">rgb</a></li>
+    <li><a href="../chalk/Chalk/rgb16m.html">rgb16m</a></li>
+    <li><a href="../chalk/Chalk/strip.html">strip</a></li>
+    <li><a href="../chalk/Chalk/toString.html">toString</a></li>
+    <li><a href="../chalk/Chalk/toStringWalkUp.html">toStringWalkUp</a></li>
+    <li><a href="../chalk/Chalk/underlineRgb.html">underlineRgb</a></li>
+    <li><a href="../chalk/Chalk/underlineRgb16m.html">underlineRgb16m</a></li>
+    <li><a href="../chalk/Chalk/wrap.html">wrap</a></li>
+    <li><a href="../chalk/Chalk/xyz.html">xyz</a></li>
+
+    <li class="section-title inherited"><a href="../chalk/Chalk-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+        <li class="section-title"><a href="../chalk/Chalk-class.html#static-properties">Static properties</a></li>
+          <li><a href="../chalk/Chalk/ansiColorLevelForNewInstances.html">ansiColorLevelForNewInstances</a></li>
+          <li><a href="../chalk/Chalk/noZeroToOneScaling.html">noZeroToOneScaling</a></li>
+          <li><a href="../chalk/Chalk/useFullResetToClose.html">useFullResetToClose</a></li>
+
+        <li class="section-title"><a href="../chalk/Chalk-class.html#static-methods">Static methods</a></li>
+          <li><a href="../chalk/Chalk/addColorKeywordHex.html">addColorKeywordHex</a></li>
+          <li><a href="../chalk/Chalk/addColorKeywordRgb.html">addColorKeywordRgb</a></li>
+          <li><a href="../chalk/Chalk/Instance.html">Instance</a></li>
+          <li><a href="../chalk/Chalk/instance.html">instance</a></li>
+
+        <li class="section-title"><a href="../chalk/Chalk-class.html#constants">Constants</a></li>
+          <li><a href="../chalk/Chalk/ansiBackgroundOffset-constant.html">ansiBackgroundOffset</a></li>
+          <li><a href="../chalk/Chalk/ansiUnderlineOffset-constant.html">ansiUnderlineOffset</a></li>
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    chalkdart
+      2.0.1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

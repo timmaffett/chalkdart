@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the hsv2rgb method from the ColorUtils class, for the Dart programming language.">
+  <title>hsv2rgb method - ColorUtils class - colorutils library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">chalkdart</a></li>
+    <li><a href="../../colorutils/colorutils-library.html">colorutils</a></li>
+    <li><a href="../../colorutils/ColorUtils-class.html">ColorUtils</a></li>
+    <li class="self-crumb">hsv2rgb method</li>
+  </ol>
+  <div class="self-name">hsv2rgb</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">hsv2rgb</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>&gt;</span></span>
+<span class="name ">hsv2rgb</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="hsv2rgb-param-hue"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">hue</span>, </span></li>
+<li><span class="parameter" id="hsv2rgb-param-saturation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">saturation</span>, </span></li>
+<li><span class="parameter" id="hsv2rgb-param-valueBrightness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/num-class.html">num</a></span> <span class="parameter-name">valueBrightness</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static List&lt;int&gt; hsv2rgb(num hue, num saturation, num valueBrightness) {
+  if (saturation &lt;= 1 &amp;&amp; valueBrightness &lt;= 1) {
+    &#47;&#47; if both &lt;=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
+    saturation *= 100;
+    valueBrightness *= 100;
+  }
+  hue = hue &#47; 60;
+  saturation = saturation &#47; 100;
+  valueBrightness = valueBrightness &#47; 100;
+  var hi = hue.floor() % 6;
+
+  var f = hue - hue.floor();
+  int p = (255 * valueBrightness * (1 - saturation)).round();
+  int q = (255 * valueBrightness * (1 - (saturation * f))).round();
+  int t = (255 * valueBrightness * (1 - (saturation * (1 - f)))).round();
+  int iV = (255 * valueBrightness).round();
+
+  switch (hi) {
+    case 0:
+      return [iV, t, p];
+    case 1:
+      return [q, iV, p];
+    case 2:
+      return [p, iV, t];
+    case 3:
+      return [p, q, iV];
+    case 4:
+      return [t, p, iV];
+    case 5:
+    default:
+      return [iV, p, q];
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">chalkdart</a></li>
+  <li><a href="../../colorutils/colorutils-library.html">colorutils</a></li>
+  <li><a href="../../colorutils/ColorUtils-class.html">ColorUtils</a></li>
+  <li class="self-crumb">hsv2rgb method</li>
+</ol>
+
+
+    <h5>ColorUtils class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../colorutils/ColorUtils-class.html#constructors">Constructors</a></li>
+          <li><a href="../../colorutils/ColorUtils/ColorUtils.html">ColorUtils</a></li>
+
+
+    <li class="section-title inherited">
+      <a href="../../colorutils/ColorUtils-class.html#instance-properties">Properties</a>
+    </li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+    <li class="section-title inherited"><a href="../../colorutils/ColorUtils-class.html#instance-methods">Methods</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/toString.html">toString</a></li>
+
+    <li class="section-title inherited"><a href="../../colorutils/ColorUtils-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+        <li class="section-title"><a href="../../colorutils/ColorUtils-class.html#static-properties">Static properties</a></li>
+          <li><a href="../../colorutils/ColorUtils/colorKeywords.html">colorKeywords</a></li>
+
+        <li class="section-title"><a href="../../colorutils/ColorUtils-class.html#static-methods">Static methods</a></li>
+          <li><a href="../../colorutils/ColorUtils/addColorKeywordHex.html">addColorKeywordHex</a></li>
+          <li><a href="../../colorutils/ColorUtils/addColorKeywordRgb.html">addColorKeywordRgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/cmyk2rgb.html">cmyk2rgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/colorFromKeyword.html">colorFromKeyword</a></li>
+          <li><a href="../../colorutils/ColorUtils/hex2rgb.html">hex2rgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/hsl2rgb.html">hsl2rgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/hslTorgb.html">hslTorgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/hslToRgb1Scale.html">hslToRgb1Scale</a></li>
+          <li><a href="../../colorutils/ColorUtils/hsv2rgb.html">hsv2rgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/hwb2rgb.html">hwb2rgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/hwbTorgb.html">hwbTorgb</a></li>
+          <li><a href="../../colorutils/ColorUtils/lab2xyz.html">lab2xyz</a></li>
+          <li><a href="../../colorutils/ColorUtils/rgb2hsl.html">rgb2hsl</a></li>
+          <li><a href="../../colorutils/ColorUtils/rgbFromKeyword.html">rgbFromKeyword</a></li>
+          <li><a href="../../colorutils/ColorUtils/rgbToAnsi256.html">rgbToAnsi256</a></li>
+          <li><a href="../../colorutils/ColorUtils/xyz2rgb.html">xyz2rgb</a></li>
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    chalkdart
+      2.0.1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

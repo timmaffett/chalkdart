@@ -18,6 +18,9 @@ Check out `example/chalkdart_example.dart` for some cool examples of what it is 
 
 If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version. 
 
+## Full Api Dart Docs can be found [here](https://timmaffett.github.io/chalkdart_docs/index.html)
+[ChalkDart API Documentation](https://timmaffett.github.io/chalkdart_docs/index.html)
+
 ## Features and bugs
 Please file feature requests and bugs at the [issue tracker](http://github.com/timmaffett/chalkdart/issues).
 
@@ -875,13 +878,271 @@ This is reference table of the X11/CSS/SVG foreground/background colors and the 
 
 
 
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+body {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.42857143;
+  color: #111111;
+  background-color: #fff;
+}
+.colortable {
+  font-size: 14px;
+}
+</style>
+<style type="text/css" media="all">
+table {
+	border-collapse: collapse;
+	border-top: 1px solid #fff;
+	font: 100 1em sans-serif;
+  margin: auto;
+  cursor: pointer;
+}
+#x11colors tr {
+  border: grey solid 2px;
+  outline:none;
+}
+tr.dark td {
+	color: #fff;
+  background-color: #fff;
+}
+tr.light td span {
+  padding: 5px 5px;
+	background-color: #000;
+}
+tr.dark td span {
+  padding: 5px 5px;
+	background-color: #fff;
+}
+th {
+	text-align: center;
+}
+th, td {
+	padding: 0.8em 0.75em 0.5em;
+	border-bottom: 1px solid #fff;
+}
+thead th {
+	border-bottom: 1px solid gray;
+}
+thead th a[href] {
+	color: #000;
+	text-decoration: none;
+	display: block;
+}
+thead th[id] a:after {
+	content: " ⬦";
+	color: #CCC;
+}
+thead th.sortby a:after {
+	font-size: 80%;
+	color: #333;
+}
+thead th.sortby.asc a:after {
+	content: " ▼";
+}
+thead th.sortby.dsc a:after {
+	content: " ▲";
+}
+thead th.sortby {
+	background: whitesmoke;
+	background:
+		-webkit-repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+	background:
+		-moz-repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+	background:
+		-o-repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+	background:
+		repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+}
+
+tbody th, td {
+	font-weight: normal;
+	font: 1.1em monospace;
+	}
+</style>
+<script type="text/javascript">
+
+var sortedAnsiIn = false;
+
+function includeAnsiChange() {
+  var ansiCheckBox = document.getElementById("includeAnsiBase");
+
+  if(!sortedAnsiIn) {
+    // We never showed ansi before so we need to sort into the current sort
+    if(document.getElementsByClassName("sortby")) {
+      // we are sorted by something
+      var s = document.getElementsByClassName("sortby")[0];
+      if(s) {
+        // get the ID
+        var id = s.id;
+        var type = id.replace('Sort','');
+        // now clear sorting and act like we never have
+        resetSortClasses();
+        sort(type);
+        // var ascending = s.classList.contains(asc);
+
+        // s.classList.remove("sortby");
+        // s.classList.remove("asc");
+        // s.classList.remove("dsc");
+      }
+    }
+  }
+
+  var hide = !ansiCheckBox.checked;
+  ansiRows = document.querySelectorAll(".baseansicolor");
+	for (i = 0; i < ansiRows.length; i++) {
+		ansiRows[i].hidden = hide;
+	}
+}
+
+function resetSortClasses() {
+  if(document.getElementsByClassName("sortby")) {
+    var s = document.getElementsByClassName("sortby")[0];
+    if(s) {
+      s.classList.remove("sortby");
+      s.classList.remove("asc");
+      s.classList.remove("dsc");
+    }
+  }
+}
+
+function rewriteTable() {
+  function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+  tbody = document.querySelector("#x11colors");
+  removeAllChildNodes(tbody);
+	var limit = sorter.length;
+	for (i = 0; i < sorter.length; i++) {
+    tbody.appendChild(sorter[i].tr);
+	}
+}
+
+function nameSort(a,b) {
+	return a.name.localeCompare(b.name);
+}
+function rgbSort(a,b) {
+	return (a.red - b.red || a.green - b.green || a.blue - b.blue);
+}
+function hslSort(a,b) {
+	return (a.hue - b.hue || a.sat - b.sat || a.light - b.light);
+}
+function luminSort(a,b) {
+	return (a.lumin - b.lumin);
+}
+
+function sort(type) {
+	if (!type) return false;
+	var header = document.getElementById(type+"Sort");
+	if (header.classList.contains("sortby")) {
+    if(!sortedAnsiIn) {
+      sorter.sort(window[type+"Sort"]);
+      sortedAnsiIn = true;
+    }
+		sorter.reverse();
+		header.classList.toggle("asc");
+		header.classList.toggle("dsc");
+	} else {
+		sorter.sort(window[type+"Sort"]);
+		resetSortClasses();
+		header.classList.add("sortby");
+		header.classList.add("asc");
+	}
+  sortedAnsiIn = true;
+	rewriteTable();
+}
+
+function indexer(rows) {
+	var array = [];
+	var rownum = rows.length;
+	var rgb = '';
+	for (i = 0;  i < rownum; i++) {
+    if(rows[i].getElementsByTagName("td").length==0) continue;
+		var name = rows[i].getElementsByTagName("td")[0].textContent;
+		var cells = rows[i].getElementsByTagName("td");
+    var title = cells[0].title;
+    var parts = title.split(' ');
+		var rgbd = parts[1];
+		var hsl = parts[2];
+
+    window.console.log(`${title} ${parts}`);
+		rgb = rgbd.substring(4,rgbd.length-1).split(",");
+		hsl = hsl.substring(4,hsl.length-1).split(",")
+		var bits = new Array();
+		bits["row"] = i;
+		bits["name"] = name;
+		bits["red"] = parseInt(rgb[0]);
+		bits["green"] = parseInt(rgb[1]);
+		bits["blue"] = parseInt(rgb[2]);
+		bits["hue"] = parseInt(hsl[0]);
+		bits["sat"] = parseFloat(hsl[1]);
+		bits["light"] = parseFloat(hsl[2]);
+		bits["lumin"] = (rgb[0]*0.375) + (rgb[1]*0.5) + (rgb[2]*0.125);
+
+window.console.log(`Lumin for ${name} is ${bits["lumin"]}`);
+
+		bits["tr"] = rows[i];
+		array.push(bits);
+	}
+	return array;
+}
+
+function startup() {
+  tbody = document.querySelector("#x11colors");
+  rows = tbody.getElementsByTagName("tr");
+	sorter = indexer(rows);
+}
+
+var sorter = [];
+
+</script>
+
 <table class="colortable" style="border-style:none;
   width:90%;text-align:center;font-weight:bold; border-collapse: separate;">
 <thead>
 <tr><th style="font-size: 150%;" colspan="2">Chalk X11/CSS/SVG Color Style Methods
-
+<span style="margin-left: 20px;"><label style="font-size:50%" for="includeAnsiBase">Include basic ansi colors</label>
+<input type="checkbox" id="includeAnsiBase" name="includeAnsiBase" value="off" onchange="includeAnsiChange();"></span>
 </th></tr>
-
+<tr>
+<th id="nameSort"  colspan="2"class="sortby asc"><a href="javascript:sort('name');">Name sort</a></th>
+</tr>
+<tr>
+<th id="rgbSort" colspan="2"><a href="javascript:sort('rgb');">RGB sort</a></th>
+</tr>
+<tr>
+<th id="hslSort" colspan="2"><a href="javascript:sort('hsl');">HSL sort</a></th>
+</tr>
+<tr>
+<th id="luminSort" colspan="2"><a href="javascript:sort('lumin');">Brightness sort</a></th>
+</tr>
 
 
 <tr style="border-bottom: grey solid 2px;">
@@ -1551,7 +1812,7 @@ This is reference table of the X11/CSS/SVG foreground/background colors and the 
 </td><td title="0x000000 rgb(0,0,0) hsl(0,0,0)" style="outline:solid rgb(0, 0, 0) 1px;border:solid rgb(0, 0, 0) thick;background-color: rgb(0, 0, 0);">.onBlack</td>
 <tr>
 </tbody></table>
-
+<script>startup();</script>
 
 
 ## Browser support
