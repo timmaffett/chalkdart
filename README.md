@@ -1,44 +1,10 @@
-<h1 align="center">
-	<br>
-	<br>
-	<img width="320" src="media/chalkdart.svg" alt="Chalk">
-	<br>
-	<br>
-	<br>
-</h1>
-
-> A library for Dart developers.
-
-## Usage
-
-A simple usage example:
-
-```dart
-import 'package:chalkdart/chalkdart.dart';
-
-main() {
-  var awesome = new Awesome();
-}
-```
+<img src="media/chalkdart.svg" width="900">
+> Terminal string styling done right
 
 ## Features and bugs
-
 Please file feature requests and bugs at the [issue tracker][http://github.com/timmaffett/chalk.dart/issues/].
 
 [tracker]: http://github.com/timmaffett/chalk.dart/issues/
-
-<h1 align="center">
-	<br>
-	<br>
-	<img width="320" src="media/chalkdart.svg" alt="Chalk">
-	<br>
-	<br>
-	<br>
-</h1>
-
-> Terminal string styling done right
-
-<img src="media/chalkdart.svg" width="900">
 
 ## Highlights
 
@@ -125,10 +91,10 @@ print(warning('Warning!'));
 
 
 ```dart
-const name = 'Tim';
-print(chalk.green('Hello %s'), name);
+const name = 'Tim Maffett';
+print(chalk.green('Hello $name'));
 ```
-<span color='rgb(0,255,0);'>//=> 'Hello Tim'</span>
+//=><span style='color:#00bc00;'> 'Hello Tim Maffett'</span>
 
 ## API
 
@@ -138,7 +104,7 @@ Example: `chalk.red.bold.underline('Hello', 'world');`
 
 Chain [styles](#styles) and call the last one as a method with a string argument. Order doesn't matter, and later styles take precedent in case of a conflict. This simply means that `chalk.red.yellow.green` is equivalent to `chalk.green`.
 
-Multiple arguments will be separated by space.
+String interpolation can be ised or multiple arguments can be listed and will be separated by space (or the string specified by `joinWith`).  The arguments can be of any type, Map<>, List<>, Iterable and Functions/Function closures are also supported.  By default Lists are joined together with a ' '(space), but the `joinWith` method can be used to specify a different join string. Up to 15 arguments can be included as arguments to a Chalk object.
 
 ### chalk.level
 
@@ -167,17 +133,23 @@ var chalkWithLevel0 = chalk.Instance(level: 0);
 ### Modifiers
 
 - `reset` - Resets the current color chain.
+- `blink` - Make text blink.
+- `rapidblink` - Make text blink rapidly.
 - `bold` - Make text bold.
 - `dim` - Emitting only a small amount of light.
 - `italic` - Make text italic.
 - `underline` - Make text underline.
-- `doubleunderline` - Thicker text underline. *(Not widely supported)*
-- `overline` - Make text overline. *(Not widely supported)*
-- `inverse`- Inverse background and foreground colors.
+- `doubleunderline` - Thicker text underline. 
+- `overline` - Make text overline.
+- `inverse` (or `invert`)- Inverse background and foreground colors.
 - `hidden` - Prints the text, but makes it invisible.
-- `strikethrough` - Puts a horizontal line through the center of the text. *(Not widely supported)*
+- `superscript` - Make text superscript.
+- `subscript` - Make text subscript.
+- `strikethrough` - Puts a horizontal line through the center of the text.
 - `visible`- Prints the text only when Chalk has a color level > 0. Can be useful for things that are purely cosmetic.
+- `font1`-`font10` - Changes the font
 
+Some of these ANSI styles are not widely supported within all terminal emulators, but I have added COMPLETE support to the standard Visual Studio Code debug console as well as to the Dart-Pad console.  Android Studio also has fairly complete support within it's debug console. See the VSCode section for info on using CSS to map fonts to the `font1` through `font10`.
 ### Colors
 
 The exact RGB values for the base ANSI colors are rendered console/terminal dependent - and can be configured on some terminals such Windows Terminal - [more info here](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)
