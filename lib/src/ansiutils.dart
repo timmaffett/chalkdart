@@ -1,5 +1,3 @@
-library chalkdart;
-
 /*
   @author: tim maffett
 */

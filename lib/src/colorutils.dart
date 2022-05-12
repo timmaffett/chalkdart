@@ -1,27 +1,25 @@
-library chalkdart;
+// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
-/*
-  @author: tim maffett
-*/
 import 'dart:math';
 
-/*
-  References with detailed explainations of the various color models included here
-  https://en.wikipedia.org/wiki/HSL_and_HSV
-  https://en.wikipedia.org/wiki/HWB_color_model
-
-  complete history of the X11 color names :
-    https://en.wikipedia.org/wiki/X11_color_names
-  and CSS color names (derived from X11 color names):
-    https://www.w3.org/wiki/CSS/Properties/color/keywords
-
-*/
-// Most of these routines are based on javascript code that I have ported to dart
-// (from https://www.npmjs.com/package/color-convert )
-//  github: https://github.com/Qix-/color-convert/
-//   and more specifically
-//          https://github.com/Qix-/color-convert/blob/master/conversions.js
-//
+/// This ColorUtils library contains the color space conversion methods
+/// used by the Chalk class to support alternate colors spaces from
+/// RGB.  An attempt is made to be as versitle in input parameters as possible,
+/// many routines accept floating point numbers from 0.0-1.0 (for percentages)
+/// or alternately integers from 0-255.
+/// References with detailed explainations of the various color models included here
+///    https://en.wikipedia.org/wiki/HSL_and_HSV
+///    https://en.wikipedia.org/wiki/HWB_color_model
+/// Complete history of the X11 color names :
+///    https://en.wikipedia.org/wiki/X11_color_names
+/// and CSS color names (derived from X11 color names):
+///    https://www.w3.org/wiki/CSS/Properties/color/keywords
+/// Many of these routines are based on work by Heather Arthur and javascript code
+/// that I have ported to dart from:
+///    https://github.com/Qix-/color-convert/blob/master/conversions.js
+/// 
 class ColorUtils {
   static int rgbToAnsi256(int red, int green, int blue) {
     // We use the extended greyscale palette here, with the exception of
@@ -44,35 +42,35 @@ class ColorUtils {
         (blue / 255 * 5).round();
   }
 
-  static List<int> hsl2rgb(num h, num s, num l) {
-    if (s <= 1 && l <= 1) {
+  static List<int> hsl2rgb(num hue, num saturation, num lightness) {
+    if (saturation <= 1 && lightness <= 1) {
       // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
-      s *= 100;
-      l *= 100;
+      saturation *= 100;
+      lightness *= 100;
     }
-    h = h / 360;
-    s = s / 100;
-    l = l / 100;
-    var t2;
-    var t3;
-    var val;
+    hue = hue / 360;
+    saturation = saturation / 100;
+    lightness = lightness / 100;
+    num t2;
+    num t3;
+    num val;
 
-    if (s == 0) {
-      final i_val = (l * 255).round();
-      return [i_val, i_val, i_val];
+    if (saturation == 0) {
+      final iVal = (lightness * 255).round();
+      return [iVal, iVal, iVal];
     }
 
-    if (l < 0.5) {
-      t2 = l * (1 + s);
+    if (lightness < 0.5) {
+      t2 = lightness * (1 + saturation);
     } else {
-      t2 = l + s - l * s;
+      t2 = lightness + saturation - lightness * saturation;
     }
 
-    var t1 = 2 * l - t2;
+    var t1 = 2 * lightness - t2;
 
     final rgb = [0, 0, 0];
     for (var i = 0; i < 3; i++) {
-      t3 = h + 1 / 3 * -(i - 1);
+      t3 = hue + 1 / 3 * -(i - 1);
       if (t3 < 0) {
         t3++;
       }
@@ -97,44 +95,77 @@ class ColorUtils {
     return rgb;
   }
 
-  static List<int> hsv2rgb(num h, num s, num v) {
-    if (s <= 1 && v <= 1) {
-      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
-      s *= 100;
-      v *= 100;
-    }
-    h = h / 60;
-    s = s / 100;
-    v = v / 100;
-    var hi = h.floor() % 6;
+  // Alternate hsl algorithm from  http://dev.w3.org/csswg/css-color/#hwb-to-rgb
+  static List<int> hslTorgb(num hue, num sat, num light) {
+    List<double> rgb1 = hslToRgb1Scale(hue, sat, light);
+    return [
+      (rgb1[0] * 255).round(),
+      (rgb1[1] * 255).round(),
+      (rgb1[2] * 255).round()
+    ];
+  }
 
-    var f = h - h.floor();
-    int p = (255 * v * (1 - s)).round();
-    int q = (255 * v * (1 - (s * f))).round();
-    int t = (255 * v * (1 - (s * (1 - f)))).round();
-    int i_v = (255 * v).round();
+  // Alternate hsl algorithm from  http://dev.w3.org/csswg/css-color/#hwb-to-rgb
+  static List<double> hslToRgb1Scale(num hue, num sat, num light) {
+    hue = hue % 360;
+
+    if (hue < 0) {
+      hue += 360;
+    }
+
+    sat /= 100;
+    light /= 100;
+
+    double f(num n) {
+      num k = (n + hue / 30) % 12;
+      num a = sat * min(light, 1 - light);
+      return (light - a * max(-1, min(k - 3.0, min(9.0 - k, 1.0))));
+    }
+
+    return [f(0), f(8), f(4)];
+  }
+
+  static List<int> hsv2rgb(num hue, num saturation, num valueBrightness) {
+    if (saturation <= 1 && valueBrightness <= 1) {
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
+      saturation *= 100;
+      valueBrightness *= 100;
+    }
+    hue = hue / 60;
+    saturation = saturation / 100;
+    valueBrightness = valueBrightness / 100;
+    var hi = hue.floor() % 6;
+
+    var f = hue - hue.floor();
+    int p = (255 * valueBrightness * (1 - saturation)).round();
+    int q = (255 * valueBrightness * (1 - (saturation * f))).round();
+    int t = (255 * valueBrightness * (1 - (saturation * (1 - f)))).round();
+    int iV = (255 * valueBrightness).round();
 
     switch (hi) {
       case 0:
-        return [i_v, t, p];
+        return [iV, t, p];
       case 1:
-        return [q, i_v, p];
+        return [q, iV, p];
       case 2:
-        return [p, i_v, t];
+        return [p, iV, t];
       case 3:
-        return [p, q, i_v];
+        return [p, q, iV];
       case 4:
-        return [t, p, i_v];
+        return [t, p, iV];
       case 5:
       default:
-        return [i_v, p, q];
+        return [iV, p, q];
     }
   }
 
-  // http://dev.w3.org/csswg/css-color/#hwb-to-rgb
+  /// hwb2rgb algorithm from http://dev.w3.org/csswg/css-color/#hwb-to-rgb
   static List<int> hwb2rgb(num h, num whiteness, num blackness) {
     if (whiteness <= 1 && blackness <= 1) {
-      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 whiteness then you need to pass it like that and not as 1 in to 100 scale)
+      // if both <=1 we assume that are 0-1 range, NOTE that means
+      // if REALLY want (0.01 whiteness AND blackness then you need to pass it like that
+      //   and not as 1 in 1-100 scale)
+      //  (because passing both as 1 will assume 0 to 1 scale, NOT 1 in the 100 scale)
       whiteness *= 100;
       blackness *= 100;
     }
@@ -142,7 +173,7 @@ class ColorUtils {
     var wh = whiteness / 100;
     var bl = blackness / 100;
     var ratio = wh + bl;
-    var f;
+    num f;
 
     // Wh + bl cant be > 1
     if (ratio > 1) {
@@ -160,9 +191,9 @@ class ColorUtils {
 
     var n = wh + f * (v - wh); // Linear interpolation
 
-    var r;
-    var g;
-    var b;
+    num r;
+    num g;
+    num b;
 
     switch (i) {
       case 1:
@@ -201,29 +232,53 @@ class ColorUtils {
     return [(r * 255).round(), (g * 255).round(), (b * 255).round()];
   }
 
-  static List<int> cmyk2rgb(num c, num m, num y, num k) {
-    if (c <= 1 && m <= 1 && y <= 1 && k <= 1) {
-      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 then you need to pass it like that and not as 1 in to 100 scale)
-      c *= 100;
-      m *= 100;
-      y *= 100;
-      k *= 100;
+  // Alternate hwb algorithm from
+  // algorithm (NOW 3/13/22) from http://dev.w3.org/csswg/css-color/#hwb-to-rgb
+  static List<int> hwbTorgb(num hue, num white, num black) {
+    white /= 100;
+    black /= 100;
+    if (white + black >= 1) {
+      int gray = (white / (white + black)).round();
+      return [gray, gray, gray];
     }
-    c = c / 100;
-    m = m / 100;
-    y = y / 100;
-    k = k / 100;
+    List<double> rgb1 = hslToRgb1Scale(hue, 100, 50);
+    for (int i = 0; i < 3; i++) {
+      rgb1[i] *= (1 - white - black);
+      rgb1[i] += white;
+    }
+    return [
+      (rgb1[0] * 255).round(),
+      (rgb1[1] * 255).round(),
+      (rgb1[2] * 255).round()
+    ];
+  }
 
-    var r = 1 - min(1, c * (1 - k) + k);
-    var g = 1 - min(1, m * (1 - k) + k);
-    var b = 1 - min(1, y * (1 - k) + k);
+  static List<int> cmyk2rgb(num cyan, num magenta, num yellow, num keyBlack) {
+    if (cyan <= 1 && magenta <= 1 && yellow <= 1 && keyBlack <= 1) {
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLY
+      // want (0.01 then you need to pass it like that and not as 1 in to 100 scale)
+      cyan *= 100;
+      magenta *= 100;
+      yellow *= 100;
+      keyBlack *= 100;
+    }
+    cyan = cyan / 100;
+    magenta = magenta / 100;
+    yellow = yellow / 100;
+    keyBlack = keyBlack / 100;
+
+    var r = 1 - min(1, cyan * (1 - keyBlack) + keyBlack);
+    var g = 1 - min(1, magenta * (1 - keyBlack) + keyBlack);
+    var b = 1 - min(1, yellow * (1 - keyBlack) + keyBlack);
 
     return [(r * 255).round(), (g * 255).round(), (b * 255).round()];
   }
 
   static List<int> xyz2rgb(num x, num y, num z) {
     if (x <= 1 && y <= 1 && z <= 1) {
-      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 then you need to pass it like that and not as 1 in to 100 scale)
+      // if both <=1 we assume that are 0-1 range, NOTE that means if 
+      // you REALLY want (0.01 then you need to pass it like that and
+      // not as 1 in to 100 scale)
       x *= 100;
       y *= 100;
       z *= 100;
@@ -272,8 +327,47 @@ class ColorUtils {
     return [x, y, z];
   }
 
-  // this handles any incoming types and trys to get a hex string out of it.. (quick attempt to do equivalent of js code)
-  // this goes the 'long' way..
+  static List<int> rgb2hsl(List<num> rgb) {
+    final num r = rgb[0] / 255.0;
+    final num g = rgb[1] / 255.0;
+    final num b = rgb[2] / 255.0;
+    final num minC = min(r, min(g, b));
+    final num maxC = max(r, max(g, b));
+    final num delta = maxC - minC;
+    num h = 0;
+    num s;
+
+    if (maxC == minC) {
+      h = 0;
+    } else if (r == maxC) {
+      h = (g - b) / delta;
+    } else if (g == maxC) {
+      h = 2 + (b - r) / delta;
+    } else if (b == maxC) {
+      h = 4 + (r - g) / delta;
+    }
+
+    h = min(h * 60, 360);
+
+    if (h < 0) {
+      h += 360;
+    }
+
+    final num l = (minC + maxC) / 2;
+
+    if (maxC == minC) {
+      s = 0;
+    } else if (l <= 0.5) {
+      s = delta / (maxC + minC);
+    } else {
+      s = delta / (2 - maxC - minC);
+    }
+
+    return [h.round(), (s * 100).round(), (l * 100).round()];
+  }
+
+  // This handles any incoming types and trys to get a hex string out of it..
+  // (quick attempt to do equivalent of js code) this goes the 'long' way..
   static List<num> hex2rgb(dynamic arg) {
     if (arg is num || arg is int) {
       int intval = arg.floor();
@@ -316,7 +410,8 @@ class ColorUtils {
     colorKeywords[colorname.toLowerCase().replaceAll(' ', '')] = colorInt;
   }
 
-  /// Add hex color (string or int) to the colorKeywords[] map that is used for dynamic lookup of colors by name.
+  /// Add hex color (string or int) to the colorKeywords[] map that is used for
+  /// dynamic lookup of colors by name.
   static void addColorKeywordHex(String colorname, dynamic hex) {
     var rgb = hex2rgb(hex);
     int colorInt = 0xff000000 |
@@ -326,8 +421,9 @@ class ColorUtils {
     colorKeywords[colorname.toLowerCase().replaceAll(' ', '')] = colorInt;
   }
 
-  ///Lookup colorname keyword in colorKeywords map and return BLACK if the color is not found
-  ///returns color as RGB int
+  /// Lookup colorname keyword in colorKeywords map and return BLACK if the
+  /// color is not found.
+  /// Returns color as RGB int.
   static int colorFromKeyword(String keyword) {
     keyword = keyword.toLowerCase().replaceAll(' ', '');
     return colorKeywords.containsKey(keyword)
@@ -335,8 +431,9 @@ class ColorUtils {
         : colorKeywords['black']!;
   }
 
-  ///Lookup colorname keyword in colorKeywords map and return BLACK if the color is not found
-  ///returns color as a num array of [red,green,blue]
+  /// Lookup colorname keyword in colorKeywords map and return BLACK if the
+  /// color is not found.
+  /// Returns color as a num array of `[red,green,blue]`.
   static List<num> rgbFromKeyword(String keyword) {
     keyword = keyword.toLowerCase().replaceAll(' ', '');
     var rgb = colorKeywords.containsKey(keyword)
@@ -345,14 +442,16 @@ class ColorUtils {
     return [(rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff];
   }
 
-  /// x11 colors appear again here: https://www.w3.org/wiki/CSS/Properties/color/keywords
+  /// A map of X11/CSS color keywords and their 6-digit hexadecimal RGB values
+  /// x11 colors appear again here:
+  ///    https://www.w3.org/wiki/CSS/Properties/color/keywords
   /// complete history of the X11 color names :
   ///    https://en.wikipedia.org/wiki/X11_color_names
   /// and CSS color names (derived from X11 color names):
   ///    https://www.w3.org/wiki/CSS/Properties/color/keywords
   /// (these are the same as the css color list (except for X11 has 'rebeccapurple'
-  ///      and css colors used 'lightGoldenrodYellow' and X11 uses 'lightGoldenrod')) - so we include both
-  /// A map of X11/CSS color keywords and their 6-digit hexadecimal RGB values
+  ///      and css colors used 'lightGoldenrodYellow' and X11 uses 'lightGoldenrod'))
+  /// - so we include both
   static final Map<String, int> colorKeywords = <String, int>{
     'aliceblue': 0xF0F8FF,
     'antiquewhite': 0xFAEBD7,

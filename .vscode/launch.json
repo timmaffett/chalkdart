@@ -46,7 +46,7 @@
             "name": "ChalkDart generate code",
             "request": "launch",
             "type": "dart",
-            "program": "example/makeX11EntryPoints.dart",
+            "program": "example/make_css_x11_methods.dart",
             // Arguments to be passed to the Dart or Flutter app.
             "args": [
                 "-x",

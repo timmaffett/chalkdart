@@ -1,5 +1,7 @@
+// ignore_for_file: unnecessary_string_interpolations
+
 import 'dart:math';
-import 'package:chalkdart/chalkdart.dart';
+import 'package:chalkdart/chalk.dart';
 
 /*
   Some different color charts to both exercise the ColorUtils class and the Chalk'Dart Chalk class.
@@ -81,15 +83,15 @@ class ChalkDartCharts {
 
     final sb16M = StringBuffer();
 
-    const DIVISIONS = 15;
+    const _numDivisions = 15;
 
     lines.add('16M rgb and white() 16x16x16');
-    for (var r = 0; r <= DIVISIONS; r++) {
-      for (var g = 0; g <= DIVISIONS; g++) {
+    for (var r = 0; r <= _numDivisions; r++) {
+      for (var g = 0; g <= _numDivisions; g++) {
         sb16M.write(('r=${_padWithSpace(r)} g=${_padWithSpace(g)} '));
-        for (var b = 0; b <= DIVISIONS; b++) {
+        for (var b = 0; b <= _numDivisions; b++) {
           sb16M.write(chalk.white
-              .onRgb16m(r / DIVISIONS, g / DIVISIONS, b / DIVISIONS)
+              .onRgb16m(r / _numDivisions, g / _numDivisions, b / _numDivisions)
               .bold(' b=${_padWithSpace(b)} '));
         }
         lines.add(sb16M.toString());
@@ -98,12 +100,12 @@ class ChalkDartCharts {
     }
 
     lines.add('\n16M  rgb and black() 16x16x16');
-    for (var r = 0; r <= DIVISIONS; r++) {
-      for (var g = 0; g <= DIVISIONS; g++) {
+    for (var r = 0; r <= _numDivisions; r++) {
+      for (var g = 0; g <= _numDivisions; g++) {
         sb16M.write(('r=${_padWithSpace(r)} g=${_padWithSpace(g)} '));
-        for (var b = 0; b <= DIVISIONS; b++) {
+        for (var b = 0; b <= _numDivisions; b++) {
           sb16M.write(chalk.black
-              .onRgb16m(r / DIVISIONS, g / DIVISIONS, b / DIVISIONS)
+              .onRgb16m(r / _numDivisions, g / _numDivisions, b / _numDivisions)
               .bold(' b=${_padWithSpace(b)} '));
         }
         lines.add(sb16M.toString());
@@ -466,12 +468,12 @@ class ChalkDartCharts {
     List<String> lines = [];
     StringBuffer sb = StringBuffer();
 
-    final b_range = 108;
-    final a_range = 100;
+    final bRange = 108;
+    final aRange = 100;
     final w = 100;
     //int h=13;
-    final b_step = 6; //((b_range*2)/h).floor();
-    final a_step = ((a_range * 2) / w).floor();
+    final bStep = 6; //((b_range*2)/h).floor();
+    final aStep = ((aRange * 2) / w).floor();
     final chartWidth = w + 1 + 6 + 6;
 
     lines.add(chalk.bold.black
@@ -479,16 +481,16 @@ class ChalkDartCharts {
 
     lines.add(chalk.bold.black.onWhite(center('Yellow', chartWidth)));
     lines.add(chalk.bold.black.onWhite(center('+b', chartWidth)));
-    lines.add(chalk.bold.black.onWhite(center('+$b_range', chartWidth)));
+    lines.add(chalk.bold.black.onWhite(center('+$bRange', chartWidth)));
 
-    for (var b = b_range; b >= -b_range; b -= b_step) {
-      for (var a = -a_range; a <= a_range; a += a_step) {
-        if (a == -a_range) {
-          if (b == b_step) {
+    for (var b = bRange; b >= -bRange; b -= bStep) {
+      for (var a = -aRange; a <= aRange; a += aStep) {
+        if (a == -aRange) {
+          if (b == bStep) {
             sb.write(chalk.bold.black.onWhite('  -a  '));
           } else if (b == 0) {
-            sb.write(chalk.bold.black.onWhite('${-a_range} '.padLeft(6)));
-          } else if (b == -b_step) {
+            sb.write(chalk.bold.black.onWhite('${-aRange} '.padLeft(6)));
+          } else if (b == -bStep) {
             sb.write(chalk.bold.black.onWhite('Green '));
           } else {
             sb.write(chalk.black.onWhite('      '));
@@ -497,12 +499,12 @@ class ChalkDartCharts {
         sb.write(chalk.bold.black.onLab(l, a, b)((b == 0)
             ? (a == 0 ? '+' : chalk.strikethrough('-'))
             : (a == 0 ? '|' : ' ')));
-        if (a == a_range) {
-          if (b == b_step) {
+        if (a == aRange) {
+          if (b == bStep) {
             sb.write(chalk.bold.black.onWhite('  +a  '));
           } else if (b == 0) {
-            sb.write(chalk.bold.black.onWhite(' +${a_range}'.padRight(6)));
-          } else if (b == -b_step) {
+            sb.write(chalk.bold.black.onWhite(' +$aRange'.padRight(6)));
+          } else if (b == -bStep) {
             sb.write(chalk.bold.black.onWhite('  Red'.padRight(6)));
           } else {
             sb.write(chalk.black.onWhite('      '));
@@ -514,7 +516,7 @@ class ChalkDartCharts {
     }
     lines.add(chalk.bold.black.onWhite(center('Blue', chartWidth)));
     lines.add(chalk.bold.black.onWhite(center('-b', chartWidth)));
-    lines.add(chalk.bold.black.onWhite(center('(${-b_range})', chartWidth)));
+    lines.add(chalk.bold.black.onWhite(center('(${-bRange})', chartWidth)));
 
     return lines;
   }

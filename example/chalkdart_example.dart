@@ -1,7 +1,8 @@
 /*
   @author: tim maffett
 */
-import 'package:chalkdart/chalkdart.dart';
+import 'package:chalkdart/chalk.dart';
+import 'package:chalkdart/chalk_x11.dart';
 import 'chalkdart_charts.dart';
 
 /*
@@ -57,6 +58,12 @@ void main() {
   final includeFonts = true;
 
   Chalk chalk = Chalk();
+
+print('''
+CPU: ${chalk.red(344)}%
+RAM: ${chalk.green((0.47 * 100))}%
+DISK: ${chalk.rgb(255,131,0)((0.76 * 100))}%
+''');
 
   print(chalk.cornflowerBlue
       .onBisque("            Chalk'Dart example program           "));
@@ -229,6 +236,11 @@ void main() {
         'And this closure ${chalk.black.onYellow("Nest calls to chalk")} inside the closure'),
   ]));
 
+  print(chalk.lightGoldenrodYellow.onCornflowerBlue('Hey There using X11 extensions'));
+  // otherwise you must use the dynamic loolup method off of the color or css methods.
+  print(chalk.color.lightGoldenrodYellow.onCornflowerBlue('Hey There using dynamic lookup via .color'));
+ 
+
 /*
   print(chalk.blue
       .underlineRgb(255, 0, 0)
@@ -265,12 +277,13 @@ void main() {
 
   if (includeFonts) {
     String fontTestString =
-        "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@#\$\%^&*()_+\'\"`~";
+        "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@#\$%^&*()_+'\"`~";
     String ligatureTest =
-        chalk.blue("\n" + "--> ~~> *** != !== <||| |||> ++ .= >= <= ~= *= /= ");
+        chalk.blue('\n--> ~~> *** != !== <||| |||> ++ .= >= <= ~= *= /= ');
     String ligatureTest2 = chalk.brightBlue(
-        "<<-----<<-----||----->>----->> <===<===||===>===> >---||---< \n  <==<==||==>==> /===/===//===/===/ //===:===!===//" +
-            "|---<>>-----|| ||-----<< \/ /\ <> <~> </>");
+        r'''<<-----<<-----||----->>----->> <===<===||===>===> >---||---< 
+<==<==||==>==> /===/===//===/===/ //===:===!===//
+|---<>>-----|| ||-----<< \/ /\ <> <~> </>''');
     // Combine styled and normal strings
     print(chalk.reset.blue('Hello BLUE font 1') +
         ' World' +
@@ -524,26 +537,27 @@ String makeAPowerLinePrompt(Chalk chalk, String name) {
   powerLineCalls++;
   Map<String, String> item = powerlineSettings[name];
 
-  String extraindent = '';
-  for (var i = 0; i < powerLineCalls; i++) extraindent += ' ';
-
+  String extraIndent = '';
+  for (var i = 0; i < powerLineCalls; i++) {
+    extraIndent += ' ';
+  }
   String lock = (item['lock'] ?? '');
   String network = (item['network'] ?? '');
   String separator = (item['separator'] ?? '');
-  String separator_thin = (item['separator_thin'] ?? '');
+  String separatorThin = (item['separator_thin'] ?? '');
 
-  String out = chalk.onYellow.color.orange("  " + extraindent + lock) +
+  String out = chalk.onYellow.color.orange("  " + extraIndent + lock) +
       chalk
           .onKeyword("orange")
           .color
-          .orangered("  " + extraindent + chalk.inverse(network)) +
+          .orangered("  " + extraIndent + chalk.inverse(network)) +
       chalk
           .onKeyword("orangered")
-          .red("  " + extraindent + chalk.inverse(separator)) +
-      chalk.onRed("  " + extraindent) +
+          .red("  " + extraIndent + chalk.inverse(separator)) +
+      chalk.onRed("  " + extraIndent) +
       chalk.red(separator) +
       '  ' +
-      chalk.color.orangeRed(separator_thin);
+      chalk.color.orangeRed(separatorThin);
   return out;
 }
 

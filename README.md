@@ -23,9 +23,9 @@ main() {
 
 ## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker][tracker].
+Please file feature requests and bugs at the [issue tracker][http://github.com/timmaffett/chalk.dart/issues/].
 
-[tracker]: http://example.com/issues/replaceme
+[tracker]: http://github.com/timmaffett/chalk.dart/issues/
 
 <h1 align="center">
 	<br>
@@ -38,11 +38,6 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 > Terminal string styling done right
 
-[![Coverage Status](https://coveralls.io/repos/github/chalk/chalk/badge.svg?branch=main)](https://coveralls.io/github/chalk/chalk?branch=main)
-[![npm dependents](https://badgen.net/npm/dependents/chalk)](https://www.npmjs.com/package/chalk?activeTab=dependents) [![Downloads](https://badgen.net/npm/dt/chalk)](https://www.npmjs.com/package/chalk)
-[![run on repl.it](https://repl.it/badge/github/chalk/chalk)](https://repl.it/github/chalk/chalk)
-[![Support Chalk on DEV](https://badge.devprotocol.xyz/0x44d871aebF0126Bf646753E2C976Aa7e68A66c15/descriptive)](https://stakes.social/0x44d871aebF0126Bf646753E2C976Aa7e68A66c15)
-
 <img src="media/chalkdart.svg" width="900">
 
 ## Highlights
@@ -50,9 +45,11 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 - Expressive API
 - Highly performant
 - Ability to nest styles
+- supports dynamic argument list and automatically handles List< >, Iterables and Function closures
 - [256/Truecolor color support](#256-and-truecolor-color-support)
 - Ignores Auto-detected ANSI color support/as common Dart/Flutter IDE's report this incorrectly.
-- Not an extentension of the `String` class - (this might be nice for Dart though ?)
+- Not an extentension of the `String` class...
+   (this might be nice for Dart though using an optional extension class...)
 - Clean and focused
 - Actively maintained
 
@@ -64,23 +61,22 @@ $ dart pub add chalkdart
 
 ## Usage
 
-```js
-const chalk = require('chalk');
+```dart
+import 'package:chalkdart/chalk.dart';
 
-print(chalk.blue('Hello world!'));
+print(chalk.yellow.onBlue('Hello world!'));
 ```
 
 Chalk comes with an easy to use composable API where you just chain and nest the styles you want.
 
 ```dart
-const chalk = require('chalk');
-const log = print;
+import 'package:chalkdart/chalk.dart';
 
 // Combine styled and normal strings
 print(chalk.blue('Hello') + ' World' + chalk.red('!'));
 
 // Compose multiple styles using the chainable API
-print(chalk.blue.bgRed.bold('Hello world!'));
+print(chalk.blue.onRed.bold('Hello world!'));
 
 // Pass in multiple arguments
 print(chalk.blue('Hello', 'World!', 'Foo', 'bar', 'biz', 'baz'));
@@ -95,21 +91,21 @@ print(chalk.green(
      ' that becomes green again!'
 ));
 
-// use in multiline string and in templating
+// use in multiline string with interpolation
 print('''
       CPU: ${chalk.red('90%')}
       RAM: ${chalk.green('40%')}
       DISK: ${chalk.yellow('70%')}
    ''');
 
-// ES2015 tagged template literal
-print(chalk`
-CPU: {red ${cpu.totalPercent}%}
-RAM: {green ${ram.used / ram.total * 100}%}
-DISK: {rgb(255,131,0) ${disk.used / disk.total * 100}%}
-`);
+// or with inline calcs
+print('''
+CPU: ${chalk.red(cpu.totalPercent)}%
+RAM: ${chalk.green((ram.used / ram.total * 100))}%
+DISK: ${chalk.rgb(255,131,0)((disk.used / disk.total * 100))}%
+''');
 
-// Use RGB colors in terminal emulators that support it.
+// Use RGB colors in debug console or terminals that support it.
 print(chalk.keyword('orange')('Yay for orange colored text!'));
 print(chalk.rgb(123, 45, 67).underline('Underlined reddish color'));
 print(chalk.hex('#DEADED').bold('Bold gray!'));
@@ -117,8 +113,8 @@ print(chalk.hex('#DEADED').bold('Bold gray!'));
 
 Easily define your own themes:
 
-```js
-const chalk = require('chalk');
+```dart
+import 'package:chalkdart/chalk.dart';
 
 const error = chalk.bold.red;
 const warning = chalk.keyword('orange');
@@ -129,10 +125,10 @@ print(warning('Warning!'));
 
 
 ```dart
-const name = 'Sindre';
+const name = 'Tim';
 print(chalk.green('Hello %s'), name);
-//=> 'Hello Sindre'
 ```
+<span color='rgb(0,255,0);'>//=> 'Hello Tim'</span>
 
 ## API
 
@@ -149,11 +145,14 @@ Multiple arguments will be separated by space.
 Specifies the level of color support.
 
 Color support is automatically detected, but you can override it by setting the `level` property. You should however only do this in your own code as it applies globally to all Chalk consumers.
+Note dart determines VSCode debug console and Android Studio debug console do not support ansi control sequences, when in fact they do, so by default the level is set to 3 (full color/sequence support) as the default, no matter what the console/terminal reports.  You must set this yourslef if you want a different value.
 
 If you need to change this in a reusable module, create a new instance:
 
-```js
-const ctx = new chalk.Instance({level: 0});
+```dart
+var chalkWithLevel0 = chalk.instance(level: 0);
+// this version is provided for users of the JS version of Chalk
+var chalkWithLevel0 = chalk.Instance(level: 0);
 ```
 
 | Level | Description |
@@ -162,18 +161,6 @@ const ctx = new chalk.Instance({level: 0});
 | `1` | Basic color support (16 colors) |
 | `2` | 256 color support |
 | `3` | Truecolor support (16 million colors) |
-
-### chalk.supportsColor
-
-Detect whether the terminal [supports color](https://github.com/chalk/supports-color). Used internally and handled for you, but exposed for convenience.
-
-Can be overridden by the user with the flags `--color` and `--no-color`. For situations where using `--color` is not possible, use the environment variable `FORCE_COLOR=1` (level 1), `FORCE_COLOR=2` (level 2), or `FORCE_COLOR=3` (level 3) to forcefully enable color, or `FORCE_COLOR=0` to forcefully disable. The use of `FORCE_COLOR` overrides all other color support checks.
-
-Explicit 256/Truecolor mode can be enabled using the `--color=256` and `--color=16m` flags, respectively.
-
-### chalk.stderr and chalk.stderr.supportsColor
-
-`chalk.stderr` contains a separate instance configured with color support detected for `stderr` stream instead of `stdout`. Override rules from `chalk.supportsColor` apply to this too. `chalk.stderr.supportsColor` is exposed for convenience.
 
 ## Styles
 
@@ -242,11 +229,12 @@ users preference on how they want their code to read.
 
 Chalk can be used as a [tagged template literal](https://exploringjs.com/es6/ch_template-literals.html#_tagged-template-literals).
 
-```js
-const chalk = require('chalk');
+```dart
+import 'package:chalkdart/chalk.dart';
 
 const miles = 18;
-const calculateFeet = miles => miles * 5280;
+
+int calculateFeet(miles) => miles * 5280;
 
 print(chalk`
 	There are {bold 5280 feet} in a mile.
@@ -282,9 +270,9 @@ Examples:
 
 Background versions of these models are prefixed with `bg` and the first level of the module capitalized (e.g. `keyword` for foreground colors and `bgKeyword` for background colors).
 
-- `chalk.bgHex('#DEADED').underline('Hello, world!')`
-- `chalk.bgKeyword('orange')('Some orange text')`
-- `chalk.bgRgb(15, 100, 204).inverse('Hello!')`
+- `chalk.onHex('#DEADED').underline('Hello, world!')`
+- `chalk.onKeyword('orange')('Some orange text')`
+- `chalk.onRgb(15, 100, 204).inverse('Hello!')`
 
 The following color models can be used:
 
@@ -293,18 +281,41 @@ The following color models can be used:
 - [`hsl`](https://en.wikipedia.org/wiki/HSL_and_HSV) - Example: `chalk.hsl(32, 100, 50).bold('Orange!')`
 - [`hsv`](https://en.wikipedia.org/wiki/HSL_and_HSV) - Example: `chalk.hsv(32, 100, 100).bold('Orange!')`
 - [`hwb`](https://en.wikipedia.org/wiki/HWB_color_model) - Example: `chalk.hwb(32, 0, 50).bold('Orange!')`
-- [`ansi`](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) - Example: `chalk.ansi(31).bgAnsi(93)('red on yellowBright')`
-- [`ansi256`](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit) - Example: `chalk.bgAnsi256(194)('Honeydew, more or less')`
-- [`keyword`](https://www.w3.org/wiki/CSS/Properties/color/keywords) (X11/CSS keywords) - Example: `chalk.cornFlowerBlue.onBeige` or `chalk.keyword('orange').bold('Orange!')`
-            The keyword table can be extended via and the new keywords can be accessed via
-               ` Chalk.addColorKeywordHex('myfavorite', 0x6495ED ); // using hex int`
-                `chalk.color.myfavorite('This is my favorite color');`
-                `Chalk.addColorKeywordHex('my2ndFavorite', '#6A5ACD' );  // or using string`
-                `chalk.color.my2ndfavorite('This is my 2nd favorite color');`
-            or
-                `chalk.keyword('myfavorite)('Using the keyword() method');`
-                    `chalk.color.XXXX`, `chalk.x11.XXXX`, 
+- [`xyz`](https://en.wikipedia.org/wiki/CIE_1931_color_space) - Example: `chalk.xyz(0.9, 0.9, 0.1).bold('Yellow!')`
+- [`lab`](https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB) - Example: `chalk.lab(85, 0, 108).bold('yellow-Orange!')`
 
+- [`ansi`](https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit) - Example: `chalk.ansi(31).bgAnsi(93)('red on yellowBright')`
+- [`ansi256`](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit) - Example: `chalk.onAnsi256(194)('Honeydew, more or less')`
+- [`keyword`](https://www.w3.org/wiki/CSS/Properties/color/keywords) (X11/CSS/SVG color keywords) - Example: `chalk.cornFlowerBlue.onBeige` or `chalk.keyword('orange').bold('Orange!')`
+            The keyword table can be extended via and the new keywords can be accessed via
+```
+Chalk.addColorKeywordHex('myfavorite', 0x6495ED ); // using hex int
+chalk.color.myfavorite('This is my favorite color');
+Chalk.addColorKeywordHex('my2ndFavorite', '#6A5ACD' );  // or using string
+chalk.color.my2ndfavorite('This is my 2nd favorite color');
+```
+or
+```
+chalk.keyword('myfavorite)('Using the keyword() method');
+chalk.color.my2ndfavorite('This is my 2nd favorite color');
+```
+
+or import the X11 extension methods to get proper methods for each of the X11/CSS/SVG color names.  With that you get code completion for available colors as well as compile time checking of color names.
+
+```
+import 'package:chalkdart/chalk.dart';
+import 'package:chalkdart/chalk_x11.dart'; // get methods for x11/css/svg color name keywords
+
+chalk.cornflowerBlue.onLimeGreen('Hey there!);
+
+// without extension methods you can use the dynamic keyword lookup method:
+chalk.color.cornflowerBlue.onLimeGreen('Hi Again!);
+// or off x11
+chalk.x11.cornflowerBlue.onLimeGreen('Hi Again!);
+// or off csscolor
+chalk.csscolor.cornflowerBlue.onLimeGreen('Hi Again!);
+
+```
 ## IDE Support
 
 The terminals and debug consoles in current versions of both Android Studio, IntelliJ and 
@@ -314,44 +325,7 @@ supporting full level 3 (24 bit) ANSI codes.
 
 ## VSCode
 
-I have extended the support for ANSI SGR codes within VSCode to support essentially EVERY ANSI SGR code, and correspondingly every feature of Chalk'Dart.
-These are now available in the release version of VSCode.  The font commands are also supported,
-but currently you must add font-family definitions to the VSCode stylesheets using the
-'Customize UI' extension.
-
-When using VSCode it is possible to Enable full font support for the 10 fonts
-by installing the extension "Customize UI" and adding the following to your VSCode settings.json
-file.
-For the value for each of these CSS selectors you place the font-family of the font you want to use,
-and any other css font directives, such as font-style, font-weight, font-size, font-stretch, etc.
-In the example below I have including using some common coding font.
-
-Add these to VSCode settings.json, after enabling the "Customize UI" extension:
-
-```json
-    "customizeUI.stylesheet": {
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-1" :
-               "font-family: Verdana,Arial,sans-serif;",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-2" :
-               "font-style: italic; font-size: 16px; padding: 0px; font-family: 'Cascadia Code PL';",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-3" :
-               "font-family: 'Segoe WPC', 'Segoe UI';",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-4" : 
-               "font-family: 'Cascadia Mono';",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-5" : 
-               "font-family: 'Courier New', 'Courier', monospace;",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-6" : 
-               "font-size: 16px; padding: 0px; font-family: 'Cascadia Code PL';",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-7" : 
-               "font-family: 'Cascadia Mono PL';",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-8" : 
-               "font-size: 14px; padding: 0px; font-family: 'Cascadia Code PL';",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-9" : 
-               "font-size: 16px; font-family: 'JetBrains Mono';",
-        ".monaco-workbench .repl .repl-tree .output.expression .code-font-10" : 
-               "font-stretch: ultra-expanded; font-weight: bold; font-family: 'League Mono';",
-    },
-```
+It is possible to set the fonts that VSCode uses in the debug console.  More information can be found [here](vscode.md).
 
 ## ANSI Color Codes for .ansi() and .onAnsi()
 
@@ -907,420 +881,948 @@ Add these to VSCode settings.json, after enabling the "Customize UI" extension:
 </td></tr></tbody></table>
 </td></tr></tbody></table>
 
-## X11/CSS Colors
+## X11/CSS/SVG Colors
 
-This is reference table of the X11/CSS foreground/background colors and the method names to access them. 
-
-
+This is reference table of the X11/CSS/SVG foreground/background colors and the method names to access them. 
 
 
-<table style="border-style:none;width:100%;text-align:center;font-weight:bold; border-collapse: separate;"><tbody>
-<tr><th style="text-align: center;" colspan="6">Chalk X11/CSS Color Methods</th></tr>
-<tr style="border-bottom: grey solid 2px;>
-<th>forground style</th><th>background style</th>
-<th>forground style</th><th>background style</th>
-<th>forground style</th><th>background style</th>
+
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+body {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.42857143;
+  color: #111111;
+  background-color: #fff;
+}
+.colortable {
+  font-size: 14px;
+}
+</style>
+<style type="text/css" media="all">
+table {
+	border-collapse: collapse;
+	border-top: 1px solid #fff;
+	font: 100 1em sans-serif;
+  margin: auto;
+  cursor: pointer;
+}
+#x11colors tr {
+  border: grey solid 2px;
+  outline:none;
+}
+tr.dark td {
+	color: #fff;
+  background-color: #fff;
+}
+tr.light td span {
+  padding: 5px 5px;
+	background-color: #000;
+}
+tr.dark td span {
+  padding: 5px 5px;
+	background-color: #fff;
+}
+th {
+	text-align: center;
+}
+th, td {
+	padding: 0.8em 0.75em 0.5em;
+	border-bottom: 1px solid #fff;
+}
+thead th {
+	border-bottom: 1px solid gray;
+}
+thead th a[href] {
+	color: #000;
+	text-decoration: none;
+	display: block;
+}
+thead th[id] a:after {
+	content: " ⬦";
+	color: #CCC;
+}
+thead th.sortby a:after {
+	font-size: 80%;
+	color: #333;
+}
+thead th.sortby.asc a:after {
+	content: " ▼";
+}
+thead th.sortby.dsc a:after {
+	content: " ▲";
+}
+thead th.sortby {
+	background: whitesmoke;
+	background:
+		-webkit-repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+	background:
+		-moz-repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+	background:
+		-o-repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+	background:
+		repeating-linear-gradient(
+			0deg,
+			transparent 3px,
+			rgba(0,0,0,0.01) 6px,
+			transparent 9px),
+		whitesmoke;
+}
+
+tbody th, td {
+	font-weight: normal;
+	font: 1.1em monospace;
+	}
+</style>
+<script type="text/javascript">
+
+var sortedAnsiIn = false;
+
+function includeAnsiChange() {
+  var ansiCheckBox = document.getElementById("includeAnsiBase");
+
+  if(!sortedAnsiIn) {
+    // We never showed ansi before so we need to sort into the current sort
+    if(document.getElementsByClassName("sortby")) {
+      // we are sorted by something
+      var s = document.getElementsByClassName("sortby")[0];
+      if(s) {
+        // get the ID
+        var id = s.id;
+        var type = id.replace('Sort','');
+        // now clear sorting and act like we never have
+        resetSortClasses();
+        sort(type);
+        // var ascending = s.classList.contains(asc);
+
+        // s.classList.remove("sortby");
+        // s.classList.remove("asc");
+        // s.classList.remove("dsc");
+      }
+    }
+  }
+
+  var hide = !ansiCheckBox.checked;
+  ansiRows = document.querySelectorAll(".baseansicolor");
+	for (i = 0; i < ansiRows.length; i++) {
+		ansiRows[i].hidden = hide;
+	}
+}
+
+function resetSortClasses() {
+  if(document.getElementsByClassName("sortby")) {
+    var s = document.getElementsByClassName("sortby")[0];
+    if(s) {
+      s.classList.remove("sortby");
+      s.classList.remove("asc");
+      s.classList.remove("dsc");
+    }
+  }
+}
+
+function rewriteTable() {
+  function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+  tbody = document.querySelector("#x11colors");
+  removeAllChildNodes(tbody);
+	var limit = sorter.length;
+	for (i = 0; i < sorter.length; i++) {
+    tbody.appendChild(sorter[i].tr);
+	}
+}
+
+function nameSort(a,b) {
+	return a.name.localeCompare(b.name);
+}
+function rgbSort(a,b) {
+	return (a.red - b.red || a.green - b.green || a.blue - b.blue);
+}
+function hslSort(a,b) {
+	return (a.hue - b.hue || a.sat - b.sat || a.light - b.light);
+}
+function luminSort(a,b) {
+	return (a.lumin - b.lumin);
+}
+
+function sort(type) {
+	if (!type) return false;
+	var header = document.getElementById(type+"Sort");
+	if (header.classList.contains("sortby")) {
+    if(!sortedAnsiIn) {
+      sorter.sort(window[type+"Sort"]);
+      sortedAnsiIn = true;
+    }
+		sorter.reverse();
+		header.classList.toggle("asc");
+		header.classList.toggle("dsc");
+	} else {
+		sorter.sort(window[type+"Sort"]);
+		resetSortClasses();
+		header.classList.add("sortby");
+		header.classList.add("asc");
+	}
+  sortedAnsiIn = true;
+	rewriteTable();
+}
+
+function indexer(rows) {
+	var array = [];
+	var rownum = rows.length;
+	var rgb = '';
+	for (i = 0;  i < rownum; i++) {
+    if(rows[i].getElementsByTagName("td").length==0) continue;
+		var name = rows[i].getElementsByTagName("td")[0].textContent;
+		var cells = rows[i].getElementsByTagName("td");
+    var title = cells[0].title;
+    var parts = title.split(' ');
+		var rgbd = parts[1];
+		var hsl = parts[2];
+
+    window.console.log(`${title} ${parts}`);
+		rgb = rgbd.substring(4,rgbd.length-1).split(",");
+		hsl = hsl.substring(4,hsl.length-1).split(",")
+		var bits = new Array();
+		bits["row"] = i;
+		bits["name"] = name;
+		bits["red"] = parseInt(rgb[0]);
+		bits["green"] = parseInt(rgb[1]);
+		bits["blue"] = parseInt(rgb[2]);
+		bits["hue"] = parseInt(hsl[0]);
+		bits["sat"] = parseFloat(hsl[1]);
+		bits["light"] = parseFloat(hsl[2]);
+		bits["lumin"] = (rgb[0]*0.375) + (rgb[1]*0.5) + (rgb[2]*0.125);
+
+window.console.log(`Lumin for ${name} is ${bits["lumin"]}`);
+
+		bits["tr"] = rows[i];
+		array.push(bits);
+	}
+	return array;
+}
+
+function startup() {
+  tbody = document.querySelector("#x11colors");
+  rows = tbody.getElementsByTagName("tr");
+	sorter = indexer(rows);
+}
+
+var sorter = [];
+
+</script>
+
+<table class="colortable" style="border-style:none;
+  width:90%;text-align:center;font-weight:bold; border-collapse: separate;">
+<thead>
+<tr><th style="font-size: 150%;" colspan="2">Chalk X11/CSS/SVG Color Style Methods
+<span style="margin-left: 20px;"><label style="font-size:50%" for="includeAnsiBase">Include basic ansi colors</label>
+<input type="checkbox" id="includeAnsiBase" name="includeAnsiBase" value="off" onchange="includeAnsiChange();"></span>
+</th></tr>
+<tr>
+<th id="nameSort"  colspan="2"class="sortby asc"><a href="javascript:sort('name');">Name sort</a></th>
 </tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xF0F8FF" style="outline:solid aliceblue 1px;background:transparent;border: solid aliceblue thick;color: aliceblue;">.aliceBlue</td>
-</td><td style="outline:solid aliceblue 1px;border:solid aliceblue thick;background-color: aliceblue;color: black;">.onAliceBlue</td>       
-<td title="0xFAEBD7" style="outline:solid antiquewhite 1px;background:transparent;border: solid antiquewhite thick;color: antiquewhite;">.antiqueWhite</td>
-</td><td style="outline:solid antiquewhite 1px;border:solid antiquewhite thick;background-color: antiquewhite;color: black;">.onAntiqueWhite</td>
-<td title="0x00FFFF" style="outline:solid aqua 1px;background:transparent;border: solid aqua thick;color: aqua;">.aqua</td>
-</td><td style="outline:solid aqua 1px;border:solid aqua thick;background-color: aqua;color: black;">.onAqua</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x7FFFD4" style="outline:solid aquamarine 1px;background:transparent;border: solid aquamarine thick;color: aquamarine;">.aquamarine</td>
-</td><td style="outline:solid aquamarine 1px;border:solid aquamarine thick;background-color: aquamarine;color: black;">.onAquamarine</td>   
-<td title="0xF0FFFF" style="outline:solid azure 1px;background:transparent;border: solid azure thick;color: azure;">.azure</td>
-</td><td style="outline:solid azure 1px;border:solid azure thick;background-color: azure;color: black;">.onAzure</td>
-<td title="0xF5F5DC" style="outline:solid beige 1px;background:transparent;border: solid beige thick;color: beige;">.beige</td>
-</td><td style="outline:solid beige 1px;border:solid beige thick;background-color: beige;color: black;">.onBeige</td>
+<th id="rgbSort" colspan="2"><a href="javascript:sort('rgb');">RGB sort</a></th>
+</tr>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFE4C4" style="outline:solid bisque 1px;background:transparent;border: solid bisque thick;color: bisque;">.bisque</td>
-</td><td style="outline:solid bisque 1px;border:solid bisque thick;background-color: bisque;color: black;">.onBisque</td>
-<td title="0x000000" style="outline:solid black 1px;background:transparent;border: solid black thick;color: black;">.blackX11</td>
-</td><td style="outline:solid black 1px;border:solid black thick;background-color: black;color: white;">.onBlackX11</td>
-<td title="0xFFEBCD" style="outline:solid blanchedalmond 1px;background:transparent;border: solid blanchedalmond thick;color: blanchedalmond;">.blanchedAlmond</td>
-</td><td style="outline:solid blanchedalmond 1px;border:solid blanchedalmond thick;background-color: blanchedalmond;color: black;">.onBlanchedAlmond</td>
+<th id="hslSort" colspan="2"><a href="javascript:sort('hsl');">HSL sort</a></th>
+</tr>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x0000FF" style="outline:solid blue 1px;background:transparent;border: solid blue thick;color: blue;">.blueX11</td>
-</td><td style="outline:solid blue 1px;border:solid blue thick;background-color: blue;color: black;">.onBlueX11</td>
-<td title="0x8A2BE2" style="outline:solid blueviolet 1px;background:transparent;border: solid blueviolet thick;color: blueviolet;">.blueViolet</td>
-</td><td style="outline:solid blueviolet 1px;border:solid blueviolet thick;background-color: blueviolet;color: black;">.onBlueViolet</td>   
-<td title="0xA52A2A" style="outline:solid brown 1px;background:transparent;border: solid brown thick;color: brown;">.brown</td>
-</td><td style="outline:solid brown 1px;border:solid brown thick;background-color: brown;color: black;">.onBrown</td>
+<th id="luminSort" colspan="2"><a href="javascript:sort('lumin');">Brightness sort</a></th>
+</tr>
+
+
+<tr style="border-bottom: grey solid 2px;">
+<th>Method name to set as forground color</th><th>Method name to set as background color</th>
+</tr>
+</thead>
+<tbody id="x11colors">
+
+<tr class="light" >
+<td title="0xF0F8FF rgb(240,248,255) hsl(208,100,97)" style="outline:solid aliceblue 1px;  border: solid aliceblue 7px;color: aliceblue;background-color: aliceblue;"><span>.aliceBlue</span></td>
+</td><td title="0xF0F8FF rgb(240,248,255) hsl(208,100,97)" style="outline:solid aliceblue 1px;border:solid aliceblue thick;background-color: aliceblue;">.onAliceBlue</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xDEB887" style="outline:solid burlywood 1px;background:transparent;border: solid burlywood thick;color: burlywood;">.burlywood</td>
-</td><td style="outline:solid burlywood 1px;border:solid burlywood thick;background-color: burlywood;color: black;">.onBurlywood</td>       
-<td title="0x5F9EA0" style="outline:solid cadetblue 1px;background:transparent;border: solid cadetblue thick;color: cadetblue;">.cadetBlue</td>
-</td><td style="outline:solid cadetblue 1px;border:solid cadetblue thick;background-color: cadetblue;color: black;">.onCadetBlue</td>       
-<td title="0x7FFF00" style="outline:solid chartreuse 1px;background:transparent;border: solid chartreuse thick;color: chartreuse;">.chartreuse</td>
-</td><td style="outline:solid chartreuse 1px;border:solid chartreuse thick;background-color: chartreuse;color: black;">.onChartreuse</td>   
+<tr class="light" >
+<td title="0xFAEBD7 rgb(250,235,215) hsl(34,78,91)" style="outline:solid antiquewhite 1px;  border: solid antiquewhite 7px;color: antiquewhite;background-color: antiquewhite;"><span>.antiqueWhite</span></td>
+</td><td title="0xFAEBD7 rgb(250,235,215) hsl(34,78,91)" style="outline:solid antiquewhite 1px;border:solid antiquewhite thick;background-color: antiquewhite;">.onAntiqueWhite</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xD2691E" style="outline:solid chocolate 1px;background:transparent;border: solid chocolate thick;color: chocolate;">.chocolate</td>
-</td><td style="outline:solid chocolate 1px;border:solid chocolate thick;background-color: chocolate;color: black;">.onChocolate</td>       
-<td title="0xFF7F50" style="outline:solid coral 1px;background:transparent;border: solid coral thick;color: coral;">.coral</td>
-</td><td style="outline:solid coral 1px;border:solid coral thick;background-color: coral;color: black;">.onCoral</td>
-<td title="0x6495ED" style="outline:solid cornflowerblue 1px;background:transparent;border: solid cornflowerblue thick;color: cornflowerblue;">.cornflowerBlue</td>
-</td><td style="outline:solid cornflowerblue 1px;border:solid cornflowerblue thick;background-color: cornflowerblue;color: black;">.onCornflowerBlue</td>
+<tr class="light" >
+<td title="0x00FFFF rgb(0,255,255) hsl(180,100,50)" style="outline:solid aqua 1px;  border: solid aqua 7px;color: aqua;background-color: aqua;"><span>.aqua</span></td>
+</td><td title="0x00FFFF rgb(0,255,255) hsl(180,100,50)" style="outline:solid aqua 1px;border:solid aqua thick;background-color: aqua;">.onAqua</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFF8DC" style="outline:solid cornsilk 1px;background:transparent;border: solid cornsilk thick;color: cornsilk;">.cornsilk</td> 
-</td><td style="outline:solid cornsilk 1px;border:solid cornsilk thick;background-color: cornsilk;color: black;">.onCornsilk</td>
-<td title="0xDC143C" style="outline:solid crimson 1px;background:transparent;border: solid crimson thick;color: crimson;">.crimson</td>     
-</td><td style="outline:solid crimson 1px;border:solid crimson thick;background-color: crimson;color: black;">.onCrimson</td>
-<td title="0x00FFFF" style="outline:solid cyan 1px;background:transparent;border: solid cyan thick;color: cyan;">.cyanX11</td>
-</td><td style="outline:solid cyan 1px;border:solid cyan thick;background-color: cyan;color: black;">.onCyanX11</td>
+<tr class="light" >
+<td title="0x7FFFD4 rgb(127,255,212) hsl(160,100,75)" style="outline:solid aquamarine 1px;  border: solid aquamarine 7px;color: aquamarine;background-color: aquamarine;"><span>.aquamarine</span></td>
+</td><td title="0x7FFFD4 rgb(127,255,212) hsl(160,100,75)" style="outline:solid aquamarine 1px;border:solid aquamarine thick;background-color: aquamarine;">.onAquamarine</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x00008B" style="outline:solid darkblue 1px;background:transparent;border: solid darkblue thick;color: darkblue;">.darkBlue</td> 
-</td><td style="outline:solid darkblue 1px;border:solid darkblue thick;background-color: darkblue;color: black;">.onDarkBlue</td>
-<td title="0x008B8B" style="outline:solid darkcyan 1px;background:transparent;border: solid darkcyan thick;color: darkcyan;">.darkCyan</td> 
-</td><td style="outline:solid darkcyan 1px;border:solid darkcyan thick;background-color: darkcyan;color: black;">.onDarkCyan</td>
-<td title="0xB8860B" style="outline:solid darkgoldenrod 1px;background:transparent;border: solid darkgoldenrod thick;color: darkgoldenrod;">.darkGoldenrod</td>
-</td><td style="outline:solid darkgoldenrod 1px;border:solid darkgoldenrod thick;background-color: darkgoldenrod;color: black;">.onDarkGoldenrod</td>
+<tr class="light" >
+<td title="0xF0FFFF rgb(240,255,255) hsl(180,100,97)" style="outline:solid azure 1px;  border: solid azure 7px;color: azure;background-color: azure;"><span>.azure</span></td>
+</td><td title="0xF0FFFF rgb(240,255,255) hsl(180,100,97)" style="outline:solid azure 1px;border:solid azure thick;background-color: azure;">.onAzure</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xA9A9A9" style="outline:solid darkgray 1px;background:transparent;border: solid darkgray thick;color: darkgray;">.darkGray</td> 
-</td><td style="outline:solid darkgray 1px;border:solid darkgray thick;background-color: darkgray;color: black;">.onDarkGray</td>
-<td title="0x006400" style="outline:solid darkgreen 1px;background:transparent;border: solid darkgreen thick;color: darkgreen;">.darkGreen</td>
-</td><td style="outline:solid darkgreen 1px;border:solid darkgreen thick;background-color: darkgreen;color: black;">.onDarkGreen</td>       
-<td title="0xA9A9A9" style="outline:solid darkgrey 1px;background:transparent;border: solid darkgrey thick;color: darkgrey;">.darkGrey</td> 
-</td><td style="outline:solid darkgrey 1px;border:solid darkgrey thick;background-color: darkgrey;color: black;">.onDarkGrey</td>
+<tr class="light" >
+<td title="0xF5F5DC rgb(245,245,220) hsl(60,56,91)" style="outline:solid beige 1px;  border: solid beige 7px;color: beige;background-color: beige;"><span>.beige</span></td>
+</td><td title="0xF5F5DC rgb(245,245,220) hsl(60,56,91)" style="outline:solid beige 1px;border:solid beige thick;background-color: beige;">.onBeige</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xBDB76B" style="outline:solid darkkhaki 1px;background:transparent;border: solid darkkhaki thick;color: darkkhaki;">.darkKhaki</td>
-</td><td style="outline:solid darkkhaki 1px;border:solid darkkhaki thick;background-color: darkkhaki;color: black;">.onDarkKhaki</td>       
-<td title="0x8B008B" style="outline:solid darkmagenta 1px;background:transparent;border: solid darkmagenta thick;color: darkmagenta;">.darkMagenta</td>
-</td><td style="outline:solid darkmagenta 1px;border:solid darkmagenta thick;background-color: darkmagenta;color: black;">.onDarkMagenta</td>
-<td title="0x556B2F" style="outline:solid darkolivegreen 1px;background:transparent;border: solid darkolivegreen thick;color: darkolivegreen;">.darkOliveGreen</td>
-</td><td style="outline:solid darkolivegreen 1px;border:solid darkolivegreen thick;background-color: darkolivegreen;color: black;">.onDarkOliveGreen</td>
+<tr class="light" >
+<td title="0xFFE4C4 rgb(255,228,196) hsl(33,100,88)" style="outline:solid bisque 1px;  border: solid bisque 7px;color: bisque;background-color: bisque;"><span>.bisque</span></td>
+</td><td title="0xFFE4C4 rgb(255,228,196) hsl(33,100,88)" style="outline:solid bisque 1px;border:solid bisque thick;background-color: bisque;">.onBisque</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFF8C00" style="outline:solid darkorange 1px;background:transparent;border: solid darkorange thick;color: darkorange;">.darkOrange</td>
-</td><td style="outline:solid darkorange 1px;border:solid darkorange thick;background-color: darkorange;color: black;">.onDarkOrange</td>   
-<td title="0x9932CC" style="outline:solid darkorchid 1px;background:transparent;border: solid darkorchid thick;color: darkorchid;">.darkOrchid</td>
-</td><td style="outline:solid darkorchid 1px;border:solid darkorchid thick;background-color: darkorchid;color: black;">.onDarkOrchid</td>   
-<td title="0x8B0000" style="outline:solid darkred 1px;background:transparent;border: solid darkred thick;color: darkred;">.darkRed</td>     
-</td><td style="outline:solid darkred 1px;border:solid darkred thick;background-color: darkred;color: black;">.onDarkRed</td>
+<tr class="dark" >
+<td title="0x000000 rgb(0,0,0) hsl(0,0,0)" style="outline:solid black 1px;  border: solid black 7px;color: black;background-color: black;"><span>.blackX11</span></td>
+</td><td title="0x000000 rgb(0,0,0) hsl(0,0,0)" style="outline:solid black 1px;border:solid black thick;background-color: black;">.onBlackX11</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xE9967A" style="outline:solid darksalmon 1px;background:transparent;border: solid darksalmon thick;color: darksalmon;">.darkSalmon</td>
-</td><td style="outline:solid darksalmon 1px;border:solid darksalmon thick;background-color: darksalmon;color: black;">.onDarkSalmon</td>   
-<td title="0x8FBC8F" style="outline:solid darkseagreen 1px;background:transparent;border: solid darkseagreen thick;color: darkseagreen;">.darkSeaGreen</td>
-</td><td style="outline:solid darkseagreen 1px;border:solid darkseagreen thick;background-color: darkseagreen;color: black;">.onDarkSeaGreen</td>
-<td title="0x483D8B" style="outline:solid darkslateblue 1px;background:transparent;border: solid darkslateblue thick;color: darkslateblue;">.darkSlateBlue</td>
-</td><td style="outline:solid darkslateblue 1px;border:solid darkslateblue thick;background-color: darkslateblue;color: black;">.onDarkSlateBlue</td>
+<tr class="light" >
+<td title="0xFFEBCD rgb(255,235,205) hsl(36,100,90)" style="outline:solid blanchedalmond 1px;  border: solid blanchedalmond 7px;color: blanchedalmond;background-color: blanchedalmond;"><span>.blanchedAlmond</span></td>
+</td><td title="0xFFEBCD rgb(255,235,205) hsl(36,100,90)" style="outline:solid blanchedalmond 1px;border:solid blanchedalmond thick;background-color: blanchedalmond;">.onBlanchedAlmond</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x2F4F4F" style="outline:solid darkslategray 1px;background:transparent;border: solid darkslategray thick;color: darkslategray;">.darkSlateGray</td>
-</td><td style="outline:solid darkslategray 1px;border:solid darkslategray thick;background-color: darkslategray;color: black;">.onDarkSlateGray</td>
-<td title="0x2F4F4F" style="outline:solid darkslategrey 1px;background:transparent;border: solid darkslategrey thick;color: darkslategrey;">.darkSlateGrey</td>
-</td><td style="outline:solid darkslategrey 1px;border:solid darkslategrey thick;background-color: darkslategrey;color: black;">.onDarkSlateGrey</td>
-<td title="0x00CED1" style="outline:solid darkturquoise 1px;background:transparent;border: solid darkturquoise thick;color: darkturquoise;">.darkTurquoise</td>
-</td><td style="outline:solid darkturquoise 1px;border:solid darkturquoise thick;background-color: darkturquoise;color: black;">.onDarkTurquoise</td>
+<tr class="dark" >
+<td title="0x0000FF rgb(0,0,255) hsl(240,100,50)" style="outline:solid blue 1px;  border: solid blue 7px;color: blue;background-color: blue;"><span>.blueX11</span></td>
+</td><td title="0x0000FF rgb(0,0,255) hsl(240,100,50)" style="outline:solid blue 1px;border:solid blue thick;background-color: blue;">.onBlueX11</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x9400D3" style="outline:solid darkviolet 1px;background:transparent;border: solid darkviolet thick;color: darkviolet;">.darkViolet</td>
-</td><td style="outline:solid darkviolet 1px;border:solid darkviolet thick;background-color: darkviolet;color: black;">.onDarkViolet</td>   
-<td title="0xFF1493" style="outline:solid deeppink 1px;background:transparent;border: solid deeppink thick;color: deeppink;">.deepPink</td> 
-</td><td style="outline:solid deeppink 1px;border:solid deeppink thick;background-color: deeppink;color: black;">.onDeepPink</td>
-<td title="0x00BFFF" style="outline:solid deepskyblue 1px;background:transparent;border: solid deepskyblue thick;color: deepskyblue;">.deepSkyBlue</td>
-</td><td style="outline:solid deepskyblue 1px;border:solid deepskyblue thick;background-color: deepskyblue;color: black;">.onDeepSkyBlue</td>
+<tr class="dark" >
+<td title="0x8A2BE2 rgb(138,43,226) hsl(271,76,53)" style="outline:solid blueviolet 1px;  border: solid blueviolet 7px;color: blueviolet;background-color: blueviolet;"><span>.blueViolet</span></td>
+</td><td title="0x8A2BE2 rgb(138,43,226) hsl(271,76,53)" style="outline:solid blueviolet 1px;border:solid blueviolet thick;background-color: blueviolet;">.onBlueViolet</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x696969" style="outline:solid dimgray 1px;background:transparent;border: solid dimgray thick;color: dimgray;">.dimGray</td>     
-</td><td style="outline:solid dimgray 1px;border:solid dimgray thick;background-color: dimgray;color: black;">.onDimGray</td>
-<td title="0x696969" style="outline:solid dimgrey 1px;background:transparent;border: solid dimgrey thick;color: dimgrey;">.dimGrey</td>     
-</td><td style="outline:solid dimgrey 1px;border:solid dimgrey thick;background-color: dimgrey;color: black;">.onDimGrey</td>
-<td title="0x1E90FF" style="outline:solid dodgerblue 1px;background:transparent;border: solid dodgerblue thick;color: dodgerblue;">.dodgerBlue</td>
-</td><td style="outline:solid dodgerblue 1px;border:solid dodgerblue thick;background-color: dodgerblue;color: black;">.onDodgerBlue</td>   
+<tr class="dark" >
+<td title="0xA52A2A rgb(165,42,42) hsl(0,59,41)" style="outline:solid brown 1px;  border: solid brown 7px;color: brown;background-color: brown;"><span>.brown</span></td>
+</td><td title="0xA52A2A rgb(165,42,42) hsl(0,59,41)" style="outline:solid brown 1px;border:solid brown thick;background-color: brown;">.onBrown</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xB22222" style="outline:solid firebrick 1px;background:transparent;border: solid firebrick thick;color: firebrick;">.fireBrick</td>
-</td><td style="outline:solid firebrick 1px;border:solid firebrick thick;background-color: firebrick;color: black;">.onFireBrick</td>       
-<td title="0xFFFAF0" style="outline:solid floralwhite 1px;background:transparent;border: solid floralwhite thick;color: floralwhite;">.floralWhite</td>
-</td><td style="outline:solid floralwhite 1px;border:solid floralwhite thick;background-color: floralwhite;color: black;">.onFloralWhite</td>
-<td title="0x228B22" style="outline:solid forestgreen 1px;background:transparent;border: solid forestgreen thick;color: forestgreen;">.forestGreen</td>
-</td><td style="outline:solid forestgreen 1px;border:solid forestgreen thick;background-color: forestgreen;color: black;">.onForestGreen</td>
+<tr class="light" >
+<td title="0xDEB887 rgb(222,184,135) hsl(34,57,70)" style="outline:solid burlywood 1px;  border: solid burlywood 7px;color: burlywood;background-color: burlywood;"><span>.burlywood</span></td>
+</td><td title="0xDEB887 rgb(222,184,135) hsl(34,57,70)" style="outline:solid burlywood 1px;border:solid burlywood thick;background-color: burlywood;">.onBurlywood</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFF00FF" style="outline:solid fuchsia 1px;background:transparent;border: solid fuchsia thick;color: fuchsia;">.fuchsia</td>     
-</td><td style="outline:solid fuchsia 1px;border:solid fuchsia thick;background-color: fuchsia;color: black;">.onFuchsia</td>
-<td title="0xDCDCDC" style="outline:solid gainsboro 1px;background:transparent;border: solid gainsboro thick;color: gainsboro;">.gainsboro</td>
-</td><td style="outline:solid gainsboro 1px;border:solid gainsboro thick;background-color: gainsboro;color: black;">.onGainsboro</td>       
-<td title="0xF8F8FF" style="outline:solid ghostwhite 1px;background:transparent;border: solid ghostwhite thick;color: ghostwhite;">.ghostWhite</td>
-</td><td style="outline:solid ghostwhite 1px;border:solid ghostwhite thick;background-color: ghostwhite;color: black;">.onGhostWhite</td>   
+<tr class="light" >
+<td title="0x5F9EA0 rgb(95,158,160) hsl(182,25,50)" style="outline:solid cadetblue 1px;  border: solid cadetblue 7px;color: cadetblue;background-color: cadetblue;"><span>.cadetBlue</span></td>
+</td><td title="0x5F9EA0 rgb(95,158,160) hsl(182,25,50)" style="outline:solid cadetblue 1px;border:solid cadetblue thick;background-color: cadetblue;">.onCadetBlue</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFD700" style="outline:solid gold 1px;background:transparent;border: solid gold thick;color: gold;">.gold</td>
-</td><td style="outline:solid gold 1px;border:solid gold thick;background-color: gold;color: black;">.onGold</td>
-<td title="0xDAA520" style="outline:solid goldenrod 1px;background:transparent;border: solid goldenrod thick;color: goldenrod;">.goldenrod</td>
-</td><td style="outline:solid goldenrod 1px;border:solid goldenrod thick;background-color: goldenrod;color: black;">.onGoldenrod</td>       
-<td title="0x808080" style="outline:solid gray 1px;background:transparent;border: solid gray thick;color: gray;">.grayX11</td>
-</td><td style="outline:solid gray 1px;border:solid gray thick;background-color: gray;color: black;">.onGrayX11</td>
+<tr class="light" >
+<td title="0x7FFF00 rgb(127,255,0) hsl(90,100,50)" style="outline:solid chartreuse 1px;  border: solid chartreuse 7px;color: chartreuse;background-color: chartreuse;"><span>.chartreuse</span></td>
+</td><td title="0x7FFF00 rgb(127,255,0) hsl(90,100,50)" style="outline:solid chartreuse 1px;border:solid chartreuse thick;background-color: chartreuse;">.onChartreuse</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x008000" style="outline:solid green 1px;background:transparent;border: solid green thick;color: green;">.greenX11</td>
-</td><td style="outline:solid green 1px;border:solid green thick;background-color: green;color: black;">.onGreenX11</td>
-<td title="0xADFF2F" style="outline:solid greenyellow 1px;background:transparent;border: solid greenyellow thick;color: greenyellow;">.greenYellow</td>
-</td><td style="outline:solid greenyellow 1px;border:solid greenyellow thick;background-color: greenyellow;color: black;">.onGreenYellow</td>
-<td title="0x808080" style="outline:solid grey 1px;background:transparent;border: solid grey thick;color: grey;">.greyX11</td>
-</td><td style="outline:solid grey 1px;border:solid grey thick;background-color: grey;color: black;">.onGreyX11</td>
+<tr class="light" >
+<td title="0xD2691E rgb(210,105,30) hsl(25,75,47)" style="outline:solid chocolate 1px;  border: solid chocolate 7px;color: chocolate;background-color: chocolate;"><span>.chocolate</span></td>
+</td><td title="0xD2691E rgb(210,105,30) hsl(25,75,47)" style="outline:solid chocolate 1px;border:solid chocolate thick;background-color: chocolate;">.onChocolate</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xF0FFF0" style="outline:solid honeydew 1px;background:transparent;border: solid honeydew thick;color: honeydew;">.honeydew</td> 
-</td><td style="outline:solid honeydew 1px;border:solid honeydew thick;background-color: honeydew;color: black;">.onHoneydew</td>
-<td title="0xFF69B4" style="outline:solid hotpink 1px;background:transparent;border: solid hotpink thick;color: hotpink;">.hotPink</td>     
-</td><td style="outline:solid hotpink 1px;border:solid hotpink thick;background-color: hotpink;color: black;">.onHotPink</td>
-<td title="0xCD5C5C" style="outline:solid indianred 1px;background:transparent;border: solid indianred thick;color: indianred;">.indianRed</td>
-</td><td style="outline:solid indianred 1px;border:solid indianred thick;background-color: indianred;color: black;">.onIndianRed</td>       
+<tr class="light" >
+<td title="0xFF7F50 rgb(255,127,80) hsl(16,100,66)" style="outline:solid coral 1px;  border: solid coral 7px;color: coral;background-color: coral;"><span>.coral</span></td>
+</td><td title="0xFF7F50 rgb(255,127,80) hsl(16,100,66)" style="outline:solid coral 1px;border:solid coral thick;background-color: coral;">.onCoral</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x4B0082" style="outline:solid indigo 1px;background:transparent;border: solid indigo thick;color: indigo;">.indigo</td>
-</td><td style="outline:solid indigo 1px;border:solid indigo thick;background-color: indigo;color: black;">.onIndigo</td>
-<td title="0xFFFFF0" style="outline:solid ivory 1px;background:transparent;border: solid ivory thick;color: ivory;">.ivory</td>
-</td><td style="outline:solid ivory 1px;border:solid ivory thick;background-color: ivory;color: black;">.onIvory</td>
-<td title="0xF0E68C" style="outline:solid khaki 1px;background:transparent;border: solid khaki thick;color: khaki;">.khaki</td>
-</td><td style="outline:solid khaki 1px;border:solid khaki thick;background-color: khaki;color: black;">.onKhaki</td>
+<tr class="light" >
+<td title="0x6495ED rgb(100,149,237) hsl(219,79,66)" style="outline:solid cornflowerblue 1px;  border: solid cornflowerblue 7px;color: cornflowerblue;background-color: cornflowerblue;"><span>.cornflowerBlue</span></td>
+</td><td title="0x6495ED rgb(100,149,237) hsl(219,79,66)" style="outline:solid cornflowerblue 1px;border:solid cornflowerblue thick;background-color: cornflowerblue;">.onCornflowerBlue</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xE6E6FA" style="outline:solid lavender 1px;background:transparent;border: solid lavender thick;color: lavender;">.lavender</td> 
-</td><td style="outline:solid lavender 1px;border:solid lavender thick;background-color: lavender;color: black;">.onLavender</td>
-<td title="0xFFF0F5" style="outline:solid lavenderblush 1px;background:transparent;border: solid lavenderblush thick;color: lavenderblush;">.lavenderBlush</td>
-</td><td style="outline:solid lavenderblush 1px;border:solid lavenderblush thick;background-color: lavenderblush;color: black;">.onLavenderBlush</td>
-<td title="0x7CFC00" style="outline:solid lawngreen 1px;background:transparent;border: solid lawngreen thick;color: lawngreen;">.lawnGreen</td>
-</td><td style="outline:solid lawngreen 1px;border:solid lawngreen thick;background-color: lawngreen;color: black;">.onLawnGreen</td>       
+<tr class="light" >
+<td title="0xFFF8DC rgb(255,248,220) hsl(48,100,93)" style="outline:solid cornsilk 1px;  border: solid cornsilk 7px;color: cornsilk;background-color: cornsilk;"><span>.cornsilk</span></td>
+</td><td title="0xFFF8DC rgb(255,248,220) hsl(48,100,93)" style="outline:solid cornsilk 1px;border:solid cornsilk thick;background-color: cornsilk;">.onCornsilk</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFFACD" style="outline:solid lemonchiffon 1px;background:transparent;border: solid lemonchiffon thick;color: lemonchiffon;">.lemonChiffon</td>
-</td><td style="outline:solid lemonchiffon 1px;border:solid lemonchiffon thick;background-color: lemonchiffon;color: black;">.onLemonChiffon</td>
-<td title="0xADD8E6" style="outline:solid lightblue 1px;background:transparent;border: solid lightblue thick;color: lightblue;">.lightBlue</td>
-</td><td style="outline:solid lightblue 1px;border:solid lightblue thick;background-color: lightblue;color: black;">.onLightBlue</td>       
-<td title="0xF08080" style="outline:solid lightcoral 1px;background:transparent;border: solid lightcoral thick;color: lightcoral;">.lightCoral</td>
-</td><td style="outline:solid lightcoral 1px;border:solid lightcoral thick;background-color: lightcoral;color: black;">.onLightCoral</td>   
+<tr class="dark" >
+<td title="0xDC143C rgb(220,20,60) hsl(348,83,47)" style="outline:solid crimson 1px;  border: solid crimson 7px;color: crimson;background-color: crimson;"><span>.crimson</span></td>
+</td><td title="0xDC143C rgb(220,20,60) hsl(348,83,47)" style="outline:solid crimson 1px;border:solid crimson thick;background-color: crimson;">.onCrimson</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xE0FFFF" style="outline:solid lightcyan 1px;background:transparent;border: solid lightcyan thick;color: lightcyan;">.lightCyan</td>
-</td><td style="outline:solid lightcyan 1px;border:solid lightcyan thick;background-color: lightcyan;color: black;">.onLightCyan</td>       
-<td title="0xFAFAD2" style="outline:solid lightgoldenrodyellow 1px;background:transparent;border: solid lightgoldenrodyellow thick;color: lightgoldenrodyellow;">.lightGoldenrodYellow</td>
-</td><td style="outline:solid lightgoldenrodyellow 1px;border:solid lightgoldenrodyellow thick;background-color: lightgoldenrodyellow;color: black;">.onLightGoldenrodYellow</td>
-<td title="0xFAFAD2" style="outline:solid rgb(250, 250, 210) 1px;background:transparent;border: solid rgb(250, 250, 210) thick;color: rgb(250, 250, 210);">.lightGoldenrod</td>
-</td><td style="outline:solid rgb(250, 250, 210) 1px;border:solid rgb(250, 250, 210) thick;background-color: rgb(250, 250, 210);color: black;">.onLightGoldenrod</td>
+<tr class="light" >
+<td title="0x00FFFF rgb(0,255,255) hsl(180,100,50)" style="outline:solid cyan 1px;  border: solid cyan 7px;color: cyan;background-color: cyan;"><span>.cyanX11</span></td>
+</td><td title="0x00FFFF rgb(0,255,255) hsl(180,100,50)" style="outline:solid cyan 1px;border:solid cyan thick;background-color: cyan;">.onCyanX11</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xD3D3D3" style="outline:solid lightgray 1px;background:transparent;border: solid lightgray thick;color: lightgray;">.lightGray</td>
-</td><td style="outline:solid lightgray 1px;border:solid lightgray thick;background-color: lightgray;color: black;">.onLightGray</td>       
-<td title="0x90EE90" style="outline:solid lightgreen 1px;background:transparent;border: solid lightgreen thick;color: lightgreen;">.lightGreen</td>
-</td><td style="outline:solid lightgreen 1px;border:solid lightgreen thick;background-color: lightgreen;color: black;">.onLightGreen</td>   
-<td title="0xD3D3D3" style="outline:solid lightgrey 1px;background:transparent;border: solid lightgrey thick;color: lightgrey;">.lightGrey</td>
-</td><td style="outline:solid lightgrey 1px;border:solid lightgrey thick;background-color: lightgrey;color: black;">.onLightGrey</td>       
+<tr class="dark" >
+<td title="0x00008B rgb(0,0,139) hsl(240,100,27)" style="outline:solid darkblue 1px;  border: solid darkblue 7px;color: darkblue;background-color: darkblue;"><span>.darkBlue</span></td>
+</td><td title="0x00008B rgb(0,0,139) hsl(240,100,27)" style="outline:solid darkblue 1px;border:solid darkblue thick;background-color: darkblue;">.onDarkBlue</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFB6C1" style="outline:solid lightpink 1px;background:transparent;border: solid lightpink thick;color: lightpink;">.lightPink</td>
-</td><td style="outline:solid lightpink 1px;border:solid lightpink thick;background-color: lightpink;color: black;">.onLightPink</td>       
-<td title="0xFFA07A" style="outline:solid lightsalmon 1px;background:transparent;border: solid lightsalmon thick;color: lightsalmon;">.lightSalmon</td>
-</td><td style="outline:solid lightsalmon 1px;border:solid lightsalmon thick;background-color: lightsalmon;color: black;">.onLightSalmon</td>
-<td title="0x20B2AA" style="outline:solid lightseagreen 1px;background:transparent;border: solid lightseagreen thick;color: lightseagreen;">.lightSeaGreen</td>
-</td><td style="outline:solid lightseagreen 1px;border:solid lightseagreen thick;background-color: lightseagreen;color: black;">.onLightSeaGreen</td>
+<tr class="dark" >
+<td title="0x008B8B rgb(0,139,139) hsl(180,100,27)" style="outline:solid darkcyan 1px;  border: solid darkcyan 7px;color: darkcyan;background-color: darkcyan;"><span>.darkCyan</span></td>
+</td><td title="0x008B8B rgb(0,139,139) hsl(180,100,27)" style="outline:solid darkcyan 1px;border:solid darkcyan thick;background-color: darkcyan;">.onDarkCyan</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x87CEFA" style="outline:solid lightskyblue 1px;background:transparent;border: solid lightskyblue thick;color: lightskyblue;">.lightSkyBlue</td>
-</td><td style="outline:solid lightskyblue 1px;border:solid lightskyblue thick;background-color: lightskyblue;color: black;">.onLightSkyBlue</td>
-<td title="0x778899" style="outline:solid lightslategray 1px;background:transparent;border: solid lightslategray thick;color: lightslategray;">.lightSlateGray</td>
-</td><td style="outline:solid lightslategray 1px;border:solid lightslategray thick;background-color: lightslategray;color: black;">.onLightSlateGray</td>
-<td title="0x778899" style="outline:solid lightslategrey 1px;background:transparent;border: solid lightslategrey thick;color: lightslategrey;">.lightSlateGrey</td>
-</td><td style="outline:solid lightslategrey 1px;border:solid lightslategrey thick;background-color: lightslategrey;color: black;">.onLightSlateGrey</td>
+<tr class="light" >
+<td title="0xB8860B rgb(184,134,11) hsl(43,89,38)" style="outline:solid darkgoldenrod 1px;  border: solid darkgoldenrod 7px;color: darkgoldenrod;background-color: darkgoldenrod;"><span>.darkGoldenrod</span></td>
+</td><td title="0xB8860B rgb(184,134,11) hsl(43,89,38)" style="outline:solid darkgoldenrod 1px;border:solid darkgoldenrod thick;background-color: darkgoldenrod;">.onDarkGoldenrod</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xB0C4DE" style="outline:solid lightsteelblue 1px;background:transparent;border: solid lightsteelblue thick;color: lightsteelblue;">.lightSteelBlue</td>
-</td><td style="outline:solid lightsteelblue 1px;border:solid lightsteelblue thick;background-color: lightsteelblue;color: black;">.onLightSteelBlue</td>
-<td title="0xFFFFE0" style="outline:solid lightyellow 1px;background:transparent;border: solid lightyellow thick;color: lightyellow;">.lightYellow</td>
-</td><td style="outline:solid lightyellow 1px;border:solid lightyellow thick;background-color: lightyellow;color: black;">.onLightYellow</td>
-<td title="0x00FF00" style="outline:solid lime 1px;background:transparent;border: solid lime thick;color: lime;">.lime</td>
-</td><td style="outline:solid lime 1px;border:solid lime thick;background-color: lime;color: black;">.onLime</td>
+<tr class="light" >
+<td title="0xA9A9A9 rgb(169,169,169) hsl(0,0,66)" style="outline:solid darkgray 1px;  border: solid darkgray 7px;color: darkgray;background-color: darkgray;"><span>.darkGray</span></td>
+</td><td title="0xA9A9A9 rgb(169,169,169) hsl(0,0,66)" style="outline:solid darkgray 1px;border:solid darkgray thick;background-color: darkgray;">.onDarkGray</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x32CD32" style="outline:solid limegreen 1px;background:transparent;border: solid limegreen thick;color: limegreen;">.limeGreen</td>
-</td><td style="outline:solid limegreen 1px;border:solid limegreen thick;background-color: limegreen;color: black;">.onLimeGreen</td>       
-<td title="0xFAF0E6" style="outline:solid linen 1px;background:transparent;border: solid linen thick;color: linen;">.linen</td>
-</td><td style="outline:solid linen 1px;border:solid linen thick;background-color: linen;color: black;">.onLinen</td>
-<td title="0xFF00FF" style="outline:solid magenta 1px;background:transparent;border: solid magenta thick;color: magenta;">.magentaX11</td>  
-</td><td style="outline:solid magenta 1px;border:solid magenta thick;background-color: magenta;color: black;">.onMagentaX11</td>
+<tr class="dark" >
+<td title="0x006400 rgb(0,100,0) hsl(120,100,20)" style="outline:solid darkgreen 1px;  border: solid darkgreen 7px;color: darkgreen;background-color: darkgreen;"><span>.darkGreen</span></td>
+</td><td title="0x006400 rgb(0,100,0) hsl(120,100,20)" style="outline:solid darkgreen 1px;border:solid darkgreen thick;background-color: darkgreen;">.onDarkGreen</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x800000" style="outline:solid maroon 1px;background:transparent;border: solid maroon thick;color: maroon;">.maroon</td>
-</td><td style="outline:solid maroon 1px;border:solid maroon thick;background-color: maroon;color: black;">.onMaroon</td>
-<td title="0x66CDAA" style="outline:solid mediumaquamarine 1px;background:transparent;border: solid mediumaquamarine thick;color: mediumaquamarine;">.mediumAquamarine</td>
-</td><td style="outline:solid mediumaquamarine 1px;border:solid mediumaquamarine thick;background-color: mediumaquamarine;color: black;">.onMediumAquamarine</td>
-<td title="0x0000CD" style="outline:solid mediumblue 1px;background:transparent;border: solid mediumblue thick;color: mediumblue;">.mediumBlue</td>
-</td><td style="outline:solid mediumblue 1px;border:solid mediumblue thick;background-color: mediumblue;color: black;">.onMediumBlue</td>   
+<tr class="light" >
+<td title="0xA9A9A9 rgb(169,169,169) hsl(0,0,66)" style="outline:solid darkgrey 1px;  border: solid darkgrey 7px;color: darkgrey;background-color: darkgrey;"><span>.darkGrey</span></td>
+</td><td title="0xA9A9A9 rgb(169,169,169) hsl(0,0,66)" style="outline:solid darkgrey 1px;border:solid darkgrey thick;background-color: darkgrey;">.onDarkGrey</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xBA55D3" style="outline:solid mediumorchid 1px;background:transparent;border: solid mediumorchid thick;color: mediumorchid;">.mediumOrchid</td>
-</td><td style="outline:solid mediumorchid 1px;border:solid mediumorchid thick;background-color: mediumorchid;color: black;">.onMediumOrchid</td>
-<td title="0x9370DB" style="outline:solid mediumpurple 1px;background:transparent;border: solid mediumpurple thick;color: mediumpurple;">.mediumPurple</td>
-</td><td style="outline:solid mediumpurple 1px;border:solid mediumpurple thick;background-color: mediumpurple;color: black;">.onMediumPurple</td>
-<td title="0x3CB371" style="outline:solid mediumseagreen 1px;background:transparent;border: solid mediumseagreen thick;color: mediumseagreen;">.mediumSeaGreen</td>
-</td><td style="outline:solid mediumseagreen 1px;border:solid mediumseagreen thick;background-color: mediumseagreen;color: black;">.onMediumSeaGreen</td>
+<tr class="light" >
+<td title="0xBDB76B rgb(189,183,107) hsl(56,38,58)" style="outline:solid darkkhaki 1px;  border: solid darkkhaki 7px;color: darkkhaki;background-color: darkkhaki;"><span>.darkKhaki</span></td>
+</td><td title="0xBDB76B rgb(189,183,107) hsl(56,38,58)" style="outline:solid darkkhaki 1px;border:solid darkkhaki thick;background-color: darkkhaki;">.onDarkKhaki</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x7B68EE" style="outline:solid mediumslateblue 1px;background:transparent;border: solid mediumslateblue thick;color: mediumslateblue;">.mediumSlateBlue</td>
-</td><td style="outline:solid mediumslateblue 1px;border:solid mediumslateblue thick;background-color: mediumslateblue;color: black;">.onMediumSlateBlue</td>
-<td title="0x00FA9A" style="outline:solid mediumspringgreen 1px;background:transparent;border: solid mediumspringgreen thick;color: mediumspringgreen;">.mediumSpringGreen</td>
-</td><td style="outline:solid mediumspringgreen 1px;border:solid mediumspringgreen thick;background-color: mediumspringgreen;color: black;">.onMediumSpringGreen</td>
-<td title="0x48D1CC" style="outline:solid mediumturquoise 1px;background:transparent;border: solid mediumturquoise thick;color: mediumturquoise;">.mediumTurquoise</td>
-</td><td style="outline:solid mediumturquoise 1px;border:solid mediumturquoise thick;background-color: mediumturquoise;color: black;">.onMediumTurquoise</td>
+<tr class="dark" >
+<td title="0x8B008B rgb(139,0,139) hsl(300,100,27)" style="outline:solid darkmagenta 1px;  border: solid darkmagenta 7px;color: darkmagenta;background-color: darkmagenta;"><span>.darkMagenta</span></td>
+</td><td title="0x8B008B rgb(139,0,139) hsl(300,100,27)" style="outline:solid darkmagenta 1px;border:solid darkmagenta thick;background-color: darkmagenta;">.onDarkMagenta</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xC71585" style="outline:solid mediumvioletred 1px;background:transparent;border: solid mediumvioletred thick;color: mediumvioletred;">.mediumVioletRed</td>
-</td><td style="outline:solid mediumvioletred 1px;border:solid mediumvioletred thick;background-color: mediumvioletred;color: black;">.onMediumVioletRed</td>
-<td title="0x191970" style="outline:solid midnightblue 1px;background:transparent;border: solid midnightblue thick;color: midnightblue;">.midnightBlue</td>
-</td><td style="outline:solid midnightblue 1px;border:solid midnightblue thick;background-color: midnightblue;color: black;">.onMidnightBlue</td>
-<td title="0xF5FFFA" style="outline:solid mintcream 1px;background:transparent;border: solid mintcream thick;color: mintcream;">.mintCream</td>
-</td><td style="outline:solid mintcream 1px;border:solid mintcream thick;background-color: mintcream;color: black;">.onMintCream</td>       
+<tr class="dark" >
+<td title="0x556B2F rgb(85,107,47) hsl(82,39,30)" style="outline:solid darkolivegreen 1px;  border: solid darkolivegreen 7px;color: darkolivegreen;background-color: darkolivegreen;"><span>.darkOliveGreen</span></td>
+</td><td title="0x556B2F rgb(85,107,47) hsl(82,39,30)" style="outline:solid darkolivegreen 1px;border:solid darkolivegreen thick;background-color: darkolivegreen;">.onDarkOliveGreen</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFE4E1" style="outline:solid mistyrose 1px;background:transparent;border: solid mistyrose thick;color: mistyrose;">.mistyRose</td>
-</td><td style="outline:solid mistyrose 1px;border:solid mistyrose thick;background-color: mistyrose;color: black;">.onMistyRose</td>       
-<td title="0xFFE4B5" style="outline:solid moccasin 1px;background:transparent;border: solid moccasin thick;color: moccasin;">.moccasin</td> 
-</td><td style="outline:solid moccasin 1px;border:solid moccasin thick;background-color: moccasin;color: black;">.onMoccasin</td>
-<td title="0xFFDEAD" style="outline:solid navajowhite 1px;background:transparent;border: solid navajowhite thick;color: navajowhite;">.navajoWhite</td>
-</td><td style="outline:solid navajowhite 1px;border:solid navajowhite thick;background-color: navajowhite;color: black;">.onNavajoWhite</td>
+<tr class="light" >
+<td title="0xFF8C00 rgb(255,140,0) hsl(33,100,50)" style="outline:solid darkorange 1px;  border: solid darkorange 7px;color: darkorange;background-color: darkorange;"><span>.darkOrange</span></td>
+</td><td title="0xFF8C00 rgb(255,140,0) hsl(33,100,50)" style="outline:solid darkorange 1px;border:solid darkorange thick;background-color: darkorange;">.onDarkOrange</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x000080" style="outline:solid navy 1px;background:transparent;border: solid navy thick;color: navy;">.navy</td>
-</td><td style="outline:solid navy 1px;border:solid navy thick;background-color: navy;color: black;">.onNavy</td>
-<td title="0xFDF5E6" style="outline:solid oldlace 1px;background:transparent;border: solid oldlace thick;color: oldlace;">.oldLace</td>     
-</td><td style="outline:solid oldlace 1px;border:solid oldlace thick;background-color: oldlace;color: black;">.onOldLace</td>
-<td title="0x808000" style="outline:solid olive 1px;background:transparent;border: solid olive thick;color: olive;">.olive</td>
-</td><td style="outline:solid olive 1px;border:solid olive thick;background-color: olive;color: black;">.onOlive</td>
+<tr class="dark" >
+<td title="0x9932CC rgb(153,50,204) hsl(280,61,50)" style="outline:solid darkorchid 1px;  border: solid darkorchid 7px;color: darkorchid;background-color: darkorchid;"><span>.darkOrchid</span></td>
+</td><td title="0x9932CC rgb(153,50,204) hsl(280,61,50)" style="outline:solid darkorchid 1px;border:solid darkorchid thick;background-color: darkorchid;">.onDarkOrchid</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x6B8E23" style="outline:solid olivedrab 1px;background:transparent;border: solid olivedrab thick;color: olivedrab;">.oliveDrab</td>
-</td><td style="outline:solid olivedrab 1px;border:solid olivedrab thick;background-color: olivedrab;color: black;">.onOliveDrab</td>       
-<td title="0xFFA500" style="outline:solid orange 1px;background:transparent;border: solid orange thick;color: orange;">.orange</td>
-</td><td style="outline:solid orange 1px;border:solid orange thick;background-color: orange;color: black;">.onOrange</td>
-<td title="0xFF4500" style="outline:solid orangered 1px;background:transparent;border: solid orangered thick;color: orangered;">.orangeRed</td>
-</td><td style="outline:solid orangered 1px;border:solid orangered thick;background-color: orangered;color: black;">.onOrangeRed</td>       
+<tr class="dark" >
+<td title="0x8B0000 rgb(139,0,0) hsl(0,100,27)" style="outline:solid darkred 1px;  border: solid darkred 7px;color: darkred;background-color: darkred;"><span>.darkRed</span></td>
+</td><td title="0x8B0000 rgb(139,0,0) hsl(0,100,27)" style="outline:solid darkred 1px;border:solid darkred thick;background-color: darkred;">.onDarkRed</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xDA70D6" style="outline:solid orchid 1px;background:transparent;border: solid orchid thick;color: orchid;">.orchid</td>
-</td><td style="outline:solid orchid 1px;border:solid orchid thick;background-color: orchid;color: black;">.onOrchid</td>
-<td title="0xEEE8AA" style="outline:solid palegoldenrod 1px;background:transparent;border: solid palegoldenrod thick;color: palegoldenrod;">.paleGoldenrod</td>
-</td><td style="outline:solid palegoldenrod 1px;border:solid palegoldenrod thick;background-color: palegoldenrod;color: black;">.onPaleGoldenrod</td>
-<td title="0x98FB98" style="outline:solid palegreen 1px;background:transparent;border: solid palegreen thick;color: palegreen;">.paleGreen</td>
-</td><td style="outline:solid palegreen 1px;border:solid palegreen thick;background-color: palegreen;color: black;">.onPaleGreen</td>       
+<tr class="light" >
+<td title="0xE9967A rgb(233,150,122) hsl(15,72,70)" style="outline:solid darksalmon 1px;  border: solid darksalmon 7px;color: darksalmon;background-color: darksalmon;"><span>.darkSalmon</span></td>
+</td><td title="0xE9967A rgb(233,150,122) hsl(15,72,70)" style="outline:solid darksalmon 1px;border:solid darksalmon thick;background-color: darksalmon;">.onDarkSalmon</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xAFEEEE" style="outline:solid paleturquoise 1px;background:transparent;border: solid paleturquoise thick;color: paleturquoise;">.paleTurquoise</td>
-</td><td style="outline:solid paleturquoise 1px;border:solid paleturquoise thick;background-color: paleturquoise;color: black;">.onPaleTurquoise</td>
-<td title="0xDB7093" style="outline:solid palevioletred 1px;background:transparent;border: solid palevioletred thick;color: palevioletred;">.paleVioletRed</td>
-</td><td style="outline:solid palevioletred 1px;border:solid palevioletred thick;background-color: palevioletred;color: black;">.onPaleVioletRed</td>
-<td title="0xFFEFD5" style="outline:solid papayawhip 1px;background:transparent;border: solid papayawhip thick;color: papayawhip;">.papayaWhip</td>
-</td><td style="outline:solid papayawhip 1px;border:solid papayawhip thick;background-color: papayawhip;color: black;">.onPapayaWhip</td>   
+<tr class="light" >
+<td title="0x8FBC8F rgb(143,188,143) hsl(120,25,65)" style="outline:solid darkseagreen 1px;  border: solid darkseagreen 7px;color: darkseagreen;background-color: darkseagreen;"><span>.darkSeaGreen</span></td>
+</td><td title="0x8FBC8F rgb(143,188,143) hsl(120,25,65)" style="outline:solid darkseagreen 1px;border:solid darkseagreen thick;background-color: darkseagreen;">.onDarkSeaGreen</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFDAB9" style="outline:solid peachpuff 1px;background:transparent;border: solid peachpuff thick;color: peachpuff;">.peachPuff</td>
-</td><td style="outline:solid peachpuff 1px;border:solid peachpuff thick;background-color: peachpuff;color: black;">.onPeachPuff</td>       
-<td title="0xCD853F" style="outline:solid peru 1px;background:transparent;border: solid peru thick;color: peru;">.peru</td>
-</td><td style="outline:solid peru 1px;border:solid peru thick;background-color: peru;color: black;">.onPeru</td>
-<td title="0xFFC0CB" style="outline:solid pink 1px;background:transparent;border: solid pink thick;color: pink;">.pink</td>
-</td><td style="outline:solid pink 1px;border:solid pink thick;background-color: pink;color: black;">.onPink</td>
+<tr class="dark" >
+<td title="0x483D8B rgb(72,61,139) hsl(248,39,39)" style="outline:solid darkslateblue 1px;  border: solid darkslateblue 7px;color: darkslateblue;background-color: darkslateblue;"><span>.darkSlateBlue</span></td>
+</td><td title="0x483D8B rgb(72,61,139) hsl(248,39,39)" style="outline:solid darkslateblue 1px;border:solid darkslateblue thick;background-color: darkslateblue;">.onDarkSlateBlue</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xDDA0DD" style="outline:solid plum 1px;background:transparent;border: solid plum thick;color: plum;">.plum</td>
-</td><td style="outline:solid plum 1px;border:solid plum thick;background-color: plum;color: black;">.onPlum</td>
-<td title="0xB0E0E6" style="outline:solid powderblue 1px;background:transparent;border: solid powderblue thick;color: powderblue;">.powderBlue</td>
-</td><td style="outline:solid powderblue 1px;border:solid powderblue thick;background-color: powderblue;color: black;">.onPowderBlue</td>   
-<td title="0x800080" style="outline:solid purple 1px;background:transparent;border: solid purple thick;color: purple;">.purple</td>
-</td><td style="outline:solid purple 1px;border:solid purple thick;background-color: purple;color: black;">.onPurple</td>
+<tr class="dark" >
+<td title="0x2F4F4F rgb(47,79,79) hsl(180,25,25)" style="outline:solid darkslategray 1px;  border: solid darkslategray 7px;color: darkslategray;background-color: darkslategray;"><span>.darkSlateGray</span></td>
+</td><td title="0x2F4F4F rgb(47,79,79) hsl(180,25,25)" style="outline:solid darkslategray 1px;border:solid darkslategray thick;background-color: darkslategray;">.onDarkSlateGray</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x663399" style="outline:solid rgb(102, 51, 153) 1px;background:transparent;border: solid rgb(102, 51, 153) thick;color: rgb(102, 51, 153);">.rebeccaPurple</td>
-</td><td style="outline:solid rgb(102, 51, 153) 1px;border:solid rgb(102, 51, 153) thick;background-color: rgb(102, 51, 153);color: black;">.onRebeccaPurple</td>
-<td title="0xFF0000" style="outline:solid red 1px;background:transparent;border: solid red thick;color: red;">.RedX11</td>
-</td><td style="outline:solid red 1px;border:solid red thick;background-color: red;color: black;">.onRedX11</td>
-<td title="0xBC8F8F" style="outline:solid rosybrown 1px;background:transparent;border: solid rosybrown thick;color: rosybrown;">.rosyBrown</td>
-</td><td style="outline:solid rosybrown 1px;border:solid rosybrown thick;background-color: rosybrown;color: black;">.onRosyBrown</td>       
+<tr class="dark" >
+<td title="0x2F4F4F rgb(47,79,79) hsl(180,25,25)" style="outline:solid darkslategrey 1px;  border: solid darkslategrey 7px;color: darkslategrey;background-color: darkslategrey;"><span>.darkSlateGrey</span></td>
+</td><td title="0x2F4F4F rgb(47,79,79) hsl(180,25,25)" style="outline:solid darkslategrey 1px;border:solid darkslategrey thick;background-color: darkslategrey;">.onDarkSlateGrey</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x4169E1" style="outline:solid royalblue 1px;background:transparent;border: solid royalblue thick;color: royalblue;">.royalBlue</td>
-</td><td style="outline:solid royalblue 1px;border:solid royalblue thick;background-color: royalblue;color: black;">.onRoyalBlue</td>       
-<td title="0x8B4513" style="outline:solid saddlebrown 1px;background:transparent;border: solid saddlebrown thick;color: saddlebrown;">.saddleBrown</td>
-</td><td style="outline:solid saddlebrown 1px;border:solid saddlebrown thick;background-color: saddlebrown;color: black;">.onSaddleBrown</td>
-<td title="0xFA8072" style="outline:solid salmon 1px;background:transparent;border: solid salmon thick;color: salmon;">.salmon</td>
-</td><td style="outline:solid salmon 1px;border:solid salmon thick;background-color: salmon;color: black;">.onSalmon</td>
+<tr class="light" >
+<td title="0x00CED1 rgb(0,206,209) hsl(181,100,41)" style="outline:solid darkturquoise 1px;  border: solid darkturquoise 7px;color: darkturquoise;background-color: darkturquoise;"><span>.darkTurquoise</span></td>
+</td><td title="0x00CED1 rgb(0,206,209) hsl(181,100,41)" style="outline:solid darkturquoise 1px;border:solid darkturquoise thick;background-color: darkturquoise;">.onDarkTurquoise</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xF4A460" style="outline:solid sandybrown 1px;background:transparent;border: solid sandybrown thick;color: sandybrown;">.sandyBrown</td>
-</td><td style="outline:solid sandybrown 1px;border:solid sandybrown thick;background-color: sandybrown;color: black;">.onSandyBrown</td>   
-<td title="0x2E8B57" style="outline:solid seagreen 1px;background:transparent;border: solid seagreen thick;color: seagreen;">.seaGreen</td> 
-</td><td style="outline:solid seagreen 1px;border:solid seagreen thick;background-color: seagreen;color: black;">.onSeaGreen</td>
-<td title="0xFFF5EE" style="outline:solid seashell 1px;background:transparent;border: solid seashell thick;color: seashell;">.seashell</td> 
-</td><td style="outline:solid seashell 1px;border:solid seashell thick;background-color: seashell;color: black;">.onSeashell</td>
+<tr class="dark" >
+<td title="0x9400D3 rgb(148,0,211) hsl(282,100,41)" style="outline:solid darkviolet 1px;  border: solid darkviolet 7px;color: darkviolet;background-color: darkviolet;"><span>.darkViolet</span></td>
+</td><td title="0x9400D3 rgb(148,0,211) hsl(282,100,41)" style="outline:solid darkviolet 1px;border:solid darkviolet thick;background-color: darkviolet;">.onDarkViolet</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xA0522D" style="outline:solid sienna 1px;background:transparent;border: solid sienna thick;color: sienna;">.sienna</td>
-</td><td style="outline:solid sienna 1px;border:solid sienna thick;background-color: sienna;color: black;">.onSienna</td>
-<td title="0xC0C0C0" style="outline:solid silver 1px;background:transparent;border: solid silver thick;color: silver;">.silver</td>
-</td><td style="outline:solid silver 1px;border:solid silver thick;background-color: silver;color: black;">.onSilver</td>
-<td title="0x87CEEB" style="outline:solid skyblue 1px;background:transparent;border: solid skyblue thick;color: skyblue;">.skyBlue</td>     
-</td><td style="outline:solid skyblue 1px;border:solid skyblue thick;background-color: skyblue;color: black;">.onSkyBlue</td>
+<tr class="light" >
+<td title="0xFF1493 rgb(255,20,147) hsl(328,100,54)" style="outline:solid deeppink 1px;  border: solid deeppink 7px;color: deeppink;background-color: deeppink;"><span>.deepPink</span></td>
+</td><td title="0xFF1493 rgb(255,20,147) hsl(328,100,54)" style="outline:solid deeppink 1px;border:solid deeppink thick;background-color: deeppink;">.onDeepPink</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0x6A5ACD" style="outline:solid slateblue 1px;background:transparent;border: solid slateblue thick;color: slateblue;">.slateBlue</td>
-</td><td style="outline:solid slateblue 1px;border:solid slateblue thick;background-color: slateblue;color: black;">.onSlateBlue</td>       
-<td title="0x708090" style="outline:solid slategray 1px;background:transparent;border: solid slategray thick;color: slategray;">.slateGray</td>
-</td><td style="outline:solid slategray 1px;border:solid slategray thick;background-color: slategray;color: black;">.onSlateGray</td>       
-<td title="0x708090" style="outline:solid slategrey 1px;background:transparent;border: solid slategrey thick;color: slategrey;">.slateGrey</td>
-</td><td style="outline:solid slategrey 1px;border:solid slategrey thick;background-color: slategrey;color: black;">.onSlateGrey</td>       
+<tr class="light" >
+<td title="0x00BFFF rgb(0,191,255) hsl(195,100,50)" style="outline:solid deepskyblue 1px;  border: solid deepskyblue 7px;color: deepskyblue;background-color: deepskyblue;"><span>.deepSkyBlue</span></td>
+</td><td title="0x00BFFF rgb(0,191,255) hsl(195,100,50)" style="outline:solid deepskyblue 1px;border:solid deepskyblue thick;background-color: deepskyblue;">.onDeepSkyBlue</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFFAFA" style="outline:solid snow 1px;background:transparent;border: solid snow thick;color: snow;">.snow</td>
-</td><td style="outline:solid snow 1px;border:solid snow thick;background-color: snow;color: black;">.onSnow</td>
-<td title="0x00FF7F" style="outline:solid springgreen 1px;background:transparent;border: solid springgreen thick;color: springgreen;">.springGreen</td>
-</td><td style="outline:solid springgreen 1px;border:solid springgreen thick;background-color: springgreen;color: black;">.onSpringGreen</td>
-<td title="0x4682B4" style="outline:solid steelblue 1px;background:transparent;border: solid steelblue thick;color: steelblue;">.steelBlue</td>
-</td><td style="outline:solid steelblue 1px;border:solid steelblue thick;background-color: steelblue;color: black;">.onSteelBlue</td>       
+<tr class="dark" >
+<td title="0x696969 rgb(105,105,105) hsl(0,0,41)" style="outline:solid dimgray 1px;  border: solid dimgray 7px;color: dimgray;background-color: dimgray;"><span>.dimGray</span></td>
+</td><td title="0x696969 rgb(105,105,105) hsl(0,0,41)" style="outline:solid dimgray 1px;border:solid dimgray thick;background-color: dimgray;">.onDimGray</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xD2B48C" style="outline:solid tan 1px;background:transparent;border: solid tan thick;color: tan;">.tan</td>
-</td><td style="outline:solid tan 1px;border:solid tan thick;background-color: tan;color: black;">.onTan</td>
-<td title="0x008080" style="outline:solid teal 1px;background:transparent;border: solid teal thick;color: teal;">.teal</td>
-</td><td style="outline:solid teal 1px;border:solid teal thick;background-color: teal;color: black;">.onTeal</td>
-<td title="0xD8BFD8" style="outline:solid thistle 1px;background:transparent;border: solid thistle thick;color: thistle;">.thistle</td>     
-</td><td style="outline:solid thistle 1px;border:solid thistle thick;background-color: thistle;color: black;">.onThistle</td>
+<tr class="dark" >
+<td title="0x696969 rgb(105,105,105) hsl(0,0,41)" style="outline:solid dimgrey 1px;  border: solid dimgrey 7px;color: dimgrey;background-color: dimgrey;"><span>.dimGrey</span></td>
+</td><td title="0x696969 rgb(105,105,105) hsl(0,0,41)" style="outline:solid dimgrey 1px;border:solid dimgrey thick;background-color: dimgrey;">.onDimGrey</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFF6347" style="outline:solid tomato 1px;background:transparent;border: solid tomato thick;color: tomato;">.tomato</td>
-</td><td style="outline:solid tomato 1px;border:solid tomato thick;background-color: tomato;color: black;">.onTomato</td>
-<td title="0x40E0D0" style="outline:solid turquoise 1px;background:transparent;border: solid turquoise thick;color: turquoise;">.turquoise</td>
-</td><td style="outline:solid turquoise 1px;border:solid turquoise thick;background-color: turquoise;color: black;">.onTurquoise</td>       
-<td title="0xEE82EE" style="outline:solid violet 1px;background:transparent;border: solid violet thick;color: violet;">.violet</td>
-</td><td style="outline:solid violet 1px;border:solid violet thick;background-color: violet;color: black;">.onViolet</td>
+<tr class="dark" >
+<td title="0x1E90FF rgb(30,144,255) hsl(210,100,56)" style="outline:solid dodgerblue 1px;  border: solid dodgerblue 7px;color: dodgerblue;background-color: dodgerblue;"><span>.dodgerBlue</span></td>
+</td><td title="0x1E90FF rgb(30,144,255) hsl(210,100,56)" style="outline:solid dodgerblue 1px;border:solid dodgerblue thick;background-color: dodgerblue;">.onDodgerBlue</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xF5DEB3" style="outline:solid wheat 1px;background:transparent;border: solid wheat thick;color: wheat;">.wheat</td>
-</td><td style="outline:solid wheat 1px;border:solid wheat thick;background-color: wheat;color: black;">.onWheat</td>
-<td title="0xFFFFFF" style="outline:solid white 1px;background:black;border: solid white thick;color: white;">.whiteX11</td>
-</td><td style="outline:solid white 1px;border:solid white thick;background-color: white;color: black;">.onWhiteX11</td>
-<td title="0xF5F5F5" style="outline:solid whitesmoke 1px;background:transparent;border: solid whitesmoke thick;color: whitesmoke;">.whiteSmoke</td>
-</td><td style="outline:solid whitesmoke 1px;border:solid whitesmoke thick;background-color: whitesmoke;color: black;">.onWhiteSmoke</td>   
+<tr class="dark" >
+<td title="0xB22222 rgb(178,34,34) hsl(0,68,42)" style="outline:solid firebrick 1px;  border: solid firebrick 7px;color: firebrick;background-color: firebrick;"><span>.fireBrick</span></td>
+</td><td title="0xB22222 rgb(178,34,34) hsl(0,68,42)" style="outline:solid firebrick 1px;border:solid firebrick thick;background-color: firebrick;">.onFireBrick</td>
 <tr>
-<tr style="border: grey solid 2px;outline:none;">
-<td title="0xFFFF00" style="outline:solid yellow 1px;background:transparent;border: solid yellow thick;color: yellow;">.yellowX11</td>      
-</td><td style="outline:solid yellow 1px;border:solid yellow thick;background-color: yellow;color: black;">.onYellowX11</td>
-<td title="0x9ACD32" style="outline:solid yellowgreen 1px;background:transparent;border: solid yellowgreen thick;color: yellowgreen;">.yellowGreen</td>
-</td><td style="outline:solid yellowgreen 1px;border:solid yellowgreen thick;background-color: yellowgreen;color: black;">.onYellowGreen</td>
-<td></td><td></td>
+<tr class="light" >
+<td title="0xFFFAF0 rgb(255,250,240) hsl(40,100,97)" style="outline:solid floralwhite 1px;  border: solid floralwhite 7px;color: floralwhite;background-color: floralwhite;"><span>.floralWhite</span></td>
+</td><td title="0xFFFAF0 rgb(255,250,240) hsl(40,100,97)" style="outline:solid floralwhite 1px;border:solid floralwhite thick;background-color: floralwhite;">.onFloralWhite</td>
+<tr>
+<tr class="dark" >
+<td title="0x228B22 rgb(34,139,34) hsl(120,61,34)" style="outline:solid forestgreen 1px;  border: solid forestgreen 7px;color: forestgreen;background-color: forestgreen;"><span>.forestGreen</span></td>
+</td><td title="0x228B22 rgb(34,139,34) hsl(120,61,34)" style="outline:solid forestgreen 1px;border:solid forestgreen thick;background-color: forestgreen;">.onForestGreen</td>
+<tr>
+<tr class="light" >
+<td title="0xFF00FF rgb(255,0,255) hsl(300,100,50)" style="outline:solid fuchsia 1px;  border: solid fuchsia 7px;color: fuchsia;background-color: fuchsia;"><span>.fuchsia</span></td>
+</td><td title="0xFF00FF rgb(255,0,255) hsl(300,100,50)" style="outline:solid fuchsia 1px;border:solid fuchsia thick;background-color: fuchsia;">.onFuchsia</td>
+<tr>
+<tr class="light" >
+<td title="0xDCDCDC rgb(220,220,220) hsl(0,0,86)" style="outline:solid gainsboro 1px;  border: solid gainsboro 7px;color: gainsboro;background-color: gainsboro;"><span>.gainsboro</span></td>
+</td><td title="0xDCDCDC rgb(220,220,220) hsl(0,0,86)" style="outline:solid gainsboro 1px;border:solid gainsboro thick;background-color: gainsboro;">.onGainsboro</td>
+<tr>
+<tr class="light" >
+<td title="0xF8F8FF rgb(248,248,255) hsl(240,100,99)" style="outline:solid ghostwhite 1px;  border: solid ghostwhite 7px;color: ghostwhite;background-color: ghostwhite;"><span>.ghostWhite</span></td>
+</td><td title="0xF8F8FF rgb(248,248,255) hsl(240,100,99)" style="outline:solid ghostwhite 1px;border:solid ghostwhite thick;background-color: ghostwhite;">.onGhostWhite</td>
+<tr>
+<tr class="light" >
+<td title="0xFFD700 rgb(255,215,0) hsl(51,100,50)" style="outline:solid gold 1px;  border: solid gold 7px;color: gold;background-color: gold;"><span>.gold</span></td>
+</td><td title="0xFFD700 rgb(255,215,0) hsl(51,100,50)" style="outline:solid gold 1px;border:solid gold thick;background-color: gold;">.onGold</td>
+<tr>
+<tr class="light" >
+<td title="0xDAA520 rgb(218,165,32) hsl(43,74,49)" style="outline:solid goldenrod 1px;  border: solid goldenrod 7px;color: goldenrod;background-color: goldenrod;"><span>.goldenrod</span></td>
+</td><td title="0xDAA520 rgb(218,165,32) hsl(43,74,49)" style="outline:solid goldenrod 1px;border:solid goldenrod thick;background-color: goldenrod;">.onGoldenrod</td>
+<tr>
+<tr class="light" >
+<td title="0x808080 rgb(128,128,128) hsl(0,0,50)" style="outline:solid gray 1px;  border: solid gray 7px;color: gray;background-color: gray;"><span>.grayX11</span></td>
+</td><td title="0x808080 rgb(128,128,128) hsl(0,0,50)" style="outline:solid gray 1px;border:solid gray thick;background-color: gray;">.onGrayX11</td>
+<tr>
+<tr class="dark" >
+<td title="0x008000 rgb(0,128,0) hsl(120,100,25)" style="outline:solid green 1px;  border: solid green 7px;color: green;background-color: green;"><span>.greenX11</span></td>
+</td><td title="0x008000 rgb(0,128,0) hsl(120,100,25)" style="outline:solid green 1px;border:solid green thick;background-color: green;">.onGreenX11</td>
+<tr>
+<tr class="light" >
+<td title="0xADFF2F rgb(173,255,47) hsl(84,100,59)" style="outline:solid greenyellow 1px;  border: solid greenyellow 7px;color: greenyellow;background-color: greenyellow;"><span>.greenYellow</span></td>
+</td><td title="0xADFF2F rgb(173,255,47) hsl(84,100,59)" style="outline:solid greenyellow 1px;border:solid greenyellow thick;background-color: greenyellow;">.onGreenYellow</td>
+<tr>
+<tr class="light" >
+<td title="0x808080 rgb(128,128,128) hsl(0,0,50)" style="outline:solid grey 1px;  border: solid grey 7px;color: grey;background-color: grey;"><span>.greyX11</span></td>
+</td><td title="0x808080 rgb(128,128,128) hsl(0,0,50)" style="outline:solid grey 1px;border:solid grey thick;background-color: grey;">.onGreyX11</td>
+<tr>
+<tr class="light" >
+<td title="0xF0FFF0 rgb(240,255,240) hsl(120,100,97)" style="outline:solid honeydew 1px;  border: solid honeydew 7px;color: honeydew;background-color: honeydew;"><span>.honeydew</span></td>
+</td><td title="0xF0FFF0 rgb(240,255,240) hsl(120,100,97)" style="outline:solid honeydew 1px;border:solid honeydew thick;background-color: honeydew;">.onHoneydew</td>
+<tr>
+<tr class="light" >
+<td title="0xFF69B4 rgb(255,105,180) hsl(330,100,71)" style="outline:solid hotpink 1px;  border: solid hotpink 7px;color: hotpink;background-color: hotpink;"><span>.hotPink</span></td>
+</td><td title="0xFF69B4 rgb(255,105,180) hsl(330,100,71)" style="outline:solid hotpink 1px;border:solid hotpink thick;background-color: hotpink;">.onHotPink</td>
+<tr>
+<tr class="light" >
+<td title="0xCD5C5C rgb(205,92,92) hsl(0,53,58)" style="outline:solid indianred 1px;  border: solid indianred 7px;color: indianred;background-color: indianred;"><span>.indianRed</span></td>
+</td><td title="0xCD5C5C rgb(205,92,92) hsl(0,53,58)" style="outline:solid indianred 1px;border:solid indianred thick;background-color: indianred;">.onIndianRed</td>
+<tr>
+<tr class="dark" >
+<td title="0x4B0082 rgb(75,0,130) hsl(275,100,25)" style="outline:solid indigo 1px;  border: solid indigo 7px;color: indigo;background-color: indigo;"><span>.indigo</span></td>
+</td><td title="0x4B0082 rgb(75,0,130) hsl(275,100,25)" style="outline:solid indigo 1px;border:solid indigo thick;background-color: indigo;">.onIndigo</td>
+<tr>
+<tr class="light" >
+<td title="0xFFFFF0 rgb(255,255,240) hsl(60,100,97)" style="outline:solid ivory 1px;  border: solid ivory 7px;color: ivory;background-color: ivory;"><span>.ivory</span></td>
+</td><td title="0xFFFFF0 rgb(255,255,240) hsl(60,100,97)" style="outline:solid ivory 1px;border:solid ivory thick;background-color: ivory;">.onIvory</td>
+<tr>
+<tr class="light" >
+<td title="0xF0E68C rgb(240,230,140) hsl(54,77,75)" style="outline:solid khaki 1px;  border: solid khaki 7px;color: khaki;background-color: khaki;"><span>.khaki</span></td>
+</td><td title="0xF0E68C rgb(240,230,140) hsl(54,77,75)" style="outline:solid khaki 1px;border:solid khaki thick;background-color: khaki;">.onKhaki</td>
+<tr>
+<tr class="light" >
+<td title="0xE6E6FA rgb(230,230,250) hsl(240,67,94)" style="outline:solid lavender 1px;  border: solid lavender 7px;color: lavender;background-color: lavender;"><span>.lavender</span></td>
+</td><td title="0xE6E6FA rgb(230,230,250) hsl(240,67,94)" style="outline:solid lavender 1px;border:solid lavender thick;background-color: lavender;">.onLavender</td>
+<tr>
+<tr class="light" >
+<td title="0xFFF0F5 rgb(255,240,245) hsl(340,100,97)" style="outline:solid lavenderblush 1px;  border: solid lavenderblush 7px;color: lavenderblush;background-color: lavenderblush;"><span>.lavenderBlush</span></td>
+</td><td title="0xFFF0F5 rgb(255,240,245) hsl(340,100,97)" style="outline:solid lavenderblush 1px;border:solid lavenderblush thick;background-color: lavenderblush;">.onLavenderBlush</td>
+<tr>
+<tr class="light" >
+<td title="0x7CFC00 rgb(124,252,0) hsl(90,100,49)" style="outline:solid lawngreen 1px;  border: solid lawngreen 7px;color: lawngreen;background-color: lawngreen;"><span>.lawnGreen</span></td>
+</td><td title="0x7CFC00 rgb(124,252,0) hsl(90,100,49)" style="outline:solid lawngreen 1px;border:solid lawngreen thick;background-color: lawngreen;">.onLawnGreen</td>
+<tr>
+<tr class="light" >
+<td title="0xFFFACD rgb(255,250,205) hsl(54,100,90)" style="outline:solid lemonchiffon 1px;  border: solid lemonchiffon 7px;color: lemonchiffon;background-color: lemonchiffon;"><span>.lemonChiffon</span></td>
+</td><td title="0xFFFACD rgb(255,250,205) hsl(54,100,90)" style="outline:solid lemonchiffon 1px;border:solid lemonchiffon thick;background-color: lemonchiffon;">.onLemonChiffon</td>
+<tr>
+<tr class="light" >
+<td title="0xADD8E6 rgb(173,216,230) hsl(195,53,79)" style="outline:solid lightblue 1px;  border: solid lightblue 7px;color: lightblue;background-color: lightblue;"><span>.lightBlue</span></td>
+</td><td title="0xADD8E6 rgb(173,216,230) hsl(195,53,79)" style="outline:solid lightblue 1px;border:solid lightblue thick;background-color: lightblue;">.onLightBlue</td>
+<tr>
+<tr class="light" >
+<td title="0xF08080 rgb(240,128,128) hsl(0,79,72)" style="outline:solid lightcoral 1px;  border: solid lightcoral 7px;color: lightcoral;background-color: lightcoral;"><span>.lightCoral</span></td>
+</td><td title="0xF08080 rgb(240,128,128) hsl(0,79,72)" style="outline:solid lightcoral 1px;border:solid lightcoral thick;background-color: lightcoral;">.onLightCoral</td>
+<tr>
+<tr class="light" >
+<td title="0xE0FFFF rgb(224,255,255) hsl(180,100,94)" style="outline:solid lightcyan 1px;  border: solid lightcyan 7px;color: lightcyan;background-color: lightcyan;"><span>.lightCyan</span></td>
+</td><td title="0xE0FFFF rgb(224,255,255) hsl(180,100,94)" style="outline:solid lightcyan 1px;border:solid lightcyan thick;background-color: lightcyan;">.onLightCyan</td>
+<tr>
+<tr class="light" >
+<td title="0xFAFAD2 rgb(250,250,210) hsl(60,80,90)" style="outline:solid lightgoldenrodyellow 1px;  border: solid lightgoldenrodyellow 7px;color: lightgoldenrodyellow;background-color: lightgoldenrodyellow;"><span>.lightGoldenrodYellow</span></td>
+</td><td title="0xFAFAD2 rgb(250,250,210) hsl(60,80,90)" style="outline:solid lightgoldenrodyellow 1px;border:solid lightgoldenrodyellow thick;background-color: lightgoldenrodyellow;">.onLightGoldenrodYellow</td>
+<tr>
+<tr class="light" >
+<td title="0xFAFAD2 rgb(250,250,210) hsl(60,80,90)" style="outline:solid rgb(250, 250, 210) 1px;  border: solid rgb(250, 250, 210) 7px;color: rgb(250, 250, 210);background-color: rgb(250, 250, 210);"><span>.lightGoldenrod</span></td>
+</td><td title="0xFAFAD2 rgb(250,250,210) hsl(60,80,90)" style="outline:solid rgb(250, 250, 210) 1px;border:solid rgb(250, 250, 210) thick;background-color: rgb(250, 250, 210);">.onLightGoldenrod</td>
+<tr>
+<tr class="light" >
+<td title="0xD3D3D3 rgb(211,211,211) hsl(0,0,83)" style="outline:solid lightgray 1px;  border: solid lightgray 7px;color: lightgray;background-color: lightgray;"><span>.lightGray</span></td>
+</td><td title="0xD3D3D3 rgb(211,211,211) hsl(0,0,83)" style="outline:solid lightgray 1px;border:solid lightgray thick;background-color: lightgray;">.onLightGray</td>
+<tr>
+<tr class="light" >
+<td title="0x90EE90 rgb(144,238,144) hsl(120,73,75)" style="outline:solid lightgreen 1px;  border: solid lightgreen 7px;color: lightgreen;background-color: lightgreen;"><span>.lightGreen</span></td>
+</td><td title="0x90EE90 rgb(144,238,144) hsl(120,73,75)" style="outline:solid lightgreen 1px;border:solid lightgreen thick;background-color: lightgreen;">.onLightGreen</td>
+<tr>
+<tr class="light" >
+<td title="0xD3D3D3 rgb(211,211,211) hsl(0,0,83)" style="outline:solid lightgrey 1px;  border: solid lightgrey 7px;color: lightgrey;background-color: lightgrey;"><span>.lightGrey</span></td>
+</td><td title="0xD3D3D3 rgb(211,211,211) hsl(0,0,83)" style="outline:solid lightgrey 1px;border:solid lightgrey thick;background-color: lightgrey;">.onLightGrey</td>
+<tr>
+<tr class="light" >
+<td title="0xFFB6C1 rgb(255,182,193) hsl(351,100,86)" style="outline:solid lightpink 1px;  border: solid lightpink 7px;color: lightpink;background-color: lightpink;"><span>.lightPink</span></td>
+</td><td title="0xFFB6C1 rgb(255,182,193) hsl(351,100,86)" style="outline:solid lightpink 1px;border:solid lightpink thick;background-color: lightpink;">.onLightPink</td>
+<tr>
+<tr class="light" >
+<td title="0xFFA07A rgb(255,160,122) hsl(17,100,74)" style="outline:solid lightsalmon 1px;  border: solid lightsalmon 7px;color: lightsalmon;background-color: lightsalmon;"><span>.lightSalmon</span></td>
+</td><td title="0xFFA07A rgb(255,160,122) hsl(17,100,74)" style="outline:solid lightsalmon 1px;border:solid lightsalmon thick;background-color: lightsalmon;">.onLightSalmon</td>
+<tr>
+<tr class="light" >
+<td title="0x20B2AA rgb(32,178,170) hsl(177,70,41)" style="outline:solid lightseagreen 1px;  border: solid lightseagreen 7px;color: lightseagreen;background-color: lightseagreen;"><span>.lightSeaGreen</span></td>
+</td><td title="0x20B2AA rgb(32,178,170) hsl(177,70,41)" style="outline:solid lightseagreen 1px;border:solid lightseagreen thick;background-color: lightseagreen;">.onLightSeaGreen</td>
+<tr>
+<tr class="light" >
+<td title="0x87CEFA rgb(135,206,250) hsl(203,92,75)" style="outline:solid lightskyblue 1px;  border: solid lightskyblue 7px;color: lightskyblue;background-color: lightskyblue;"><span>.lightSkyBlue</span></td>
+</td><td title="0x87CEFA rgb(135,206,250) hsl(203,92,75)" style="outline:solid lightskyblue 1px;border:solid lightskyblue thick;background-color: lightskyblue;">.onLightSkyBlue</td>
+<tr>
+<tr class="light" >
+<td title="0x778899 rgb(119,136,153) hsl(210,14,53)" style="outline:solid lightslategray 1px;  border: solid lightslategray 7px;color: lightslategray;background-color: lightslategray;"><span>.lightSlateGray</span></td>
+</td><td title="0x778899 rgb(119,136,153) hsl(210,14,53)" style="outline:solid lightslategray 1px;border:solid lightslategray thick;background-color: lightslategray;">.onLightSlateGray</td>
+<tr>
+<tr class="light" >
+<td title="0x778899 rgb(119,136,153) hsl(210,14,53)" style="outline:solid lightslategrey 1px;  border: solid lightslategrey 7px;color: lightslategrey;background-color: lightslategrey;"><span>.lightSlateGrey</span></td>
+</td><td title="0x778899 rgb(119,136,153) hsl(210,14,53)" style="outline:solid lightslategrey 1px;border:solid lightslategrey thick;background-color: lightslategrey;">.onLightSlateGrey</td>
+<tr>
+<tr class="light" >
+<td title="0xB0C4DE rgb(176,196,222) hsl(214,41,78)" style="outline:solid lightsteelblue 1px;  border: solid lightsteelblue 7px;color: lightsteelblue;background-color: lightsteelblue;"><span>.lightSteelBlue</span></td>
+</td><td title="0xB0C4DE rgb(176,196,222) hsl(214,41,78)" style="outline:solid lightsteelblue 1px;border:solid lightsteelblue thick;background-color: lightsteelblue;">.onLightSteelBlue</td>
+<tr>
+<tr class="light" >
+<td title="0xFFFFE0 rgb(255,255,224) hsl(60,100,94)" style="outline:solid lightyellow 1px;  border: solid lightyellow 7px;color: lightyellow;background-color: lightyellow;"><span>.lightYellow</span></td>
+</td><td title="0xFFFFE0 rgb(255,255,224) hsl(60,100,94)" style="outline:solid lightyellow 1px;border:solid lightyellow thick;background-color: lightyellow;">.onLightYellow</td>
+<tr>
+<tr class="light" >
+<td title="0x00FF00 rgb(0,255,0) hsl(120,100,50)" style="outline:solid lime 1px;  border: solid lime 7px;color: lime;background-color: lime;"><span>.lime</span></td>
+</td><td title="0x00FF00 rgb(0,255,0) hsl(120,100,50)" style="outline:solid lime 1px;border:solid lime thick;background-color: lime;">.onLime</td>
+<tr>
+<tr class="light" >
+<td title="0x32CD32 rgb(50,205,50) hsl(120,61,50)" style="outline:solid limegreen 1px;  border: solid limegreen 7px;color: limegreen;background-color: limegreen;"><span>.limeGreen</span></td>
+</td><td title="0x32CD32 rgb(50,205,50) hsl(120,61,50)" style="outline:solid limegreen 1px;border:solid limegreen thick;background-color: limegreen;">.onLimeGreen</td>
+<tr>
+<tr class="light" >
+<td title="0xFAF0E6 rgb(250,240,230) hsl(30,67,94)" style="outline:solid linen 1px;  border: solid linen 7px;color: linen;background-color: linen;"><span>.linen</span></td>
+</td><td title="0xFAF0E6 rgb(250,240,230) hsl(30,67,94)" style="outline:solid linen 1px;border:solid linen thick;background-color: linen;">.onLinen</td>
+<tr>
+<tr class="light" >
+<td title="0xFF00FF rgb(255,0,255) hsl(300,100,50)" style="outline:solid magenta 1px;  border: solid magenta 7px;color: magenta;background-color: magenta;"><span>.magentaX11</span></td>
+</td><td title="0xFF00FF rgb(255,0,255) hsl(300,100,50)" style="outline:solid magenta 1px;border:solid magenta thick;background-color: magenta;">.onMagentaX11</td>
+<tr>
+<tr class="dark" >
+<td title="0x800000 rgb(128,0,0) hsl(0,100,25)" style="outline:solid maroon 1px;  border: solid maroon 7px;color: maroon;background-color: maroon;"><span>.maroon</span></td>
+</td><td title="0x800000 rgb(128,0,0) hsl(0,100,25)" style="outline:solid maroon 1px;border:solid maroon thick;background-color: maroon;">.onMaroon</td>
+<tr>
+<tr class="light" >
+<td title="0x66CDAA rgb(102,205,170) hsl(160,51,60)" style="outline:solid mediumaquamarine 1px;  border: solid mediumaquamarine 7px;color: mediumaquamarine;background-color: mediumaquamarine;"><span>.mediumAquamarine</span></td>
+</td><td title="0x66CDAA rgb(102,205,170) hsl(160,51,60)" style="outline:solid mediumaquamarine 1px;border:solid mediumaquamarine thick;background-color: mediumaquamarine;">.onMediumAquamarine</td>
+<tr>
+<tr class="dark" >
+<td title="0x0000CD rgb(0,0,205) hsl(240,100,40)" style="outline:solid mediumblue 1px;  border: solid mediumblue 7px;color: mediumblue;background-color: mediumblue;"><span>.mediumBlue</span></td>
+</td><td title="0x0000CD rgb(0,0,205) hsl(240,100,40)" style="outline:solid mediumblue 1px;border:solid mediumblue thick;background-color: mediumblue;">.onMediumBlue</td>
+<tr>
+<tr class="light" >
+<td title="0xBA55D3 rgb(186,85,211) hsl(288,59,58)" style="outline:solid mediumorchid 1px;  border: solid mediumorchid 7px;color: mediumorchid;background-color: mediumorchid;"><span>.mediumOrchid</span></td>
+</td><td title="0xBA55D3 rgb(186,85,211) hsl(288,59,58)" style="outline:solid mediumorchid 1px;border:solid mediumorchid thick;background-color: mediumorchid;">.onMediumOrchid</td>
+<tr>
+<tr class="light" >
+<td title="0x9370DB rgb(147,112,219) hsl(260,60,65)" style="outline:solid mediumpurple 1px;  border: solid mediumpurple 7px;color: mediumpurple;background-color: mediumpurple;"><span>.mediumPurple</span></td>
+</td><td title="0x9370DB rgb(147,112,219) hsl(260,60,65)" style="outline:solid mediumpurple 1px;border:solid mediumpurple thick;background-color: mediumpurple;">.onMediumPurple</td>
+<tr>
+<tr class="light" >
+<td title="0x3CB371 rgb(60,179,113) hsl(147,50,47)" style="outline:solid mediumseagreen 1px;  border: solid mediumseagreen 7px;color: mediumseagreen;background-color: mediumseagreen;"><span>.mediumSeaGreen</span></td>
+</td><td title="0x3CB371 rgb(60,179,113) hsl(147,50,47)" style="outline:solid mediumseagreen 1px;border:solid mediumseagreen thick;background-color: mediumseagreen;">.onMediumSeaGreen</td>
+<tr>
+<tr class="light" >
+<td title="0x7B68EE rgb(123,104,238) hsl(249,80,67)" style="outline:solid mediumslateblue 1px;  border: solid mediumslateblue 7px;color: mediumslateblue;background-color: mediumslateblue;"><span>.mediumSlateBlue</span></td>
+</td><td title="0x7B68EE rgb(123,104,238) hsl(249,80,67)" style="outline:solid mediumslateblue 1px;border:solid mediumslateblue thick;background-color: mediumslateblue;">.onMediumSlateBlue</td>
+<tr>
+<tr class="light" >
+<td title="0x00FA9A rgb(0,250,154) hsl(157,100,49)" style="outline:solid mediumspringgreen 1px;  border: solid mediumspringgreen 7px;color: mediumspringgreen;background-color: mediumspringgreen;"><span>.mediumSpringGreen</span></td>
+</td><td title="0x00FA9A rgb(0,250,154) hsl(157,100,49)" style="outline:solid mediumspringgreen 1px;border:solid mediumspringgreen thick;background-color: mediumspringgreen;">.onMediumSpringGreen</td>
+<tr>
+<tr class="light" >
+<td title="0x48D1CC rgb(72,209,204) hsl(178,60,55)" style="outline:solid mediumturquoise 1px;  border: solid mediumturquoise 7px;color: mediumturquoise;background-color: mediumturquoise;"><span>.mediumTurquoise</span></td>
+</td><td title="0x48D1CC rgb(72,209,204) hsl(178,60,55)" style="outline:solid mediumturquoise 1px;border:solid mediumturquoise thick;background-color: mediumturquoise;">.onMediumTurquoise</td>
+<tr>
+<tr class="dark" >
+<td title="0xC71585 rgb(199,21,133) hsl(322,81,43)" style="outline:solid mediumvioletred 1px;  border: solid mediumvioletred 7px;color: mediumvioletred;background-color: mediumvioletred;"><span>.mediumVioletRed</span></td>
+</td><td title="0xC71585 rgb(199,21,133) hsl(322,81,43)" style="outline:solid mediumvioletred 1px;border:solid mediumvioletred thick;background-color: mediumvioletred;">.onMediumVioletRed</td>
+<tr>
+<tr class="dark" >
+<td title="0x191970 rgb(25,25,112) hsl(240,64,27)" style="outline:solid midnightblue 1px;  border: solid midnightblue 7px;color: midnightblue;background-color: midnightblue;"><span>.midnightBlue</span></td>
+</td><td title="0x191970 rgb(25,25,112) hsl(240,64,27)" style="outline:solid midnightblue 1px;border:solid midnightblue thick;background-color: midnightblue;">.onMidnightBlue</td>
+<tr>
+<tr class="light" >
+<td title="0xF5FFFA rgb(245,255,250) hsl(150,100,98)" style="outline:solid mintcream 1px;  border: solid mintcream 7px;color: mintcream;background-color: mintcream;"><span>.mintCream</span></td>
+</td><td title="0xF5FFFA rgb(245,255,250) hsl(150,100,98)" style="outline:solid mintcream 1px;border:solid mintcream thick;background-color: mintcream;">.onMintCream</td>
+<tr>
+<tr class="light" >
+<td title="0xFFE4E1 rgb(255,228,225) hsl(6,100,94)" style="outline:solid mistyrose 1px;  border: solid mistyrose 7px;color: mistyrose;background-color: mistyrose;"><span>.mistyRose</span></td>
+</td><td title="0xFFE4E1 rgb(255,228,225) hsl(6,100,94)" style="outline:solid mistyrose 1px;border:solid mistyrose thick;background-color: mistyrose;">.onMistyRose</td>
+<tr>
+<tr class="light" >
+<td title="0xFFE4B5 rgb(255,228,181) hsl(38,100,85)" style="outline:solid moccasin 1px;  border: solid moccasin 7px;color: moccasin;background-color: moccasin;"><span>.moccasin</span></td>
+</td><td title="0xFFE4B5 rgb(255,228,181) hsl(38,100,85)" style="outline:solid moccasin 1px;border:solid moccasin thick;background-color: moccasin;">.onMoccasin</td>
+<tr>
+<tr class="light" >
+<td title="0xFFDEAD rgb(255,222,173) hsl(36,100,84)" style="outline:solid navajowhite 1px;  border: solid navajowhite 7px;color: navajowhite;background-color: navajowhite;"><span>.navajoWhite</span></td>
+</td><td title="0xFFDEAD rgb(255,222,173) hsl(36,100,84)" style="outline:solid navajowhite 1px;border:solid navajowhite thick;background-color: navajowhite;">.onNavajoWhite</td>
+<tr>
+<tr class="dark" >
+<td title="0x000080 rgb(0,0,128) hsl(240,100,25)" style="outline:solid navy 1px;  border: solid navy 7px;color: navy;background-color: navy;"><span>.navy</span></td>
+</td><td title="0x000080 rgb(0,0,128) hsl(240,100,25)" style="outline:solid navy 1px;border:solid navy thick;background-color: navy;">.onNavy</td>
+<tr>
+<tr class="light" >
+<td title="0xFDF5E6 rgb(253,245,230) hsl(39,85,95)" style="outline:solid oldlace 1px;  border: solid oldlace 7px;color: oldlace;background-color: oldlace;"><span>.oldLace</span></td>
+</td><td title="0xFDF5E6 rgb(253,245,230) hsl(39,85,95)" style="outline:solid oldlace 1px;border:solid oldlace thick;background-color: oldlace;">.onOldLace</td>
+<tr>
+<tr class="dark" >
+<td title="0x808000 rgb(128,128,0) hsl(60,100,25)" style="outline:solid olive 1px;  border: solid olive 7px;color: olive;background-color: olive;"><span>.olive</span></td>
+</td><td title="0x808000 rgb(128,128,0) hsl(60,100,25)" style="outline:solid olive 1px;border:solid olive thick;background-color: olive;">.onOlive</td>
+<tr>
+<tr class="dark" >
+<td title="0x6B8E23 rgb(107,142,35) hsl(80,60,35)" style="outline:solid olivedrab 1px;  border: solid olivedrab 7px;color: olivedrab;background-color: olivedrab;"><span>.oliveDrab</span></td>
+</td><td title="0x6B8E23 rgb(107,142,35) hsl(80,60,35)" style="outline:solid olivedrab 1px;border:solid olivedrab thick;background-color: olivedrab;">.onOliveDrab</td>
+<tr>
+<tr class="light" >
+<td title="0xFFA500 rgb(255,165,0) hsl(39,100,50)" style="outline:solid orange 1px;  border: solid orange 7px;color: orange;background-color: orange;"><span>.orange</span></td>
+</td><td title="0xFFA500 rgb(255,165,0) hsl(39,100,50)" style="outline:solid orange 1px;border:solid orange thick;background-color: orange;">.onOrange</td>
+<tr>
+<tr class="light" >
+<td title="0xFF4500 rgb(255,69,0) hsl(16,100,50)" style="outline:solid orangered 1px;  border: solid orangered 7px;color: orangered;background-color: orangered;"><span>.orangeRed</span></td>
+</td><td title="0xFF4500 rgb(255,69,0) hsl(16,100,50)" style="outline:solid orangered 1px;border:solid orangered thick;background-color: orangered;">.onOrangeRed</td>
+<tr>
+<tr class="light" >
+<td title="0xDA70D6 rgb(218,112,214) hsl(302,59,65)" style="outline:solid orchid 1px;  border: solid orchid 7px;color: orchid;background-color: orchid;"><span>.orchid</span></td>
+</td><td title="0xDA70D6 rgb(218,112,214) hsl(302,59,65)" style="outline:solid orchid 1px;border:solid orchid thick;background-color: orchid;">.onOrchid</td>
+<tr>
+<tr class="light" >
+<td title="0xEEE8AA rgb(238,232,170) hsl(55,67,80)" style="outline:solid palegoldenrod 1px;  border: solid palegoldenrod 7px;color: palegoldenrod;background-color: palegoldenrod;"><span>.paleGoldenrod</span></td>
+</td><td title="0xEEE8AA rgb(238,232,170) hsl(55,67,80)" style="outline:solid palegoldenrod 1px;border:solid palegoldenrod thick;background-color: palegoldenrod;">.onPaleGoldenrod</td>
+<tr>
+<tr class="light" >
+<td title="0x98FB98 rgb(152,251,152) hsl(120,93,79)" style="outline:solid palegreen 1px;  border: solid palegreen 7px;color: palegreen;background-color: palegreen;"><span>.paleGreen</span></td>
+</td><td title="0x98FB98 rgb(152,251,152) hsl(120,93,79)" style="outline:solid palegreen 1px;border:solid palegreen thick;background-color: palegreen;">.onPaleGreen</td>
+<tr>
+<tr class="light" >
+<td title="0xAFEEEE rgb(175,238,238) hsl(180,65,81)" style="outline:solid paleturquoise 1px;  border: solid paleturquoise 7px;color: paleturquoise;background-color: paleturquoise;"><span>.paleTurquoise</span></td>
+</td><td title="0xAFEEEE rgb(175,238,238) hsl(180,65,81)" style="outline:solid paleturquoise 1px;border:solid paleturquoise thick;background-color: paleturquoise;">.onPaleTurquoise</td>
+<tr>
+<tr class="light" >
+<td title="0xDB7093 rgb(219,112,147) hsl(340,60,65)" style="outline:solid palevioletred 1px;  border: solid palevioletred 7px;color: palevioletred;background-color: palevioletred;"><span>.paleVioletRed</span></td>
+</td><td title="0xDB7093 rgb(219,112,147) hsl(340,60,65)" style="outline:solid palevioletred 1px;border:solid palevioletred thick;background-color: palevioletred;">.onPaleVioletRed</td>
+<tr>
+<tr class="light" >
+<td title="0xFFEFD5 rgb(255,239,213) hsl(37,100,92)" style="outline:solid papayawhip 1px;  border: solid papayawhip 7px;color: papayawhip;background-color: papayawhip;"><span>.papayaWhip</span></td>
+</td><td title="0xFFEFD5 rgb(255,239,213) hsl(37,100,92)" style="outline:solid papayawhip 1px;border:solid papayawhip thick;background-color: papayawhip;">.onPapayaWhip</td>
+<tr>
+<tr class="light" >
+<td title="0xFFDAB9 rgb(255,218,185) hsl(28,100,86)" style="outline:solid peachpuff 1px;  border: solid peachpuff 7px;color: peachpuff;background-color: peachpuff;"><span>.peachPuff</span></td>
+</td><td title="0xFFDAB9 rgb(255,218,185) hsl(28,100,86)" style="outline:solid peachpuff 1px;border:solid peachpuff thick;background-color: peachpuff;">.onPeachPuff</td>
+<tr>
+<tr class="light" >
+<td title="0xCD853F rgb(205,133,63) hsl(30,59,53)" style="outline:solid peru 1px;  border: solid peru 7px;color: peru;background-color: peru;"><span>.peru</span></td>
+</td><td title="0xCD853F rgb(205,133,63) hsl(30,59,53)" style="outline:solid peru 1px;border:solid peru thick;background-color: peru;">.onPeru</td>
+<tr>
+<tr class="light" >
+<td title="0xFFC0CB rgb(255,192,203) hsl(350,100,88)" style="outline:solid pink 1px;  border: solid pink 7px;color: pink;background-color: pink;"><span>.pink</span></td>
+</td><td title="0xFFC0CB rgb(255,192,203) hsl(350,100,88)" style="outline:solid pink 1px;border:solid pink thick;background-color: pink;">.onPink</td>
+<tr>
+<tr class="light" >
+<td title="0xDDA0DD rgb(221,160,221) hsl(300,47,75)" style="outline:solid plum 1px;  border: solid plum 7px;color: plum;background-color: plum;"><span>.plum</span></td>
+</td><td title="0xDDA0DD rgb(221,160,221) hsl(300,47,75)" style="outline:solid plum 1px;border:solid plum thick;background-color: plum;">.onPlum</td>
+<tr>
+<tr class="light" >
+<td title="0xB0E0E6 rgb(176,224,230) hsl(187,52,80)" style="outline:solid powderblue 1px;  border: solid powderblue 7px;color: powderblue;background-color: powderblue;"><span>.powderBlue</span></td>
+</td><td title="0xB0E0E6 rgb(176,224,230) hsl(187,52,80)" style="outline:solid powderblue 1px;border:solid powderblue thick;background-color: powderblue;">.onPowderBlue</td>
+<tr>
+<tr class="dark" >
+<td title="0x800080 rgb(128,0,128) hsl(300,100,25)" style="outline:solid purple 1px;  border: solid purple 7px;color: purple;background-color: purple;"><span>.purple</span></td>
+</td><td title="0x800080 rgb(128,0,128) hsl(300,100,25)" style="outline:solid purple 1px;border:solid purple thick;background-color: purple;">.onPurple</td>
+<tr>
+<tr class="dark" >
+<td title="0x663399 rgb(102,51,153) hsl(270,50,40)" style="outline:solid rgb(102, 51, 153) 1px;  border: solid rgb(102, 51, 153) 7px;color: rgb(102, 51, 153);background-color: rgb(102, 51, 153);"><span>.rebeccaPurple</span></td>
+</td><td title="0x663399 rgb(102,51,153) hsl(270,50,40)" style="outline:solid rgb(102, 51, 153) 1px;border:solid rgb(102, 51, 153) thick;background-color: rgb(102, 51, 153);">.onRebeccaPurple</td>
+<tr>
+<tr class="dark" >
+<td title="0xFF0000 rgb(255,0,0) hsl(0,100,50)" style="outline:solid red 1px;  border: solid red 7px;color: red;background-color: red;"><span>.redX11</span></td>
+</td><td title="0xFF0000 rgb(255,0,0) hsl(0,100,50)" style="outline:solid red 1px;border:solid red thick;background-color: red;">.onRedX11</td>
+<tr>
+<tr class="light" >
+<td title="0xBC8F8F rgb(188,143,143) hsl(0,25,65)" style="outline:solid rosybrown 1px;  border: solid rosybrown 7px;color: rosybrown;background-color: rosybrown;"><span>.rosyBrown</span></td>
+</td><td title="0xBC8F8F rgb(188,143,143) hsl(0,25,65)" style="outline:solid rosybrown 1px;border:solid rosybrown thick;background-color: rosybrown;">.onRosyBrown</td>
+<tr>
+<tr class="dark" >
+<td title="0x4169E1 rgb(65,105,225) hsl(225,73,57)" style="outline:solid royalblue 1px;  border: solid royalblue 7px;color: royalblue;background-color: royalblue;"><span>.royalBlue</span></td>
+</td><td title="0x4169E1 rgb(65,105,225) hsl(225,73,57)" style="outline:solid royalblue 1px;border:solid royalblue thick;background-color: royalblue;">.onRoyalBlue</td>
+<tr>
+<tr class="dark" >
+<td title="0x8B4513 rgb(139,69,19) hsl(25,76,31)" style="outline:solid saddlebrown 1px;  border: solid saddlebrown 7px;color: saddlebrown;background-color: saddlebrown;"><span>.saddleBrown</span></td>
+</td><td title="0x8B4513 rgb(139,69,19) hsl(25,76,31)" style="outline:solid saddlebrown 1px;border:solid saddlebrown thick;background-color: saddlebrown;">.onSaddleBrown</td>
+<tr>
+<tr class="light" >
+<td title="0xFA8072 rgb(250,128,114) hsl(6,93,71)" style="outline:solid salmon 1px;  border: solid salmon 7px;color: salmon;background-color: salmon;"><span>.salmon</span></td>
+</td><td title="0xFA8072 rgb(250,128,114) hsl(6,93,71)" style="outline:solid salmon 1px;border:solid salmon thick;background-color: salmon;">.onSalmon</td>
+<tr>
+<tr class="light" >
+<td title="0xF4A460 rgb(244,164,96) hsl(28,87,67)" style="outline:solid sandybrown 1px;  border: solid sandybrown 7px;color: sandybrown;background-color: sandybrown;"><span>.sandyBrown</span></td>
+</td><td title="0xF4A460 rgb(244,164,96) hsl(28,87,67)" style="outline:solid sandybrown 1px;border:solid sandybrown thick;background-color: sandybrown;">.onSandyBrown</td>
+<tr>
+<tr class="dark" >
+<td title="0x2E8B57 rgb(46,139,87) hsl(146,50,36)" style="outline:solid seagreen 1px;  border: solid seagreen 7px;color: seagreen;background-color: seagreen;"><span>.seaGreen</span></td>
+</td><td title="0x2E8B57 rgb(46,139,87) hsl(146,50,36)" style="outline:solid seagreen 1px;border:solid seagreen thick;background-color: seagreen;">.onSeaGreen</td>
+<tr>
+<tr class="light" >
+<td title="0xFFF5EE rgb(255,245,238) hsl(25,100,97)" style="outline:solid seashell 1px;  border: solid seashell 7px;color: seashell;background-color: seashell;"><span>.seashell</span></td>
+</td><td title="0xFFF5EE rgb(255,245,238) hsl(25,100,97)" style="outline:solid seashell 1px;border:solid seashell thick;background-color: seashell;">.onSeashell</td>
+<tr>
+<tr class="dark" >
+<td title="0xA0522D rgb(160,82,45) hsl(19,56,40)" style="outline:solid sienna 1px;  border: solid sienna 7px;color: sienna;background-color: sienna;"><span>.sienna</span></td>
+</td><td title="0xA0522D rgb(160,82,45) hsl(19,56,40)" style="outline:solid sienna 1px;border:solid sienna thick;background-color: sienna;">.onSienna</td>
+<tr>
+<tr class="light" >
+<td title="0xC0C0C0 rgb(192,192,192) hsl(0,0,75)" style="outline:solid silver 1px;  border: solid silver 7px;color: silver;background-color: silver;"><span>.silver</span></td>
+</td><td title="0xC0C0C0 rgb(192,192,192) hsl(0,0,75)" style="outline:solid silver 1px;border:solid silver thick;background-color: silver;">.onSilver</td>
+<tr>
+<tr class="light" >
+<td title="0x87CEEB rgb(135,206,235) hsl(197,71,73)" style="outline:solid skyblue 1px;  border: solid skyblue 7px;color: skyblue;background-color: skyblue;"><span>.skyBlue</span></td>
+</td><td title="0x87CEEB rgb(135,206,235) hsl(197,71,73)" style="outline:solid skyblue 1px;border:solid skyblue thick;background-color: skyblue;">.onSkyBlue</td>
+<tr>
+<tr class="dark" >
+<td title="0x6A5ACD rgb(106,90,205) hsl(248,53,58)" style="outline:solid slateblue 1px;  border: solid slateblue 7px;color: slateblue;background-color: slateblue;"><span>.slateBlue</span></td>
+</td><td title="0x6A5ACD rgb(106,90,205) hsl(248,53,58)" style="outline:solid slateblue 1px;border:solid slateblue thick;background-color: slateblue;">.onSlateBlue</td>
+<tr>
+<tr class="light" >
+<td title="0x708090 rgb(112,128,144) hsl(210,13,50)" style="outline:solid slategray 1px;  border: solid slategray 7px;color: slategray;background-color: slategray;"><span>.slateGray</span></td>
+</td><td title="0x708090 rgb(112,128,144) hsl(210,13,50)" style="outline:solid slategray 1px;border:solid slategray thick;background-color: slategray;">.onSlateGray</td>
+<tr>
+<tr class="light" >
+<td title="0x708090 rgb(112,128,144) hsl(210,13,50)" style="outline:solid slategrey 1px;  border: solid slategrey 7px;color: slategrey;background-color: slategrey;"><span>.slateGrey</span></td>
+</td><td title="0x708090 rgb(112,128,144) hsl(210,13,50)" style="outline:solid slategrey 1px;border:solid slategrey thick;background-color: slategrey;">.onSlateGrey</td>
+<tr>
+<tr class="light" >
+<td title="0xFFFAFA rgb(255,250,250) hsl(0,100,99)" style="outline:solid snow 1px;  border: solid snow 7px;color: snow;background-color: snow;"><span>.snow</span></td>
+</td><td title="0xFFFAFA rgb(255,250,250) hsl(0,100,99)" style="outline:solid snow 1px;border:solid snow thick;background-color: snow;">.onSnow</td>
+<tr>
+<tr class="light" >
+<td title="0x00FF7F rgb(0,255,127) hsl(150,100,50)" style="outline:solid springgreen 1px;  border: solid springgreen 7px;color: springgreen;background-color: springgreen;"><span>.springGreen</span></td>
+</td><td title="0x00FF7F rgb(0,255,127) hsl(150,100,50)" style="outline:solid springgreen 1px;border:solid springgreen thick;background-color: springgreen;">.onSpringGreen</td>
+<tr>
+<tr class="dark" >
+<td title="0x4682B4 rgb(70,130,180) hsl(207,44,49)" style="outline:solid steelblue 1px;  border: solid steelblue 7px;color: steelblue;background-color: steelblue;"><span>.steelBlue</span></td>
+</td><td title="0x4682B4 rgb(70,130,180) hsl(207,44,49)" style="outline:solid steelblue 1px;border:solid steelblue thick;background-color: steelblue;">.onSteelBlue</td>
+<tr>
+<tr class="light" >
+<td title="0xD2B48C rgb(210,180,140) hsl(34,44,69)" style="outline:solid tan 1px;  border: solid tan 7px;color: tan;background-color: tan;"><span>.tan</span></td>
+</td><td title="0xD2B48C rgb(210,180,140) hsl(34,44,69)" style="outline:solid tan 1px;border:solid tan thick;background-color: tan;">.onTan</td>
+<tr>
+<tr class="dark" >
+<td title="0x008080 rgb(0,128,128) hsl(180,100,25)" style="outline:solid teal 1px;  border: solid teal 7px;color: teal;background-color: teal;"><span>.teal</span></td>
+</td><td title="0x008080 rgb(0,128,128) hsl(180,100,25)" style="outline:solid teal 1px;border:solid teal thick;background-color: teal;">.onTeal</td>
+<tr>
+<tr class="light" >
+<td title="0xD8BFD8 rgb(216,191,216) hsl(300,24,80)" style="outline:solid thistle 1px;  border: solid thistle 7px;color: thistle;background-color: thistle;"><span>.thistle</span></td>
+</td><td title="0xD8BFD8 rgb(216,191,216) hsl(300,24,80)" style="outline:solid thistle 1px;border:solid thistle thick;background-color: thistle;">.onThistle</td>
+<tr>
+<tr class="light" >
+<td title="0xFF6347 rgb(255,99,71) hsl(9,100,64)" style="outline:solid tomato 1px;  border: solid tomato 7px;color: tomato;background-color: tomato;"><span>.tomato</span></td>
+</td><td title="0xFF6347 rgb(255,99,71) hsl(9,100,64)" style="outline:solid tomato 1px;border:solid tomato thick;background-color: tomato;">.onTomato</td>
+<tr>
+<tr class="light" >
+<td title="0x40E0D0 rgb(64,224,208) hsl(174,72,56)" style="outline:solid turquoise 1px;  border: solid turquoise 7px;color: turquoise;background-color: turquoise;"><span>.turquoise</span></td>
+</td><td title="0x40E0D0 rgb(64,224,208) hsl(174,72,56)" style="outline:solid turquoise 1px;border:solid turquoise thick;background-color: turquoise;">.onTurquoise</td>
+<tr>
+<tr class="light" >
+<td title="0xEE82EE rgb(238,130,238) hsl(300,76,72)" style="outline:solid violet 1px;  border: solid violet 7px;color: violet;background-color: violet;"><span>.violet</span></td>
+</td><td title="0xEE82EE rgb(238,130,238) hsl(300,76,72)" style="outline:solid violet 1px;border:solid violet thick;background-color: violet;">.onViolet</td>
+<tr>
+<tr class="light" >
+<td title="0xF5DEB3 rgb(245,222,179) hsl(39,77,83)" style="outline:solid wheat 1px;  border: solid wheat 7px;color: wheat;background-color: wheat;"><span>.wheat</span></td>
+</td><td title="0xF5DEB3 rgb(245,222,179) hsl(39,77,83)" style="outline:solid wheat 1px;border:solid wheat thick;background-color: wheat;">.onWheat</td>
+<tr>
+<tr class="light" >
+<td title="0xFFFFFF rgb(255,255,255) hsl(0,0,100)" style="outline:solid white 1px;  border: solid white 7px;color: white;background-color: white;"><span>.whiteX11</span></td>
+</td><td title="0xFFFFFF rgb(255,255,255) hsl(0,0,100)" style="outline:solid white 1px;border:solid white thick;background-color: white;">.onWhiteX11</td>
+<tr>
+<tr class="light" >
+<td title="0xF5F5F5 rgb(245,245,245) hsl(0,0,96)" style="outline:solid whitesmoke 1px;  border: solid whitesmoke 7px;color: whitesmoke;background-color: whitesmoke;"><span>.whiteSmoke</span></td>
+</td><td title="0xF5F5F5 rgb(245,245,245) hsl(0,0,96)" style="outline:solid whitesmoke 1px;border:solid whitesmoke thick;background-color: whitesmoke;">.onWhiteSmoke</td>
+<tr>
+<tr class="light" >
+<td title="0xFFFF00 rgb(255,255,0) hsl(60,100,50)" style="outline:solid yellow 1px;  border: solid yellow 7px;color: yellow;background-color: yellow;"><span>.yellowX11</span></td>
+</td><td title="0xFFFF00 rgb(255,255,0) hsl(60,100,50)" style="outline:solid yellow 1px;border:solid yellow thick;background-color: yellow;">.onYellowX11</td>
+<tr>
+<tr class="light" >
+<td title="0x9ACD32 rgb(154,205,50) hsl(80,61,50)" style="outline:solid yellowgreen 1px;  border: solid yellowgreen 7px;color: yellowgreen;background-color: yellowgreen;"><span>.yellowGreen</span></td>
+</td><td title="0x9ACD32 rgb(154,205,50) hsl(80,61,50)" style="outline:solid yellowgreen 1px;border:solid yellowgreen thick;background-color: yellowgreen;">.onYellowGreen</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0xFF0000 rgb(255,0,0) hsl(0,100,50)" style="outline:solid rgb(255, 0, 0) 1px;  border: solid rgb(255, 0, 0) 7px;color: rgb(255, 0, 0);background-color: rgb(255, 0, 0);"><span>.brightRed</span></td>
+</td><td title="0xFF0000 rgb(255,0,0) hsl(0,100,50)" style="outline:solid rgb(255, 0, 0) 1px;border:solid rgb(255, 0, 0) thick;background-color: rgb(255, 0, 0);">.onBrightRed</td>
+<tr>
+<tr class="light baseansicolor" hidden>
+<td title="0x00FF00 rgb(0,255,0) hsl(120,100,50)" style="outline:solid rgb(0, 255, 0) 1px;  border: solid rgb(0, 255, 0) 7px;color: rgb(0, 255, 0);background-color: rgb(0, 255, 0);"><span>.brightGreen</span></td>
+</td><td title="0x00FF00 rgb(0,255,0) hsl(120,100,50)" style="outline:solid rgb(0, 255, 0) 1px;border:solid rgb(0, 255, 0) thick;background-color: rgb(0, 255, 0);">.onBrightGreen</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x0000FF rgb(0,0,255) hsl(240,100,50)" style="outline:solid rgb(0, 0, 255) 1px;  border: solid rgb(0, 0, 255) 7px;color: rgb(0, 0, 255);background-color: rgb(0, 0, 255);"><span>.brightBlue</span></td>
+</td><td title="0x0000FF rgb(0,0,255) hsl(240,100,50)" style="outline:solid rgb(0, 0, 255) 1px;border:solid rgb(0, 0, 255) thick;background-color: rgb(0, 0, 255);">.onBrightBlue</td>
+<tr>
+<tr class="light baseansicolor" hidden>
+<td title="0x00FFFF rgb(0,255,255) hsl(180,100,50)" style="outline:solid rgb(0, 255, 255) 1px;  border: solid rgb(0, 255, 255) 7px;color: rgb(0, 255, 255);background-color: rgb(0, 255, 255);"><span>.brightCyan</span></td>
+</td><td title="0x00FFFF rgb(0,255,255) hsl(180,100,50)" style="outline:solid rgb(0, 255, 255) 1px;border:solid rgb(0, 255, 255) thick;background-color: rgb(0, 255, 255);">.onBrightCyan</td>
+<tr>
+<tr class="light baseansicolor" hidden>
+<td title="0xFFFF00 rgb(255,255,0) hsl(60,100,50)" style="outline:solid rgb(255, 255, 0) 1px;  border: solid rgb(255, 255, 0) 7px;color: rgb(255, 255, 0);background-color: rgb(255, 255, 0);"><span>.brightYellow</span></td>
+</td><td title="0xFFFF00 rgb(255,255,0) hsl(60,100,50)" style="outline:solid rgb(255, 255, 0) 1px;border:solid rgb(255, 255, 0) thick;background-color: rgb(255, 255, 0);">.onBrightYellow</td>
+<tr>
+<tr class="light baseansicolor" hidden>
+<td title="0xFF00FF rgb(255,0,255) hsl(300,100,50)" style="outline:solid rgb(255, 0, 255) 1px;  border: solid rgb(255, 0, 255) 7px;color: rgb(255, 0, 255);background-color: rgb(255, 0, 255);"><span>.brightMagenta</span></td>
+</td><td title="0xFF00FF rgb(255,0,255) hsl(300,100,50)" style="outline:solid rgb(255, 0, 255) 1px;border:solid rgb(255, 0, 255) thick;background-color: rgb(255, 0, 255);">.onBrightMagenta</td>
+<tr>
+<tr class="light baseansicolor" hidden>
+<td title="0xFFFFFF rgb(255,255,255) hsl(0,0,100)" style="outline:solid rgb(255, 255, 255) 1px;  border: solid rgb(255, 255, 255) 7px;color: rgb(255, 255, 255);background-color: rgb(255, 255, 255);"><span>.brightWhite</span></td>
+</td><td title="0xFFFFFF rgb(255,255,255) hsl(0,0,100)" style="outline:solid rgb(255, 255, 255) 1px;border:solid rgb(255, 255, 255) thick;background-color: rgb(255, 255, 255);">.onBrightWhite</td>
+<tr>
+<tr class="light baseansicolor" hidden>
+<td title="0x888888 rgb(136,136,136) hsl(0,0,53)" style="outline:solid rgb(136, 136, 136) 1px;  border: solid rgb(136, 136, 136) 7px;color: rgb(136, 136, 136);background-color: rgb(136, 136, 136);"><span>.brightBlack</span></td>
+</td><td title="0x888888 rgb(136,136,136) hsl(0,0,53)" style="outline:solid rgb(136, 136, 136) 1px;border:solid rgb(136, 136, 136) thick;background-color: rgb(136, 136, 136);">.onBrightBlack</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x880000 rgb(136,0,0) hsl(0,100,27)" style="outline:solid rgb(136, 0, 0) 1px;  border: solid rgb(136, 0, 0) 7px;color: rgb(136, 0, 0);background-color: rgb(136, 0, 0);"><span>.red</span></td>
+</td><td title="0x880000 rgb(136,0,0) hsl(0,100,27)" style="outline:solid rgb(136, 0, 0) 1px;border:solid rgb(136, 0, 0) thick;background-color: rgb(136, 0, 0);">.onRed</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x008800 rgb(0,136,0) hsl(120,100,27)" style="outline:solid rgb(0, 136, 0) 1px;  border: solid rgb(0, 136, 0) 7px;color: rgb(0, 136, 0);background-color: rgb(0, 136, 0);"><span>.green</span></td>
+</td><td title="0x008800 rgb(0,136,0) hsl(120,100,27)" style="outline:solid rgb(0, 136, 0) 1px;border:solid rgb(0, 136, 0) thick;background-color: rgb(0, 136, 0);">.onGreen</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x000088 rgb(0,0,136) hsl(240,100,27)" style="outline:solid rgb(0, 0, 136) 1px;  border: solid rgb(0, 0, 136) 7px;color: rgb(0, 0, 136);background-color: rgb(0, 0, 136);"><span>.blue</span></td>
+</td><td title="0x000088 rgb(0,0,136) hsl(240,100,27)" style="outline:solid rgb(0, 0, 136) 1px;border:solid rgb(0, 0, 136) thick;background-color: rgb(0, 0, 136);">.onBlue</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x008888 rgb(0,136,136) hsl(180,100,27)" style="outline:solid rgb(0, 136, 136) 1px;  border: solid rgb(0, 136, 136) 7px;color: rgb(0, 136, 136);background-color: rgb(0, 136, 136);"><span>.cyan</span></td>
+</td><td title="0x008888 rgb(0,136,136) hsl(180,100,27)" style="outline:solid rgb(0, 136, 136) 1px;border:solid rgb(0, 136, 136) thick;background-color: rgb(0, 136, 136);">.onCyan</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x888800 rgb(136,136,0) hsl(60,100,27)" style="outline:solid rgb(136, 136, 0) 1px;  border: solid rgb(136, 136, 0) 7px;color: rgb(136, 136, 0);background-color: rgb(136, 136, 0);"><span>.yellow</span></td>
+</td><td title="0x888800 rgb(136,136,0) hsl(60,100,27)" style="outline:solid rgb(136, 136, 0) 1px;border:solid rgb(136, 136, 0) thick;background-color: rgb(136, 136, 0);">.onYellow</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x880088 rgb(136,0,136) hsl(300,100,27)" style="outline:solid rgb(136, 0, 136) 1px;  border: solid rgb(136, 0, 136) 7px;color: rgb(136, 0, 136);background-color: rgb(136, 0, 136);"><span>.magenta</span></td>
+</td><td title="0x880088 rgb(136,0,136) hsl(300,100,27)" style="outline:solid rgb(136, 0, 136) 1px;border:solid rgb(136, 0, 136) thick;background-color: rgb(136, 0, 136);">.onMagenta</td>
+<tr>
+<tr class="light baseansicolor" hidden>
+<td title="0x888888 rgb(136,136,136) hsl(0,0,53)" style="outline:solid rgb(136, 136, 136) 1px;  border: solid rgb(136, 136, 136) 7px;color: rgb(136, 136, 136);background-color: rgb(136, 136, 136);"><span>.white</span></td>
+</td><td title="0x888888 rgb(136,136,136) hsl(0,0,53)" style="outline:solid rgb(136, 136, 136) 1px;border:solid rgb(136, 136, 136) thick;background-color: rgb(136, 136, 136);">.onWhite</td>
+<tr>
+<tr class="dark baseansicolor" hidden>
+<td title="0x000000 rgb(0,0,0) hsl(0,0,0)" style="outline:solid rgb(0, 0, 0) 1px;  border: solid rgb(0, 0, 0) 7px;color: rgb(0, 0, 0);background-color: rgb(0, 0, 0);"><span>.black</span></td>
+</td><td title="0x000000 rgb(0,0,0) hsl(0,0,0)" style="outline:solid rgb(0, 0, 0) 1px;border:solid rgb(0, 0, 0) thick;background-color: rgb(0, 0, 0);">.onBlack</td>
 <tr>
 </tbody></table>
+<script>startup();</script>
 
 
 ## Browser support
