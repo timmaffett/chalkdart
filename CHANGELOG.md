@@ -1,3 +1,5 @@
+## 2.0.6 
+ - Simplify/cleanup example
 ## 2.0.5 
  - There is always something. Regenerate dart docs
 ## 2.0.4 
