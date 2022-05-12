@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/timmaffett/chalkdart/713b6657ffc00f699c8eba234fe30374049d5f13/media/chalkdart.svg" width="100%">
+<img src="https://raw.githubusercontent.com/timmaffett/chalkdart/master/media/ChalkDart.png" width="100%">
 
 ##### vscode debug console
 <img src="https://github.com/timmaffett/chalkdart/raw/master/media/ABasic.png" width="100%">
