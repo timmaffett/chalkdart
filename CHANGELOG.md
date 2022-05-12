@@ -1,3 +1,5 @@
+## 2.0.5 
+ - There is always something. Regenerate dart docs
 ## 2.0.4 
  - Use png instead of svg for logo
 
