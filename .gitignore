@@ -11,3 +11,5 @@ build/
 
 # where we build docs with html and scripts for sorting colors
 htmldocs/
+
+remakeDocs.bat
