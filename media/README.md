@@ -27,8 +27,9 @@ Please file feature requests and bugs at the [issue tracker](http://github.com/t
 - Expressive API
 - Highly performant
 - Ability to nest styles
-- supports dynamic argument list and automatically handles printing Maps, Lists, Iterables and Function closures
+- Supports dynamic argument list and automatically handles printing Maps, Lists, Iterables and Function closures
 - [256/Truecolor color support](#256-and-truecolor-color-support)
+- All standard X11/CSS/SVG colors can be accessed for by name.
 - Ignores Auto-detected ANSI color support/as common Dart/Flutter IDE's report this incorrectly.
 - Not an extentension of the `String` class.
 - Clean and focused
