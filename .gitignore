@@ -9,3 +9,5 @@ pubspec.lock
 # Conventional directory for build outputs
 build/
 
+# where we build docs with html and scripts for sorting colors
+htmldocs/
