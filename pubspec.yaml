@@ -1,6 +1,6 @@
 name: chalkdart
 description: Console text coloring and styling library for Dart. 'Terminal string styling done right'
-version: 2.0.3
+version: 2.0.4
 homepage: https://github.com/timmaffett/chalkdart
 
 environment:

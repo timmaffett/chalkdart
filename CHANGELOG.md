@@ -1,3 +1,6 @@
+## 2.0.4 
+ - Use png instead of svg for logo
+
 ## 2.0.3 
  - Remove html/script from README.md and regenerate dart docs
 ## 2.0.2
