@@ -1,10 +1,17 @@
 <img src="media/chalkdart.svg" width="900">
-> Terminal string styling done right
+
+## Console/Terminal string styling done right
+
+I created this for my Dart/Flutter development logging almost 2 years ago now, and I have finally taken the time to clean it up and get it released as a package.
+In the mean time I added full ANSI support to the Visual Studio Code debugging console as well as just finishing full ANSI support for the Dart-Pad console as well.  You can use this within your VSCode debugger to enable colorful, styled logging today. 😊
+
+Check out `example/chalkdart_example.dart` for some cool examples of what it is capable of.
+
+If you have used the Chalk package within the npm/node.js environment you know how nice and easy it makes text coloring and styling!
 
 ## Features and bugs
-Please file feature requests and bugs at the [issue tracker][http://github.com/timmaffett/chalk.dart/issues/].
+Please file feature requests and bugs at the [issue tracker](http://github.com/timmaffett/chalkdart/issues).
 
-[tracker]: http://github.com/timmaffett/chalk.dart/issues/
 
 ## Highlights
 
@@ -1800,6 +1807,7 @@ var sorter = [];
 ## Browser support
 
 Chrome, Firefox and Edge natively support ANSI escape codes in their respective developer consoles.
+From dart web code you can use `window.console.log(...)` to log messages to the browser's debug console.
 
 ## Windows
 
@@ -1808,7 +1816,7 @@ If you're on Windows, do yourself a favor and use [Windows Terminal](https://git
 
 ## Related
 
-- [chalk-js](https://github.com/chalk/chalk) - The original Chalk library module for javascript
+- [chalk-js](https://github.com/chalk/chalk) - The original Chalk library module for javascript which was the inspiration for this (as well as being the basis for this readme as well)!
   
 ## Author/Maintainer
 
