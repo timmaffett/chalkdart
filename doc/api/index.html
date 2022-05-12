@@ -210,27 +210,6 @@ users preference on how they want their code to read.</p>
 <li><code>onBrightCyan</code> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<sub><sup>(alias <code>bgCyanBright</code>)</sup></sub></li>
 <li><code>onBrightWhite</code> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<sub><sup>(alias <code>bgWhiteBright</code>)</sup></sub></li>
 </ul>
-<h2 id="tagged-template-literal">Tagged template literal</h2>
-<p>Chalk can be used as a <a href="https://exploringjs.com/es6/ch_template-literals.html#_tagged-template-literals">tagged template literal</a>.</p>
-<pre class="language-dart"><code class="language-dart">import 'package:chalkdart/chalk.dart';
-
-const miles = 18;
-
-int calculateFeet(miles) =&gt; miles * 5280;
-
-print(chalk`
-	There are {bold 5280 feet} in a mile.
-	In {bold ${miles} miles}, there are {green.bold ${calculateFeet(miles)} feet}.
-`);
-</code></pre>
-<p>Blocks are delimited by an opening curly brace (<code>{</code>), a style, some content, and a closing curly brace (<code>}</code>).</p>
-<p>Template styles are chained exactly like normal Chalk styles. The following three statements are equivalent:</p>
-<pre class="language-dart"><code class="language-dart">print(chalk.bold.rgb(10, 100, 200)('Hello!'));
-print(chalk.bold.rgb(10, 100, 200)`Hello!`);
-print(`{chalk.bold.rgb(10,100,200) Hello!}`);
-</code></pre>
-<p>Note that function styles (<code>rgb()</code>, <code>hsl()</code>, <code>keyword()</code>, etc.) may not contain spaces between parameters.</p>
-<p>All interpolated values (<code>chalk`${foo}`</code>) are converted to strings via the <code>.toString()</code> method. All curly braces (<code>{</code> and <code>}</code>) in interpolated value strings are escaped.</p>
 <h2 id="256-and-truecolor-color-support">256 and Truecolor color support</h2>
 <p>Chalk supports 256 colors and <a href="https://gist.github.com/XVilka/8346728">Truecolor</a> (16 million colors) on supported terminal apps.</p>
 <p>Colors are downsampled from 16 million RGB values to an ANSI color format that is supported by the terminal emulator (or by specifying <code>{level: n}</code> as a Chalk option). For example, Chalk configured to run at level 1 (basic color support) will downsample an RGB value of #FF0000 (red) to 31 (ANSI escape for red).</p>

@@ -7,8 +7,8 @@
 
 <img src="https://github.com/timmaffett/chalkdart/raw/master/media/AChalkDart2.png" width="100%">
 
+## Console/Terminal text coloring and styling library for Dart
 
-## Console/Terminal text coloring and styling library for Dart.
 ### 'Terminal string styling done right'
 
 I created this for my Dart/Flutter development logging almost 2 years ago now, and I have finally taken the time to clean it up and get it released as a package.
@@ -16,14 +16,15 @@ In the mean time I added full ANSI support to the Visual Studio Code debugging c
 
 Check out `example/chalkdart_example.dart` for some cool examples of what it is capable of.
 
-If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version. 
+If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version.
 
 ## Full Api Dart Docs can be found [here](https://timmaffett.github.io/chalkdart_docs/index.html)
+
 [ChalkDart API Documentation](https://timmaffett.github.io/chalkdart_docs/index.html)
 
 ## Features and bugs
-Please file feature requests and bugs at the [issue tracker](http://github.com/timmaffett/chalkdart/issues).
 
+Please file feature requests and bugs at the [issue tracker](http://github.com/timmaffett/chalkdart/issues).
 
 ## Highlights
 
@@ -108,11 +109,11 @@ print(error('Error!'));
 print(warning('Warning!'));
 ```
 
-
 ```dart
 const name = 'Tim Maffett';
 print(chalk.green('Hello $name'));
 ```
+
 //=><span style='color:#00bc00;'> 'Hello Tim Maffett'</span>
 
 ## API
@@ -125,28 +126,6 @@ Chain [styles](#styles) and call the last one as a method with a string argument
 
 String interpolation can be ised or multiple arguments can be listed and will be separated by space (or the string specified by `joinWith`).  The arguments can be of any type, Map<>, List<>, Iterable and Functions/Function closures are also supported.  By default Lists are joined together with a ' '(space), but the `joinWith` method can be used to specify a different join string. Up to 15 arguments can be included as arguments to a Chalk object.
 
-### chalk.level
-
-Specifies the level of color support.
-
-Color support is automatically detected, but you can override it by setting the `level` property. You should however only do this in your own code as it applies globally to all Chalk consumers.
-Note dart determines VSCode debug console and Android Studio debug console do not support ansi control sequences, when in fact they do, so by default the level is set to 3 (full color/sequence support) as the default, no matter what the console/terminal reports.  You must set this yourslef if you want a different value.
-
-If you need to change this in a reusable module, create a new instance:
-
-```dart
-var chalkWithLevel0 = chalk.instance(level: 0);
-// this version is provided for users of the JS version of Chalk
-var chalkWithLevel0 = chalk.Instance(level: 0);
-```
-
-| Level | Description |
-| :---: | :--- |
-| `0` | All colors disabled |
-| `1` | Basic color support (16 colors) |
-| `2` | 256 color support |
-| `3` | Truecolor support (16 million colors) |
-
 ## Styles
 
 ### Modifiers
@@ -158,7 +137,7 @@ var chalkWithLevel0 = chalk.Instance(level: 0);
 - `dim` - Emitting only a small amount of light.
 - `italic` - Make text italic.
 - `underline` - Make text underline.
-- `doubleunderline` - Thicker text underline. 
+- `doubleunderline` - Thicker text underline.
 - `overline` - Make text overline.
 - `inverse` (or `invert`)- Inverse background and foreground colors.
 - `hidden` - Prints the text, but makes it invisible.
@@ -169,6 +148,7 @@ var chalkWithLevel0 = chalk.Instance(level: 0);
 - `font1`-`font10` - Changes the font
 
 Some of these ANSI styles are not widely supported within all terminal emulators, but I have added COMPLETE support to the standard Visual Studio Code debug console as well as to the Dart-Pad console.  Android Studio also has fairly complete support within it's debug console. See the VSCode section for info on using CSS to map fonts to the `font1` through `font10`.
+
 ### Colors
 
 The exact RGB values for the base ANSI colors are rendered console/terminal dependent - and can be configured on some terminals such Windows Terminal - [more info here](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)
@@ -193,11 +173,11 @@ I include original JS Chalk 'xxxxBright' method names for users that may want le
 - `brightWhite`  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<sub><sup>(alias `whiteBright`)</sup></sub>
 
 ### Background colors
+
 They are named by prefixing the color with 'on'.  Chalk'Dart favors the 'onXXXXX' style of specifying background colors because the verb 'on' makes chained methods read better as a sentence ([it's the Dart way](https://dart.dev/guides/language/effective-dart/design#prefer-a-non-imperative-verb-phrase-for-a-boolean-property-or-variable)).  I include original Chalk 'bgXXXX' method names for users that may prefer that scheme (essentially for legacy compatability with original JS Chalk).  
- 
+
 For example 'onBlue' and 'bgBlue' are the same, it is a matter of
 users preference on how they want their code to read.
-
 
 - `onBlack` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<sub><sup>(alias `bgBlack`)</sup></sub>
 - `onRed` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<sub><sup>(alias `bgRed`)</sup></sub>
@@ -215,37 +195,6 @@ users preference on how they want their code to read.
 - `onBrightMagenta` &nbsp;&nbsp;&nbsp;<sub><sup>(alias `bgMagentaBright`)</sup></sub>
 - `onBrightCyan` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<sub><sup>(alias `bgCyanBright`)</sup></sub>
 - `onBrightWhite` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<sub><sup>(alias `bgWhiteBright`)</sup></sub>
-
-## Tagged template literal
-
-Chalk can be used as a [tagged template literal](https://exploringjs.com/es6/ch_template-literals.html#_tagged-template-literals).
-
-```dart
-import 'package:chalkdart/chalk.dart';
-
-const miles = 18;
-
-int calculateFeet(miles) => miles * 5280;
-
-print(chalk`
-	There are {bold 5280 feet} in a mile.
-	In {bold ${miles} miles}, there are {green.bold ${calculateFeet(miles)} feet}.
-`);
-```
-
-Blocks are delimited by an opening curly brace (`{`), a style, some content, and a closing curly brace (`}`).
-
-Template styles are chained exactly like normal Chalk styles. The following three statements are equivalent:
-
-```dart
-print(chalk.bold.rgb(10, 100, 200)('Hello!'));
-print(chalk.bold.rgb(10, 100, 200)`Hello!`);
-print(`{chalk.bold.rgb(10,100,200) Hello!}`);
-```
-
-Note that function styles (`rgb()`, `hsl()`, `keyword()`, etc.) may not contain spaces between parameters.
-
-All interpolated values (`` chalk`${foo}` ``) are converted to strings via the `.toString()` method. All curly braces (`{` and `}`) in interpolated value strings are escaped.
 
 ## 256 and Truecolor color support
 
@@ -279,21 +228,24 @@ The following color models can be used:
 - [`ansi256`](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit) - Example: `chalk.onAnsi256(194)('Honeydew, more or less')`
 - [`keyword`](https://www.w3.org/wiki/CSS/Properties/color/keywords) (X11/CSS/SVG color keywords) - Example: `chalk.cornFlowerBlue.onBeige` or `chalk.keyword('orange').bold('Orange!')`
             The keyword table can be extended via and the new keywords can be accessed via
-```
+
+```dart
 Chalk.addColorKeywordHex('myfavorite', 0x6495ED ); // using hex int
 chalk.color.myfavorite('This is my favorite color');
 Chalk.addColorKeywordHex('my2ndFavorite', '#6A5ACD' );  // or using string
 chalk.color.my2ndfavorite('This is my 2nd favorite color');
 ```
+
 or
-```
+
+```dart
 chalk.keyword('myfavorite)('Using the keyword() method');
 chalk.color.my2ndfavorite('This is my 2nd favorite color');
 ```
 
 or import the X11 extension methods to get proper methods for each of the X11/CSS/SVG color names.  With that you get code completion for available colors as well as compile time checking of color names.
 
-```
+```dart
 import 'package:chalkdart/chalk.dart';
 import 'package:chalkdart/chalk_x11.dart'; // get methods for x11/css/svg color name keywords
 
@@ -307,6 +259,29 @@ chalk.x11.cornflowerBlue.onLimeGreen('Hi Again!);
 chalk.csscolor.cornflowerBlue.onLimeGreen('Hi Again!);
 
 ```
+
+### chalk.level
+
+Specifies the level of color support.
+
+Color support is automatically detected, but you can override it by setting the `level` property. You should however only do this in your own code as it applies globally to all Chalk consumers.
+Note dart determines VSCode debug console and Android Studio debug console do not support ansi control sequences, when in fact they do, so by default the level is set to 3 (full color/sequence support) as the default, no matter what the console/terminal reports.  You must set this yourslef if you want a different value.
+
+If you need to change this in a reusable module, create a new instance:
+
+```dart
+var chalkWithLevel0 = chalk.instance(level: 0);
+// this version is provided for users of the JS version of Chalk
+var chalkWithLevel0 = chalk.Instance(level: 0);
+```
+
+| Level | Description |
+| :---: | :--- |
+| `0` | All colors disabled |
+| `1` | Basic color support (16 colors) |
+| `2` | 256 color support |
+| `3` | Truecolor support (16 million colors) |
+
 ## IDE Support
 
 The terminals and debug consoles in current versions of both Android Studio, IntelliJ and 
@@ -326,7 +301,6 @@ From dart web code you can use `window.console.log(...)` to log messages to the 
 ## Windows
 
 If you're on Windows, do yourself a favor and use [Windows Terminal](https://github.com/microsoft/terminal) instead of `cmd.exe`.
-
 
 ## Related
 
