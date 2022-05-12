@@ -1,85 +1,24 @@
 import 'package:chalkdart/chalk.dart';
 import 'package:chalkdart/chalk_x11.dart';
-import 'chalkdart_charts.dart';  // for making color charts for example
+import 'chalkdart_charts.dart'; // for making color charts for example
 
 void main() {
   print(chalk.cornflowerBlue
       .onBisque("            Chalk'Dart example program           "));
-
-  print(chalk.green('I am a green line ' +
-      chalk.blue.underline.bold('with a blue bold underline substring ') +
-      chalk.reset('') +
-      chalk.red.overline.italic('with a red italic overline substring') +
-      ' that becomes green again!'));
-
-  print(chalk.x11.purple([
-    'I am a purple line',
-    chalk.blue.underline.bold('with a blue bold underline substring'),
-    chalk.brightYellow.doubleUnderline
-        .italic('with a yellow italic g doubleunderline substring'),
-    'that becomes purple again!'
-  ]));
-
-  // Pass in multiple arguments, variables
-  print(chalk.blue(
-      'Hello',
-      45,
-      45.6,
-      true,
-      {'mymap': 23.4},
-      'Foo',
-      'bar',
-      'biz',
-      'baz'));
-  print(chalk.blink('Hello this is a blink test'));
-  print(chalk.doubleunderline('Hello this is a doublenderline test'));
-  print(chalk.blue(
-      'Hello',
-    //dump the contents of chalk    'chalk.red.doubleunderline.onBrightBlue=',
-    //dump the contents of chalk   chalk.red.doubleunderline.onBrightBlue,
-      45,
-      45.6,
-      true,
-      {'mymap': 23.4},
-      'Foo',
-      'bar',
-      'biz',
-      'baz'));
-
-  print(chalk.joinWith(',').red([
-    'Hello',
-    'World!',
-    'Foo',
-    'bar',
-    'biz',
-    'baz',
-    '(This Array joined with ",")'
-  ]));
-
-  print(chalk.x11.orangeRed('Hello', chalk.underline('World!'), 'Foo', 'bar',
-      chalk.blue('biz'), 'baz'));
-  print(chalk.x11.DarkOrange(['Hello', 'World!', 'Foo', 'bar', 'biz', 'baz']));
-
-  // Nest styles
-  print(chalk.red('Hello', chalk.underline.bgBlue('world') + '!'));
-
-  // test printing variables, joining
-  print(chalk.blue('Hello', 'World!', 45, 45.6, true,
-      {'mymap': 23.4}, 'Foo', 'bar', 'biz', 'baz'));
-
-  var demolines = ChalkDartCharts.demo();
-  print('\n\nChalkDart colorLevel 2 DEMO:');
-  for (var i = 0; i < demolines.length; i++) {
-    print(demolines[i]);
-  }
-
-  var chalkNL = chalk.wrap('\n', '');
 
   print(
       'SGR (Select Graphic Rendition) parameters test (see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR )');
   print(chalk.red('Testing Chalk`Dart!!!  red'));
   print(chalk.red.dim('Testing Chalk`Dart!!! DIM DIM red') +
       chalk.blue(' then back to blue'));
+
+  // Nest styles
+  print(chalk.red('Hello', chalk.underline.bgBlue('world') + '!'));
+
+  // Nest styles of the same type even (color, underline, background)
+  print(chalk.green('I am a green line ' +
+      chalk.blue.underline.bold('with a blue substring') +
+      ' that becomes green again!'));
 
   print(chalk.blue.dim('Testing Chalk`Dart!!! DIM blue') +
       chalk.blue(' then back to blue'));
@@ -103,6 +42,10 @@ void main() {
       chalk.inverse(
           'THIS IS (${chalk.inverse('(THIS IS NESTED INVERTED COLOR)')})  INVERTED COLOR') +
       ' of white.onGrey'));
+
+  // make a chalk that will join wrap print with newline
+  var chalkNL = chalk.wrap('\n', '');
+
   print(chalkNL.onBrightGreen.redBright.strikethrough(
       'Testing Chalk`Dart!!!  onGreenBright.redBright.strikethrough'));
   print(
@@ -135,6 +78,70 @@ void main() {
       chalk.white.x11.onPurple(
           () => ' and this is the return from closure #2 then back to blue'));
 
+  // test adding strings and reset
+  print(chalk.green('I am a green line ' +
+      chalk.blue.underline.bold('with a blue bold underline substring ') +
+      chalk.reset('') +
+      chalk.red.overline.italic('with a red italic overline substring') +
+      ' that becomes green again!'));
+
+  // test joining array
+  print(chalk.x11.purple([
+    'I am a purple line',
+    chalk.blue.underline.bold('with a blue bold underline substring'),
+    chalk.brightYellow.doubleUnderline
+        .italic('with a yellow italic g doubleunderline substring'),
+    'that becomes purple again!'
+  ]));
+
+  // Pass in multiple arguments, variables
+  print(chalk.blue(
+      'Hello', 45, 45.6, true, {'mymap': 23.4}, 'Foo', 'bar', 'biz', 'baz'));
+  print(chalk.blink('Hello this is a blink test'));
+  print(chalk.doubleunderline('Hello this is a doublenderline test'));
+  print(chalk.blue(
+      'Hello',
+      //dump the contents of chalk    'chalk.red.doubleunderline.onBrightBlue=',
+      //dump the contents of chalk   chalk.red.doubleunderline.onBrightBlue,
+      45,
+      45.6,
+      true,
+      {'mymap': 23.4},
+      'Foo',
+      'bar',
+      'biz',
+      'baz'));
+
+  // test joinWith
+  print(chalk.joinWith(',').red([
+    'Hello',
+    'World!',
+    'Foo',
+    'bar',
+    'biz',
+    'baz',
+    '(This Array joined with ",")'
+  ]));
+
+  // mulitple args
+  print(chalk.x11.orangeRed('Hello', chalk.underline('World!'), 'Foo', 'bar',
+      chalk.blue('biz'), 'baz'));
+  print(chalk.x11.DarkOrange(['Hello', 'World!', 'Foo', 'bar', 'biz', 'baz']));
+
+  // Nest styles
+  print(chalk.red('Hello', chalk.underline.bgBlue('world') + '!'));
+
+  // test printing variables, joining
+  print(chalk.blue('Hello', 'World!', 45, 45.6, true, {'mymap': 23.4}, 'Foo',
+      'bar', 'biz', 'baz'));
+
+  // dumping simple color charts
+  var demolines = ChalkDartCharts.demo();
+  print('\n\nChalkDart colorLevel 2 DEMO:');
+  for (var i = 0; i < demolines.length; i++) {
+    print(demolines[i]);
+  }
+
   print(chalk.joinWith('\n').x11.goldenrod.onBlack([
     'These will all have a \n after each line from joinWith()',
     () => chalk.onBlue(
@@ -152,22 +159,22 @@ void main() {
   print(chalk.color.lightGoldenrodYellow
       .onCornflowerBlue('Hey There using dynamic lookup via .color'));
 
-  print(chalk.red('Following under/overline color test will only work in vscode. Will be white in terminal.'));
+  print(chalk.red(
+      'Following under/overline color test will only work in vscode. Will be white in terminal.'));
   print(chalk.blue
       .underlineRgb(255, 0, 0)
       .doubleunderline('Testing Chalk`Dart!!! blue WITH Red double underline'));
-  print(chalk.x11.cornFlowerBlue
-      .underlineRgb16m(0, 255, 0)
-      .doubleunderline('Testing Chalk`Dart!!! cornflowerblue WITH Green double underline'));
+  print(chalk.x11.cornFlowerBlue.underlineRgb16m(0, 255, 0).doubleunderline(
+      'Testing Chalk`Dart!!! cornflowerblue WITH Green double underline'));
 
-  print(chalk.x11.cornFlowerBlue
-      .underlineRgb16m(0, 0, 255)
-      .overline
-      .strikethrough('Testing Chalk`Dart!!! cornflowerblue WITH blue overline and strikethrough'));
+  print(chalk.x11.cornFlowerBlue.underlineRgb16m(0, 0, 255).overline.strikethrough(
+      'Testing Chalk`Dart!!! cornflowerblue WITH blue overline and strikethrough'));
   print('\n');
-  print(chalk.x11.cornFlowerBlue.underlineRgb16m(255, 255, 255).doubleunderline.overline(
-      'Testing Chalk`Dart!!! cornflowerblue WITH white double underline, overline'));
-
+  print(chalk.x11.cornFlowerBlue
+      .underlineRgb16m(255, 255, 255)
+      .doubleunderline
+      .overline(
+          'Testing Chalk`Dart!!! cornflowerblue WITH white double underline, overline'));
 
   print(chalk.yellow.onBlack('here is some yellow text, black BG color ' +
       chalk.inverse('and then switch to inverse colors') +
@@ -181,9 +188,7 @@ void main() {
       ' <<< HIDDEN (still selectable) and back to regular'));
 
   print('\n');
-  print(chalk
-      .hsl(150, 1, 0.5)
-      .ansiSgr(21, 24)('21 to 24 double underline'));
+  print(chalk.hsl(150, 1, 0.5).ansiSgr(21, 24)('21 to 24 double underline'));
 
   String fontTestString =
       "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@#\$%^&*()_+'\"`~";
@@ -193,37 +198,28 @@ void main() {
       ' World' +
       chalk.reset.red('! font 3 RED'));
 
-  print(chalk.reset.font1
-      .white("FONT 1  ", fontTestString,'\n'));
+  print(chalk.reset.font1.white("FONT 1  ", fontTestString, '\n'));
 
-  print(chalk.reset.font2
-      .white("FONT 2  ", fontTestString,'\n'));
+  print(chalk.reset.font2.white("FONT 2  ", fontTestString, '\n'));
 
-  print(chalk.reset.font3
-      .white("FONT 3  ", fontTestString,'\n'));
+  print(chalk.reset.font3.white("FONT 3  ", fontTestString, '\n'));
 
-  print(chalk.reset.font4
-      .white("FONT 4  ", fontTestString,'\n'));
+  print(chalk.reset.font4.white("FONT 4  ", fontTestString, '\n'));
 
-  print(chalk.reset.font5
-      .white("FONT 5  ", fontTestString,'\n'));
+  print(chalk.reset.font5.white("FONT 5  ", fontTestString, '\n'));
 
-  print(chalk.reset.font6
-      .white("FONT 6  ", fontTestString,'\n'));
+  print(chalk.reset.font6.white("FONT 6  ", fontTestString, '\n'));
 
   print(chalk.reset.font6.blueBright(
       "  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
+  print(chalk.reset.font7.white("FONT 7  ", fontTestString, '\n'));
   print(chalk.reset.font7
-      .white("FONT 7  ", fontTestString,'\n'));
-  print(chalk.reset.font7.white(
-      "  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
+      .white("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-  print(chalk.reset.font8
-      .white("FONT 8  ", fontTestString,'\n'));
+  print(chalk.reset.font8.white("FONT 8  ", fontTestString, '\n'));
 
-  print(chalk.reset.font9
-      .white("FONT 9  ", fontTestString,'\n'));
+  print(chalk.reset.font9.white("FONT 9  ", fontTestString, '\n'));
   print(chalk.reset.font9
       .blue("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
@@ -235,12 +231,8 @@ void main() {
       chalk.reset.red.font3('! <same line font change)     font 3 RED'));
 
   // Compose multiple styles using the chainable API
-  print(chalk
-      .hsl(180, 1, 0.5)
-      .font1('Hello World! Font 1'));
-  print(chalk
-      .hsl(210, 1, 0.5)
-      .font2('Hello world! Font 2'));
+  print(chalk.hsl(180, 1, 0.5).font1('Hello World! Font 1'));
+  print(chalk.hsl(210, 1, 0.5).font2('Hello world! Font 2'));
   print(chalk.hsl(240, 1, 0.5).onGreyscale(.7).font3('Hello world! Font 3'));
   print(chalk.hsl(270, 1, 0.5).onGreyscale(.1).font4('Hello world! Font 4') +
       chalk.font3(' (on same line) Hello world! Font 3'));
@@ -259,7 +251,8 @@ void main() {
       .blackletter('Hello world! Font 10'));
   print('\n');
 
-  print(chalk.red('Following under/overline color test will only work in vscode. Will be white in terminal.'));
+  print(chalk.red(
+      'Following under/overline color test will only work in vscode. Will be white in terminal.'));
 
   print(chalk
       .hsl(120, 1, 0.5)
@@ -267,19 +260,11 @@ void main() {
       .underlineRgb16m(0, 255, 0)
       .overline('Hello world! green text on magenta with green OVERLINE'));
 
-  print(chalk
-      .hsl(120, 1, 0.5)
-      .onGrey
-      .underlineRgb16m(0, 255, 0)
-      .overline(
-          'TIMTEST Hello world! .underlineRgb16m KILL STYLE on Android green text on grey with green OVERLINE'));
+  print(chalk.hsl(120, 1, 0.5).onGrey.underlineRgb16m(0, 255, 0).overline(
+      'TIMTEST Hello world! .underlineRgb16m KILL STYLE on Android green text on grey with green OVERLINE'));
 
-  print(chalk
-      .hsl(120, 1, 0.5)
-      .onGrey
-      .underlineRgb(0, 255, 0)
-      .overline(
-          'TIMTEST Hello world! .underlineRgb KILL STYLE on Android green text on grey with green OVERLINE'));
+  print(chalk.hsl(120, 1, 0.5).onGrey.underlineRgb(0, 255, 0).overline(
+      'TIMTEST Hello world! .underlineRgb KILL STYLE on Android green text on grey with green OVERLINE'));
 
   print('\n');
   print(chalk.overline.brightWhite.underlineRgb16m(0, 255, 0)(
@@ -339,14 +324,6 @@ void main() {
   // Pass in multiple arguments
   print(chalk.blue('Hello', 'World!', 'Foo', 'bar', 'biz', 'baz'));
 
-  // Nest styles
-  print(chalk.red('Hello', chalk.underline.bgBlue('world') + '!'));
-
-  // Nest styles of the same type even (color, underline, background)
-  print(chalk.green('I am a green line ' +
-      chalk.blue.underline.bold('with a blue substring') +
-      ' that becomes green again!'));
-
   // use in multiline string and in templating
   print('''
 CPU: ${chalk.red('90%')}
@@ -354,16 +331,14 @@ RAM: ${chalk.green('40%')}
 DISK: ${chalk.yellow('70%')}
 ''');
 
-
   print('''
 CPU: ${chalk.red(344)}%
 RAM: ${chalk.green((0.47 * 100))}%
 DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
 ''');
 
-
   chalk = Chalk.Instance(level: 3).font8;
- 
+
   demolines = ChalkDartCharts.dumpAllHWBTables();
   print('\n\n');
   for (var i = 0; i < demolines.length; i++) {
