@@ -1,13 +1,14 @@
 <img src="media/chalkdart.svg" width="900">
 
-## Console/Terminal string styling done right
+## Console/Terminal text coloring and styling library for Dart.
+### 'Terminal string styling done right'
 
 I created this for my Dart/Flutter development logging almost 2 years ago now, and I have finally taken the time to clean it up and get it released as a package.
 In the mean time I added full ANSI support to the Visual Studio Code debugging console as well as just finishing full ANSI support for the Dart-Pad console as well.  You can use this within your VSCode debugger to enable colorful, styled logging today. 😊
 
 Check out `example/chalkdart_example.dart` for some cool examples of what it is capable of.
 
-If you have used the Chalk package within the npm/node.js environment you know how nice and easy it makes text coloring and styling!
+If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version. 
 
 ## Features and bugs
 Please file feature requests and bugs at the [issue tracker](http://github.com/timmaffett/chalkdart/issues).
@@ -18,11 +19,10 @@ Please file feature requests and bugs at the [issue tracker](http://github.com/t
 - Expressive API
 - Highly performant
 - Ability to nest styles
-- supports dynamic argument list and automatically handles List< >, Iterables and Function closures
+- supports dynamic argument lists and automatically handles printing Maps, Lists, Iterables and Function closures.
 - [256/Truecolor color support](#256-and-truecolor-color-support)
 - Ignores Auto-detected ANSI color support/as common Dart/Flutter IDE's report this incorrectly.
-- Not an extentension of the `String` class...
-   (this might be nice for Dart though using an optional extension class...)
+- Not an extentension of the `String` class.
 - Clean and focused
 - Actively maintained
 

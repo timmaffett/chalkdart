@@ -93,8 +93,8 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
 // Pass in multiple arguments
   print(chalk.blue(
       'Hello',
-      'chalk.red.doubleunderline.onBrightBlue=',
-      chalk.red.doubleunderline.onBrightBlue,
+  //    'chalk.red.doubleunderline.onBrightBlue=',
+  //    chalk.red.doubleunderline.onBrightBlue,
       45,
       45.6,
       true,
@@ -107,8 +107,8 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
   print(chalk.doubleunderline('Hello this is a doublenderline test'));
   print(chalk.blue(
       'Hello',
-      'chalk.red.doubleunderline.onBrightBlue=',
-      chalk.red.doubleunderline.onBrightBlue,
+  //    'chalk.red.doubleunderline.onBrightBlue=',
+   //   chalk.red.doubleunderline.onBrightBlue,
       45,
       45.6,
       true,
@@ -135,7 +135,7 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
 // Nest styles
   print(chalk.red('Hello', chalk.underline.bgBlue('world') + '!'));
 
-  print(chalk.blue('Hello', 'World!', chalk.red, 45, 45.6, true,
+  print(chalk.blue('Hello', 'World!', /*chalk.red,*/ 45, 45.6, true,
       {'mymap': 23.4}, 'Foo', 'bar', 'biz', 'baz'));
 
   var demolines = ChalkDartCharts.demo();
@@ -192,7 +192,7 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
   print(chalk.white.onGrey('Testing Chalk`Dart!!! ' +
       chalk.inverse(
           'THIS IS (${chalk.inverse('(THIS IS NESTED INVERTED COLOR)')})  INVERTED COLOR') +
-      ' of magenta.onGrey'));
+      ' of white.onGrey'));
   print(chalkNL.onBrightGreen.redBright.strikethrough(
       'Testing Chalk`Dart!!!  onGreenBright.redBright.strikethrough'));
   print(

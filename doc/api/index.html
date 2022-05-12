@@ -44,11 +44,12 @@
       
 <section class="desc markdown">
   <img src="media/chalkdart.svg" width="900">
-<h2 id="consoleterminal-string-styling-done-right">Console/Terminal string styling done right</h2>
+<h2 id="consoleterminal-text-coloring-and-styling-library-for-dart">Console/Terminal text coloring and styling library for Dart.</h2>
+<h3 id="terminal-string-styling-done-right">'Terminal string styling done right'</h3>
 <p>I created this for my Dart/Flutter development logging almost 2 years ago now, and I have finally taken the time to clean it up and get it released as a package.
 In the mean time I added full ANSI support to the Visual Studio Code debugging console as well as just finishing full ANSI support for the Dart-Pad console as well.  You can use this within your VSCode debugger to enable colorful, styled logging today. 😊</p>
 <p>Check out <code>example/chalkdart_example.dart</code> for some cool examples of what it is capable of.</p>
-<p>If you have used the Chalk package within the npm/node.js environment you know how nice and easy it makes text coloring and styling!</p>
+<p>If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version.</p>
 <h2 id="features-and-bugs">Features and bugs</h2>
 <p>Please file feature requests and bugs at the <a href="http://github.com/timmaffett/chalkdart/issues">issue tracker</a>.</p>
 <h2 id="highlights">Highlights</h2>
@@ -56,11 +57,10 @@ In the mean time I added full ANSI support to the Visual Studio Code debugging c
 <li>Expressive API</li>
 <li>Highly performant</li>
 <li>Ability to nest styles</li>
-<li>supports dynamic argument list and automatically handles List&lt; &gt;, Iterables and Function closures</li>
+<li>supports dynamic argument lists and automatically handles printing Maps, Lists, Iterables and Function closures.</li>
 <li><a href="#256-and-truecolor-color-support">256/Truecolor color support</a></li>
 <li>Ignores Auto-detected ANSI color support/as common Dart/Flutter IDE's report this incorrectly.</li>
-<li>Not an extentension of the <code>String</code> class...
- (this might be nice for Dart though using an optional extension class...)</li>
+<li>Not an extentension of the <code>String</code> class.</li>
 <li>Clean and focused</li>
 <li>Actively maintained</li>
 </ul>
@@ -1850,7 +1850,7 @@ From dart web code you can use <code>window.console.log(...)</code> to log messa
 <footer>
   <span class="no-break">
     chalkdart
-      1.0.0
+      2.0.0
   </span>
 
   
