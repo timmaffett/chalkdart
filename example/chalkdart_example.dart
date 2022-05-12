@@ -1,16 +1,8 @@
-/*
-  @author: tim maffett
-*/
 import 'package:chalkdart/chalk.dart';
 import 'package:chalkdart/chalk_x11.dart';
-import 'chalkdart_charts.dart';
-
+import 'chalkdart_charts.dart';  // for making color charts for example
 
 void main() {
-  final includeFonts = true;
-
-  Chalk chalk = Chalk();
-
   print(chalk.cornflowerBlue
       .onBisque("            Chalk'Dart example program           "));
 
@@ -28,7 +20,7 @@ void main() {
     'that becomes purple again!'
   ]));
 
-// Pass in multiple arguments
+  // Pass in multiple arguments, variables
   print(chalk.blue(
       'Hello',
       45,
@@ -71,7 +63,8 @@ void main() {
   // Nest styles
   print(chalk.red('Hello', chalk.underline.bgBlue('world') + '!'));
 
-  print(chalk.blue('Hello', 'World!', /*chalk.red,*/ 45, 45.6, true,
+  // test printing variables, joining
+  print(chalk.blue('Hello', 'World!', 45, 45.6, true,
       {'mymap': 23.4}, 'Foo', 'bar', 'biz', 'baz'));
 
   var demolines = ChalkDartCharts.demo();
@@ -159,6 +152,7 @@ void main() {
   print(chalk.color.lightGoldenrodYellow
       .onCornflowerBlue('Hey There using dynamic lookup via .color'));
 
+  print(chalk.red('Following under/overline color test will only work in vscode. Will be white in terminal.'));
   print(chalk.blue
       .underlineRgb(255, 0, 0)
       .doubleunderline('Testing Chalk`Dart!!! blue WITH Red double underline'));
@@ -189,93 +183,83 @@ void main() {
   print('\n');
   print(chalk
       .hsl(150, 1, 0.5)
-      //.onGreyscale(0.05)
       .ansiSgr(21, 24)('21 to 24 double underline'));
 
-  if (includeFonts) {
-    String fontTestString =
-        "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@#\$%^&*()_+'\"`~";
-    String ligatureTest =
-        chalk.blue('\n--> ~~> *** != !== <||| |||> ++ .= >= <= ~= *= /= ');
-    String ligatureTest2 = chalk.brightBlue(
-        r'''<<-----<<-----||----->>----->> <===<===||===>===> >---||---< 
-<==<==||==>==> /===/===//===/===/ //===:===!===//
-|---<>>-----|| ||-----<< \/ /\ <> <~> </>''');
-    // Combine styled and normal strings
-    print(chalk.reset.blue('Hello BLUE font 1') +
-        ' World' +
-        chalk.reset.red('! font 3 RED'));
+  String fontTestString =
+      "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@#\$%^&*()_+'\"`~";
 
-    //chalk = chalk.font6;
-ligatureTest = ligatureTest2 = '';
-    print(chalk.reset.font1
-        .white("FONT 1  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+  // Combine styled and normal strings
+  print(chalk.reset.blue('Hello BLUE font 1') +
+      ' World' +
+      chalk.reset.red('! font 3 RED'));
 
-    print(chalk.reset.font2
-        .white("FONT 2  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+  print(chalk.reset.font1
+      .white("FONT 1  ", fontTestString,'\n'));
 
-    print(chalk.reset.font3
-        .white("FONT 3  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+  print(chalk.reset.font2
+      .white("FONT 2  ", fontTestString,'\n'));
 
-    print(chalk.reset.font4
-        .white("FONT 4  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+  print(chalk.reset.font3
+      .white("FONT 3  ", fontTestString,'\n'));
 
-    print(chalk.reset.font5
-        .white("FONT 5  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+  print(chalk.reset.font4
+      .white("FONT 4  ", fontTestString,'\n'));
 
-    print(chalk.reset.font6
-        .white("FONT 6  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+  print(chalk.reset.font5
+      .white("FONT 5  ", fontTestString,'\n'));
 
-    print(chalk.reset.font6.blueBright(
-        "  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
+  print(chalk.reset.font6
+      .white("FONT 6  ", fontTestString,'\n'));
 
-    print(chalk.reset.font7
-        .white("FONT 7  ", fontTestString, ligatureTest, '\n', ligatureTest2));
-    print(chalk.reset.font7.white(
-        "  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
+  print(chalk.reset.font6.blueBright(
+      "  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-    print(chalk.reset.font8
-        .white("FONT 8  ", fontTestString, ligatureTest, '\n', ligatureTest2));
+  print(chalk.reset.font7
+      .white("FONT 7  ", fontTestString,'\n'));
+  print(chalk.reset.font7.white(
+      "  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-    print(chalk.reset.font9
-        .white("FONT 9  ", fontTestString, ligatureTest, '\n', ligatureTest2));
-    print(chalk.reset.font9
-        .blue("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
+  print(chalk.reset.font8
+      .white("FONT 8  ", fontTestString,'\n'));
 
-    print(chalk.reset.font10
-        .white("FONT 10  -extra wide font - no ligatures ", fontTestString));
+  print(chalk.reset.font9
+      .white("FONT 9  ", fontTestString,'\n'));
+  print(chalk.reset.font9
+      .blue("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-    print(chalk.reset.blue.font1('Hello BLUE font 1') +
-        ' World' +
-        chalk.reset.red.font3('! <same line font change)     font 3 RED'));
+  print(chalk.reset.font10
+      .white("FONT 10  -extra wide font - no ligatures ", fontTestString));
 
-    // Compose multiple styles using the chainable API
-    print(chalk
-        .hsl(180, 1, 0.5)
-        //.onGreyscale(.5)
-        .font1('Hello World! Font 1'));
-    print(chalk
-        .hsl(210, 1, 0.5)
-        //.onGreyscale(.6)
-        .font2('Hello world! Font 2'));
-    print(chalk.hsl(240, 1, 0.5).onGreyscale(.7).font3('Hello world! Font 3'));
-    print(chalk.hsl(270, 1, 0.5).onGreyscale(.1).font4('Hello world! Font 4') +
-        chalk.font3(' (on same line) Hello world! Font 3'));
-    print(chalk.hsl(300, 1, 0.5).onGreyscale(.2).font5('Hello world! Font 5'));
-    print(chalk.hsl(330, 1, 0.5).onGreyscale(.3).font6('Hello world! Font 6'));
-    print(chalk.hsl(0, 1, 0.5).onGreyscale(.4).font7('Hello world! Font 7'));
-    print(chalk.hsl(30, 1, 0.5).onGreyscale(.5).font8('Hello world! Font 8'));
-    print(chalk.hsl(60, 1, 0.5).onGreyscale(.5).font9('Hello world! Font 9'));
-    print(chalk
-        .hsl(90, 1, 0.5)
-        .onGreyscale(.5)
-        .blackletter('Hello world! Font blackletter (font 10)'));
-    print(chalk
-        .hsl(90, 1, 0.5)
-        .onGreyscale(.5)
-        .blackletter('Hello world! Font 10'));
-    print('\n');
-  }
+  print(chalk.reset.blue.font1('Hello BLUE font 1') +
+      ' World' +
+      chalk.reset.red.font3('! <same line font change)     font 3 RED'));
+
+  // Compose multiple styles using the chainable API
+  print(chalk
+      .hsl(180, 1, 0.5)
+      .font1('Hello World! Font 1'));
+  print(chalk
+      .hsl(210, 1, 0.5)
+      .font2('Hello world! Font 2'));
+  print(chalk.hsl(240, 1, 0.5).onGreyscale(.7).font3('Hello world! Font 3'));
+  print(chalk.hsl(270, 1, 0.5).onGreyscale(.1).font4('Hello world! Font 4') +
+      chalk.font3(' (on same line) Hello world! Font 3'));
+  print(chalk.hsl(300, 1, 0.5).onGreyscale(.2).font5('Hello world! Font 5'));
+  print(chalk.hsl(330, 1, 0.5).onGreyscale(.3).font6('Hello world! Font 6'));
+  print(chalk.hsl(0, 1, 0.5).onGreyscale(.4).font7('Hello world! Font 7'));
+  print(chalk.hsl(30, 1, 0.5).onGreyscale(.5).font8('Hello world! Font 8'));
+  print(chalk.hsl(60, 1, 0.5).onGreyscale(.5).font9('Hello world! Font 9'));
+  print(chalk
+      .hsl(90, 1, 0.5)
+      .onGreyscale(.5)
+      .blackletter('Hello world! Font blackletter (font 10)'));
+  print(chalk
+      .hsl(90, 1, 0.5)
+      .onGreyscale(.5)
+      .blackletter('Hello world! Font 10'));
+  print('\n');
+
+  print(chalk.red('Following under/overline color test will only work in vscode. Will be white in terminal.'));
 
   print(chalk
       .hsl(120, 1, 0.5)
@@ -329,11 +313,10 @@ ligatureTest = ligatureTest2 = '';
       'Yay for x11.MediumSlateBlue.bgMediumVioletRed colored DOUBLE UNDERLINED text!'));
 
   var testtim = "Super Way";
-  dynamic chalk2 =
-      Chalk(); // put chalk in dynamic variable so we can directly access X11/CSS color names as 'virtual' methods
-  print(chalk2.orangeRed(
-      'Yay for .orangeRed background to ${chalk.x11.purple("purple $testtim inside")} back to orangeRed colored text!'));
-  print(chalk2.lightskyblue('Yay for lightskyblue colored text!'));
+
+  print(chalk.orangeRed(
+      'Yay for .orangeRed background to ${chalk.purple("purple $testtim inside")} back to orangeRed colored text!'));
+  print(chalk.lightSkyBlue('Yay for lightskyblue colored text!'));
 
   // Use RGB colors in terminal emulators that support it.
   print(chalk.keyword('olive')('Yay for olive colored text!'));
