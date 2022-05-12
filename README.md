@@ -1,4 +1,12 @@
-<img src="media/chalkdart.svg" width="900">
+<img src="https://raw.githubusercontent.com/timmaffett/chalkdart/713b6657ffc00f699c8eba234fe30374049d5f13/media/chalkdart.svg" width="100%">
+
+##### vscode debug console
+<img src="media/ABasic.png" width="100%">
+
+##### windows terminal
+
+<img src="media/AChalkDart2.png" width="100%">
+
 
 ## Console/Terminal text coloring and styling library for Dart.
 ### 'Terminal string styling done right'
@@ -19,7 +27,7 @@ Please file feature requests and bugs at the [issue tracker](http://github.com/t
 - Expressive API
 - Highly performant
 - Ability to nest styles
-- supports dynamic argument lists and automatically handles printing Maps, Lists, Iterables and Function closures.
+- supports dynamic argument list and automatically handles printing Maps, Lists, Iterables and Function closures
 - [256/Truecolor color support](#256-and-truecolor-color-support)
 - Ignores Auto-detected ANSI color support/as common Dart/Flutter IDE's report this incorrectly.
 - Not an extentension of the `String` class.
@@ -1821,3 +1829,13 @@ If you're on Windows, do yourself a favor and use [Windows Terminal](https://git
 ## Author/Maintainer
 
 - [Tim Maffett](https://github.com/timmaffett)
+
+
+## Other examples
+
+##### Charts from chalkdart_example.dart output to windows terminal
+<img src="media/Ansi0.png" width="100%">
+<img src="media/Ansi1.png" width="100%">
+
+<img src="media/AWindowsTerminal.png" width="100%">
+<img src="media/AChalkDart2_chart2.png" width="100%">

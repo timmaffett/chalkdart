@@ -291,7 +291,7 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
         chalk.reset.red('! font 3 RED'));
 
     //chalk = chalk.font6;
-
+ligatureTest = ligatureTest2 = '';
     print(chalk.reset.font1
         .white("FONT 1  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 
@@ -309,7 +309,7 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
 
     print(chalk.reset.font6
         .white("FONT 6  ", fontTestString, ligatureTest, '\n', ligatureTest2));
-    outputThePowerSymbols(chalk.font6);
+   // outputThePowerSymbols(chalk.font6);
     print(chalk.reset.font6.blueBright(
         "  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
@@ -318,7 +318,7 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
     print(chalk.reset.font7.white(
         "  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
 
-    outputThePowerSymbols(chalk.font7);
+   // outputThePowerSymbols(chalk.font7);
     print(chalk.reset.font8
         .white("FONT 8  ", fontTestString, ligatureTest, '\n', ligatureTest2));
 

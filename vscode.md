@@ -38,3 +38,7 @@ Add these to VSCode settings.json, after enabling the "Customize UI" extension:
                "font-stretch: ultra-expanded; font-weight: bold; font-family: 'League Mono';",
     },
 ```
+
+##Example screengrab from VSCode Debug Console
+ 
+<img src="media/AFontsTestVSCode.png" width="100%">
