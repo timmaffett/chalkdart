@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.8
+
+- Changed http link in readme to https
+
 ## 2.0.7
 
 - More example cleanup

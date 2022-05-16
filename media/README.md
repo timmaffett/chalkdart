@@ -1,6 +1,7 @@
 <img src="https://raw.githubusercontent.com/timmaffett/chalkdart/master/media/ChalkDart.png" width="100%">
 
 ##### vscode debug console
+
 <img src="https://github.com/timmaffett/chalkdart/raw/master/media/ABasic.png" width="100%">
 
 ##### windows terminal
@@ -16,11 +17,11 @@ In the mean time I added full ANSI support to the Visual Studio Code debugging c
 
 Check out `example/chalkdart_example.dart` for some cool examples of what it is capable of.
 
-If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version. 
+If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version.
 
 ## Features and bugs
-Please file feature requests and bugs at the [issue tracker](http://github.com/timmaffett/chalkdart/issues).
 
+Please file feature requests and bugs at the [issue tracker](https://github.com/timmaffett/chalkdart/issues).
 
 ## Highlights
 

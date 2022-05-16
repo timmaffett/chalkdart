@@ -1,6 +1,7 @@
 <img src="https://raw.githubusercontent.com/timmaffett/chalkdart/master/media/ChalkDart.png" width="100%">
 
 ##### vscode debug console
+
 <img src="https://github.com/timmaffett/chalkdart/raw/master/media/ABasic.png" width="100%">
 
 ##### windows terminal
@@ -24,7 +25,7 @@ If you have used the Chalk.js package within the npm/node.js environment you kno
 
 ## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker](http://github.com/timmaffett/chalkdart/issues).
+Please file feature requests and bugs at the [issue tracker](https://github.com/timmaffett/chalkdart/issues).
 
 ## Highlights
 
