@@ -1,4 +1,12 @@
+# Chalk'Dart [![Share on Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Dart%Chalk%20plugin!&url=https://github.com/timmaffett/chalkdart&hashtags=flutter,dart,dartlang,console) [![Share on Facebook](https://img.shields.io/badge/share-facebook-blue.svg?longCache=true&style=flat&colorB=%234267b2)](https://www.facebook.com/sharer/sharer.php?u=https%3A//github.com/timmaffett/chalkdart)
 <img src="https://raw.githubusercontent.com/timmaffett/chalkdart/master/media/ChalkDart.png" width="100%">
+
+[![Pub](https://img.shields.io/pub/v/chalkdart.svg)](https://pub.dartlang.org/packages/chalkdart)
+[![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter-chalkdart)
+[![License](https://img.shields.io/badge/License-BSD%203.0-blue.svg)](/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/timmaffett/chalkdart)](https://github.com/timmaffett/chalkdart/graphs/contributors)
+[![GitHub forks](https://img.shields.io/github/forks/timmaffett/chalkdart)](https://github.com/timmaffett/chalkdart)
+[![GitHub stars](https://img.shields.io/github/stars/timmaffett/chalkdart?)](https://github.com/timmaffett/chalkdart)
 
 ##### vscode debug console
 
@@ -113,9 +121,9 @@ print(warning('Warning!'));
 ```dart
 const name = 'Tim Maffett';
 print(chalk.green('Hello $name'));
+//=> 'Hello Tim Maffett'
 ```
 
-//=><span style='color:#00bc00;'> 'Hello Tim Maffett'</span>
 
 ## API
 
