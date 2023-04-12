@@ -1,10 +1,19 @@
 name: chalkdart
 description: Console text coloring and styling library for Dart. 'Terminal string styling done right'
-version: 2.0.8
+version: 2.0.10
 homepage: https://github.com/timmaffett/chalkdart
+screenshots:
+  - description: 'vscode debug terminal example'
+    path: media/ABasic.png
+  - description: 'windows terminal example'
+    path: media/AChalkDart2.png
+  - description: '256 color chart from chalkdart_example.dart output to windows terminal'
+    path: media/Ansi0.png
+  - description: 'Full color chart from chalkdart_example.dart output to windows terminal'
+    path: media/AWindowsTerminal.png
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 
 #dependencies:
 

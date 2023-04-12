@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.10
+
+- Add quotes to screenshot section of pubspec.yaml
+
+## 2.0.9
+
+- Added screenshots to pubspec.yaml
+
 ## 2.0.8
 
 - Changed http link in readme to https

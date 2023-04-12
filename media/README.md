@@ -109,9 +109,8 @@ print(warning('Warning!'));
 ```dart
 const name = 'Tim Maffett';
 print(chalk.green('Hello $name'));
+//=> 'Hello Tim Maffett'
 ```
-
-//=><span style='color:#00bc00;'> 'Hello Tim Maffett'</span>
 
 ## API
 
