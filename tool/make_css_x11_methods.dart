@@ -9,6 +9,7 @@ import 'package:args/args.dart';
 import 'package:chalkdart/colorutils.dart';
 
 const String outputExtensionClassFile = 'lib/src/chalk_x11.g.dart';
+const String outputStringExtensionClassFile = 'lib/src/chalkstrings_x11.g.dart';
 
 void main(List<String> arguments) {
   //arguments = ['-c', '-x', '--out', 'timmy.txt'];
@@ -21,6 +22,11 @@ void main(List<String> arguments) {
         negatable: false,
         help:
             'Write color methods to $outputExtensionClassFile (override destination with --out)')
+    ..addFlag('stringColorMethods',
+        abbr: 's',
+        negatable: false,
+        help:
+            'Write String color extension methods to $outputStringExtensionClassFile (override destination with --out)')
     ..addFlag('x11ReadmeTable',
         abbr: 'x',
         negatable: false,
@@ -39,6 +45,7 @@ void main(List<String> arguments) {
 
   if (argResults.wasParsed('help') ||
       (!argResults.wasParsed('colorMethods') &&
+        !argResults.wasParsed('stringColorMethods') &&
           !argResults.wasParsed('x11ReadmeTable'))) {
     printUsage(parser);
     exit(0);
@@ -48,18 +55,35 @@ void main(List<String> arguments) {
       argResults.wasParsed('out') && argResults['out'].isNotEmpty;
   final String outputFileName =
       dumpToOutFile ? argResults['out'] : outputExtensionClassFile;
+  final String stringOutputFileName =
+      dumpToOutFile ? argResults['out'] : outputStringExtensionClassFile;
 
   final bool dumpColorMethodsFlag = argResults.wasParsed('colorMethods');
+  final bool dumpStringColorMethodsFlag = argResults.wasParsed('stringColorMethods');
+  final bool dumpX11ReadmeFlag = argResults.wasParsed('x11ReadmeTable');
+
+  int numOutputs=0;
+  if(dumpColorMethodsFlag) numOutputs++;
+  if(dumpStringColorMethodsFlag) numOutputs++;
+  if(dumpX11ReadmeFlag) numOutputs++;
+  if(numOutputs>1) {
+    print('ERROR - only a single output type flag can be used at one time.');
+    exit(0);
+  }
 
   List<String> out = [];
 
-  if (dumpColorMethodsFlag) {
+  if(dumpStringColorMethodsFlag) {
+    out = dumpStringExtensionColorMethods();
+  } else if (dumpColorMethodsFlag) {
     out = dumpColorMethods();
   } else if (argResults['x11ReadmeTable']) {
     out = dumpX11ReadmeTable();
   }
 
-  if (dumpColorMethodsFlag || dumpToOutFile) {
+  if(dumpStringColorMethodsFlag) {
+    File(stringOutputFileName).writeAsStringSync(out.join('\n').toString());
+  } else if (dumpColorMethodsFlag || dumpToOutFile) {
     File(outputFileName).writeAsStringSync(out.join('\n').toString());
   } else {
     for (String line in out) {
@@ -74,7 +98,11 @@ List<String> dumpColorMethods() {
   List<String> out = [];
 
   out.add(
-      '// BEGIN GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /tool/makeX11EntryPoints.dart');
+      '''// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+// BEGIN GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /tool/makeX11EntryPoints.dart''');
 
   out.add('''
 import 'chalk.dart';
@@ -124,6 +152,70 @@ extension ChalkX11 on Chalk {''');
         "/// set background color to $colorSource color $colorKeyword <span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x$colorHexStr)/rgb($red, $green, $blue)");
     outWithIndent(out,
         'Chalk get $onEntryPoint => makeRGBChalk($red, $green, $blue, bg: true);');
+    outWithIndent(out, '');
+  });
+  out.add('}');
+
+  out.add('');
+  out.add(
+      '''// END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart
+''');
+
+  return out;
+}
+
+
+List<String> dumpStringExtensionColorMethods() {
+  List<String> out = [];
+
+  out.add(
+      '''// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+// BEGIN GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /tool/makeX11EntryPoints.dart''');
+
+  out.add('''
+import 'chalk.dart';
+import 'chalk_x11.g.dart';
+
+/// This extension class adds proper methods to Chalk for all of the 
+/// standard X11/CSS/SVG color names for use by Chalk.
+extension ChalkX11Strings on String {
+  static final Chalk _chalk = Chalk();
+''');
+
+  colorKeywords.forEach((colorKeyword, hexColorValue) {
+    if (colorKeyword.startsWith('@')) return; // skip ansi colors
+    num red = (hexColorValue >> 16) & 0xFF;
+    num green = (hexColorValue >> 8) & 0xFF;
+    num blue = hexColorValue & 0xFF;
+
+    String colorHexStr =
+        hexColorValue.toRadixString(16).padLeft(6, '0').toUpperCase();
+    String entryPoint = colorKeyword;
+    String onEntryPoint =
+        'on' + colorKeyword[0].toUpperCase() + colorKeyword.substring(1);
+
+    String cssColorCode = colorKeyword.toLowerCase();
+    String colorSource = 'X11/CSS';
+    if (cssColorCode == 'rebeccapurple' || cssColorCode == 'lightgoldenrod') {
+      colorSource = 'X11';
+      cssColorCode = 'rgb($red, $green, $blue)'; // these are X11 names
+    } else if (cssColorCode == 'lightgoldenrodyellow') {
+      colorSource = 'CSS';
+    }
+    cssColorCode = cssColorCode.replaceAll('x11', '');
+
+    outWithIndent(out,
+        "/// set foreground color to $colorSource color $colorKeyword <span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x$colorHexStr)/rgb($red, $green, $blue)");
+    outWithIndent(
+        out, 'String get $entryPoint => _chalk.$entryPoint(this);');
+    outWithIndent(out, '');
+    outWithIndent(out,
+        "/// set background color to $colorSource color $colorKeyword <span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x$colorHexStr)/rgb($red, $green, $blue)");
+    outWithIndent(out,
+        'String get $onEntryPoint => _chalk.$onEntryPoint(this);');
     outWithIndent(out, '');
   });
   out.add('}');

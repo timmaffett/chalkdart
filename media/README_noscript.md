@@ -30,6 +30,7 @@ Please file feature requests and bugs at the [issue tracker](https://github.com/
 ## Highlights
 
 - Expressive API
+- Optional String extension classes which allow use of the Chalk methods directly on Strings
 - Highly performant
 - Ability to nest styles
 - Supports dynamic argument list and automatically handles printing Maps, Lists, Iterables and Function closures
@@ -52,6 +53,14 @@ $ dart pub add chalkdart
 import 'package:chalkdart/chalk.dart';
 
 print(chalk.yellow.onBlue('Hello world!'));
+```
+
+or using the Chalk String extentions:
+
+```dart
+import 'package:chalkdart/chalkstrings.dart';
+
+print('Hello world!'.yellow.onBlue);
 ```
 
 Chalk comes with an easy to use composable API where you just chain and nest the styles you want.
@@ -96,6 +105,46 @@ DISK: ${chalk.rgb(255,131,0)((disk.used / disk.total * 100))}%
 print(chalk.keyword('orange')('Yay for orange colored text!'));
 print(chalk.rgb(123, 45, 67).underline('Underlined reddish color'));
 print(chalk.hex('#DEADED').bold('Bold gray!'));
+```
+
+Alternately using the Chalk String extensions:
+
+```dart
+import 'package:chalkdart/chalkstrings.dart';
+
+// Combine styled and normal strings
+print('Hello'.blue + ' World' + '!'.red);
+
+// Compose multiple styles using the chainable API
+print('Hello world!'.blue.onRed.bold);
+
+// Nest styles
+print(('Hello' + 'world'.underline.bgBlue + '!').red);
+
+// Nest styles of the same type even (color, underline, background)
+print(('I am a green line ' +
+     'with a blue substring'.blue.underline.bold +
+     ' that becomes green again!').green
+);
+
+// use in multiline string with interpolation
+print('''
+      CPU: ${'90%'.red}
+      RAM: ${'40%'.green}
+      DISK: ${'70%'.yellow}
+   ''');
+
+// or with inline calcs
+print('''
+CPU: ${cpu.totalPercent.toString().red}%
+RAM: ${(ram.used / ram.total * 100).toString().green}%
+DISK: ${(disk.used / disk.total * 100).toString().rgb(255,131,0)}%
+''');
+
+// Use RGB colors in debug console or terminals that support it.
+print('Yay for orange colored text!'.keyword('orange'));
+print('Underlined reddish color'.rgb(123, 45, 67).underline);
+print('Bold gray!'.hex('#DEADED').bold);
 ```
 
 Easily define your own themes:

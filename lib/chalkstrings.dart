@@ -9,6 +9,9 @@ import 'src/supports_ansi.dart'
 import 'src/chalk.dart';
 export 'src/chalk.dart';
 
+// String extensions allowing using chalk methods directlty on String's
+export 'src/chalkstrings.dart';
+
 /// Default global instance of chalk used for base call.
 /// This can be set to a specific Chalk instance that would then serve
 /// as basis for all calls.
@@ -34,3 +37,4 @@ final bool ansiColorDisabled = !supportsAnsiColor;
 /// or the dart.libary.io version `supports_ansi_io.dart`
 /// or the dart.library.html version `supports_ansi_web.dart`.
 final String chalkUsedAnsiInclude = usedAnsiInclude;
+
