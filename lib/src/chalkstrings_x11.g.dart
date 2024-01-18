@@ -6,7 +6,7 @@
 import 'chalk.dart';
 import 'chalk_x11.g.dart';
 
-/// This extension class adds proper methods to Chalk for all of the 
+/// This extension class adds proper methods to Chalk for all of the
 /// standard X11/CSS/SVG color names for use by Chalk.
 extension ChalkX11Strings on String {
   static final Chalk _chalk = Chalk();
@@ -904,7 +904,6 @@ extension ChalkX11Strings on String {
 
   /// set background color to X11/CSS color yellowGreen <span style='background-color: yellowgreen;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x9ACD32)/rgb(154, 205, 50)
   String get onYellowGreen => _chalk.onYellowGreen(this);
-
 }
 
 // END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart

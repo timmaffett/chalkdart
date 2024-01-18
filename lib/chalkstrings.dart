@@ -37,4 +37,3 @@ final bool ansiColorDisabled = !supportsAnsiColor;
 /// or the dart.libary.io version `supports_ansi_io.dart`
 /// or the dart.library.html version `supports_ansi_web.dart`.
 final String chalkUsedAnsiInclude = usedAnsiInclude;
-

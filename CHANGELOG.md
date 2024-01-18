@@ -1,14 +1,21 @@
 # Change Log
 
+## 2.2.1
+
+- Dart format on source
+
 ## 2.2.0
+
 - Extended make_css_x11_methods.dart to have capability to generate extensions to String class for all
   the X11/Css color methods from chalk_x11.dart
 - Added `chalkstrings_x11.dart` class for adding X11 Chalk methods as extensions to String class
 
-## 2.1.0 
+## 2.1.0
+
 - Added Chalk extensions to String class for all Chalk methods using `chalkstrings.dart`
 
 ## 2.0.11
+
 - Updated packages, fixed typos in readme, removed non functional badges from readme
 
 ## 2.0.10

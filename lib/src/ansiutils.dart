@@ -73,5 +73,4 @@ class AnsiUtils {
     return null;
   }
   */
-
 }
