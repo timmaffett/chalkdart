@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+// Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 //
@@ -9,8 +9,9 @@ import 'src/supports_ansi.dart'
 import 'src/chalk.dart';
 export 'src/chalk.dart';
 
-// String extensions allowing using chalk methods directlty on String's
+// String extensions allowing using chalk methods directly on String's
 export 'src/chalkstrings.dart';
+export 'src/chalkstrings_x11.g.dart';
 
 /// Default global instance of chalk used for base call.
 /// This can be set to a specific Chalk instance that would then serve
@@ -34,6 +35,6 @@ final bool ansiColorDisabled = !supportsAnsiColor;
 
 /// Read only, informational only.
 /// Name of the ansi include file used `supports_ansi.dart` is the default,
-/// or the dart.libary.io version `supports_ansi_io.dart`
+/// or the dart.library.io version `supports_ansi_io.dart`
 /// or the dart.library.html version `supports_ansi_web.dart`.
 final String chalkUsedAnsiInclude = usedAnsiInclude;

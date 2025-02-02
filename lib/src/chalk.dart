@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+// Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 import 'ansiutils.dart';
@@ -454,200 +454,339 @@ class Chalk {
   /// Alternate name for onGreyscale() (provided for legacy compatibility with JS Chalk)
   Chalk bgGreyscale(num greyscale) => onGreyscale(greyscale);
 
-  /// Set foreground color to one of the base 16 xterm colors
+  /// Set foreground base 16 xterm colors black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get black => _createStyler(_ansiSGRModiferOpen(30), _ansiClose, this);
 
-  /// make foreground red <span style="background:red;">&nbsp;&nbsp;&nbsp;</span>
+  /// Set foreground base 16 xterm colors red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get red => _createStyler(_ansiSGRModiferOpen(31), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,128,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get green => _createStyler(_ansiSGRModiferOpen(32), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors yellow
+  /// (terminal dependent)![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get yellow => _createStyler(_ansiSGRModiferOpen(33), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors blue
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get blue => _createStyler(_ansiSGRModiferOpen(34), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get magenta => _createStyler(_ansiSGRModiferOpen(35), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get cyan => _createStyler(_ansiSGRModiferOpen(36), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors white
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28192,192,192%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get white => _createStyler(_ansiSGRModiferOpen(37), _ansiClose, this);
 
   /// 8 more 'bright' versions of the lower 8 colors
+  /// Set foreground base 16 xterm colors bright black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightBlack =>
       _createStyler(_ansiSGRModiferOpen(90), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get blackBright =>
       brightBlack; // original chalk library used 'xxxxxBright' (adjective AFTER the color noun), we include alias for compatibility
+
+  /// Set foreground base 16 xterm colors gray  (alternate name for bright black)
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get gray => brightBlack;
 
+  /// Set foreground base 16 xterm colors grey (alternate name for bright black)
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get grey => brightBlack;
 
+  /// Set foreground base 16 xterm colors bright red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightRed =>
       _createStyler(_ansiSGRModiferOpen(91), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get redBright => brightRed;
 
+  /// Set foreground base 16 xterm colors bright green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightGreen =>
       _createStyler(_ansiSGRModiferOpen(92), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get greenBright => brightGreen;
 
+  /// Set foreground base 16 xterm colors bright yellow
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightYellow =>
       _createStyler(_ansiSGRModiferOpen(93), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright yellow
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get yellowBright => brightYellow;
 
+  /// Set foreground base 16 xterm colors bright blue
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightBlue =>
       _createStyler(_ansiSGRModiferOpen(94), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright blue
+  /// set foreground color to bright blue ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get blueBright => brightBlue;
 
+  /// Set foreground base 16 xterm colors bright magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightMagenta =>
       _createStyler(_ansiSGRModiferOpen(95), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get magentaBright => brightMagenta;
 
+  /// Set foreground base 16 xterm colors bright cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightCyan =>
       _createStyler(_ansiSGRModiferOpen(96), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get cyanBright => brightCyan;
 
+  /// Set foreground base 16 xterm colors bright white
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get brightWhite =>
       _createStyler(_ansiSGRModiferOpen(97), _ansiClose, this);
 
+  /// Set foreground base 16 xterm colors bright white
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get whiteBright => brightWhite;
 
   /// chalkdart favors 'onXXXXX' style of specifying background colors because it makes
   /// chained methods list read better as a sentence (`it's the Dart way`).
   /// We include original Chalk 'bgXXXX' method names for users that prefer that scheme
-  /// and for legacy compatability with original JS Chalk.
+  /// and for legacy compatibility with original JS Chalk.
+  /// Set background base 16 xterm colors black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBlack =>
       _createStyler(_ansiSGRModiferOpen(40), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBlack.
+  /// Legacy api, provided only for backwards compatibility, use onBlack.
+  /// Set background base 16 xterm colors black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBlack => onBlack;
 
+  /// Set background base 16 xterm colors red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onRed => _createStyler(_ansiSGRModiferOpen(41), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onRed.
+  /// Legacy api, provided only for backwards compatibility, use onRed.
+  /// Set background base 16 xterm colors red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgRed => onRed;
 
+  /// Set background base 16 xterm colors green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,128,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onGreen =>
       _createStyler(_ansiSGRModiferOpen(42), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onGreen.
+  /// Legacy api, provided only for backwards compatibility, use onGreen.
+  /// Set background base 16 xterm colors green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,128,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgGreen => onGreen;
 
+  /// Set background base 16 xterm colors yellow
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onYellow =>
       _createStyler(_ansiSGRModiferOpen(43), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onYellow.
+  /// Legacy api, provided only for backwards compatibility, use onYellow.
+  /// Set background base 16 xterm colors yellow
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgYellow => onYellow;
 
+  /// Set background base 16 xterm colors blue
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBlue =>
       _createStyler(_ansiSGRModiferOpen(44), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBlue.
+  /// Legacy api, provided only for backwards compatibility, use onBlue.
+  /// Set background base 16 xterm colors blue
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBlue => onBlue;
 
+  /// Set background base 16 xterm colors magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onMagenta =>
       _createStyler(_ansiSGRModiferOpen(45), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onMagenta.
+  /// Legacy api, provided only for backwards compatibility, use onMagenta.
+  /// Set background base 16 xterm colors magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgMagenta => onMagenta;
 
+  /// Set background base 16 xterm colors cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onCyan =>
       _createStyler(_ansiSGRModiferOpen(46), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onCyan.
+  /// Legacy api, provided only for backwards compatibility, use onCyan.
+  /// Set background base 16 xterm colors cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgCyan => onCyan;
 
+  /// Set background base 16 xterm colors white
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28192,192,192%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onWhite =>
       _createStyler(_ansiSGRModiferOpen(47), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onWhite.
+  /// Legacy api, provided only for backwards compatibility, use onWhite.
+  /// Set background base 16 xterm colors white
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28192,192,192%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgWhite => onWhite;
 
+  /// Set background base 16 xterm colors bright black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightBlack =>
       _createStyler(_ansiSGRModiferOpen(100), _ansiBgClose, this);
 
+  /// Set background base 16 xterm colors gray (alternate name for bright black)
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onGray => onBrightBlack;
 
+  /// Set background base 16 xterm colors grey (alternate name for bright black)
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onGrey => onBrightBlack;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightBlack.
+  /// Legacy api, provided only for backwards compatibility, use onBrightBlack.
+  /// Set background base 16 xterm colors bright black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightBlack => onBrightBlack;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightBlack.
+  /// Legacy api, provided only for backwards compatibility, use onBrightBlack.
+  /// Set background base 16 xterm colors bright black
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBlackBright => onBrightBlack;
 
-  /// Legacy api, provided only for backwards compatability, use onGray.
+  /// Legacy api, provided only for backwards compatibility, use onGray.
+  /// Set background base 16 xterm colors gray (alternate name for bright black)
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgGray => onBrightBlack;
 
-  /// Legacy api, provided only for backwards compatability, use onGrey.
+  /// Legacy api, provided only for backwards compatibility, use onGrey.
+  /// Set background base 16 xterm colors grey (alternate name for bright black)
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,128,128%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgGrey => onBrightBlack;
 
+  /// Set background base 16 xterm colors bright red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightRed =>
       _createStyler(_ansiSGRModiferOpen(101), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBrightRed.
+  /// Legacy api, provided only for backwards compatibility, use onBrightRed.
+  /// Set background base 16 xterm colors bright red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightRed => onBrightRed;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightRed.
+  /// Legacy api, provided only for backwards compatibility, use onBrightRed.
+  /// Set background base 16 xterm colors bright red
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgRedBright => onBrightRed;
 
+  /// Set background base 16 xterm colors bright green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightGreen =>
       _createStyler(_ansiSGRModiferOpen(102), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBrightGreen.
+  /// Legacy api, provided only for backwards compatibility, use onBrightGreen.
+  /// Set background base 16 xterm colors bright green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightGreen => onBrightGreen;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightGreen.
+  /// Legacy api, provided only for backwards compatibility, use onBrightGreen.
+  /// Set background base 16 xterm colors bright green
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgGreenBright => onBrightGreen;
 
+  /// Set background base 16 xterm colors bright yellow
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightYellow =>
       _createStyler(_ansiSGRModiferOpen(103), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBrightYellow.
+  /// Legacy api, provided only for backwards compatibility, use onBrightYellow.
+  /// Set background base 16 xterm colors bright yellow
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightYellow => onBrightYellow;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightYellow.
+  /// Legacy api, provided only for backwards compatibility, use onBrightYellow.
+  /// Set background base 16 xterm colors bright yellow
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgYellowBright => onBrightYellow;
 
+  /// Set background base 16 xterm colors bright blue
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightBlue =>
       _createStyler(_ansiSGRModiferOpen(104), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBrightBlue.
+  /// Legacy api, provided only for backwards compatibility, use onBrightBlue.
+  /// Set background base 16 xterm colors bright blue
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightBlue => onBrightBlue;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightBlue.
+  /// Legacy api, provided only for backwards compatibility, use onBrightBlue.
+  /// Set background base 16 xterm colors bright blue
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBlueBright => onBrightBlue;
 
+  /// Set background base 16 xterm colors bright magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightMagenta =>
       _createStyler(_ansiSGRModiferOpen(105), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBrightMagenta.
+  /// Legacy api, provided only for backwards compatibility, use onBrightMagenta.
+  /// Set background base 16 xterm colors bright magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightMagenta => onBrightMagenta;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightMagenta.
+  /// Legacy api, provided only for backwards compatibility, use onBrightMagenta.
+  /// Set background base 16 xterm colors bright magenta
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,0,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgMagentaBright => onBrightMagenta;
 
+  /// Set background base 16 xterm colors bright cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightCyan =>
       _createStyler(_ansiSGRModiferOpen(106), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBrightCyan.
+  /// Legacy api, provided only for backwards compatibility, use onBrightCyan.
+  /// Set background base 16 xterm colors bright cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightCyan => onBrightCyan;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightCyan.
+  /// Legacy api, provided only for backwards compatibility, use onBrightCyan.
+  /// Set background base 16 xterm colors bright cyan
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgCyanBright => onBrightCyan;
 
+  /// Set background base 16 xterm colors bright white
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get onBrightWhite =>
       _createStyler(_ansiSGRModiferOpen(107), _ansiBgClose, this);
 
-  /// Legacy api, provided only for backwards compatability, use onBrightWhite.
+  /// Legacy api, provided only for backwards compatibility, use onBrightWhite.
+  /// Set background base 16 xterm colors bright white
+  /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgBrightWhite => onBrightWhite;
 
-  /// Legacy api, provided only for backwards compatability, use onBrightWhite.
+  /// Legacy api, provided only for backwards compatibility, use onBrightWhite.
+  /// Set background base 16 xterm colors bright white
+  /// (terminal dependent)  ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28255,255,255%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   Chalk get bgWhiteBright => onBrightWhite;
 
   ///reset - Resets the current color chain.
@@ -670,32 +809,35 @@ class Chalk {
   Chalk get italic =>
       _createStyler(_ansiSGRModiferOpen(3), _ansiSGRModiferClose(23), this);
 
-  /// underline - Make text underline. (Not widely supported)
+  /// underline - Make text underline. (Not as widely supported, supported in VSCode through my PR)
   Chalk get underline =>
       _createStyler(_ansiSGRModiferOpen(4), _ansiSGRModiferClose(24), this);
 
+  /// underlined (alternate name for underline) - Make text underline. (Not as widely supported, supported in VSCode through my PR)
   Chalk get underlined => underline;
 
-  /// doubleunderline - Make text double underlined. (Not widely supported)
+  /// doubleunderline - Make text double underlined. (Not as widely supported, supported in VSCode through my PR)
   Chalk get doubleunderline =>
       _createStyler(_ansiSGRModiferOpen(21), _ansiSGRModiferClose(24), this);
 
+  /// doubleunderlined (alternate name for doubleunderline) - Make text double underlined. (Not as widely supported, supported in VSCode through my PR)
   Chalk get doubleunderlined => doubleunderline;
 
-  /// doubleUnderline - alternate for doubleunderline
+  /// doubleUnderline (alternate name for doubleunderline) - alternate for doubleunderline
   Chalk get doubleUnderline => doubleunderline;
 
-  /// overline - Make text overlined. (Not widely supported)
+  /// overline - Make text overlined. (Not as widely supported, supported in VSCode through my PR)
   Chalk get overline =>
       _createStyler(_ansiSGRModiferOpen(53), _ansiSGRModiferClose(55), this);
 
+  /// overlined (alternate name for overline) - Make text overlined. (Not as widely supported, supported in VSCode through my PR)
   Chalk get overlined => overline;
 
-  /// blink - Make text blink. (Not widely supported)
+  /// blink - Make text blink. (Not as widely supported, supported in VSCode through my PR)
   Chalk get blink =>
       _createStyler(_ansiSGRModiferOpen(5), _ansiSGRModiferClose(25), this);
 
-  /// rapidblink - Make text blink rapidly (>150 times per minute). (Not widely supported)
+  /// rapidblink - Make text blink rapidly (>150 times per minute). (Not as widely supported, supported in VSCode through my PR)
   Chalk get rapidblink =>
       _createStyler(_ansiSGRModiferOpen(6), _ansiSGRModiferClose(25), this);
 
@@ -710,60 +852,60 @@ class Chalk {
   Chalk get hidden =>
       _createStyler(_ansiSGRModiferOpen(8), _ansiSGRModiferClose(28), this);
 
-  /// strikethrough - Puts a horizontal line through the center of the text. (Not widely supported)
+  /// strikethrough - Puts a horizontal line through the center of the text. (Not as widely supported, supported in VSCode through my PR)
   Chalk get strikethrough =>
       _createStyler(_ansiSGRModiferOpen(9), _ansiSGRModiferClose(29), this);
 
-  /// superscript - Superscript text. (Not widely supported)
+  /// superscript - Superscript text. (Not as widely supported, supported in VSCode through my PR)
   Chalk get superscript =>
       _createStyler(_ansiSGRModiferOpen(73), _ansiSGRModiferClose(75), this);
 
-  /// subscript - Subscript text. (Not widely supported)
+  /// subscript - Subscript text. (Not as widely supported, supported in VSCode through my PR)
   Chalk get subscript =>
       _createStyler(_ansiSGRModiferOpen(74), _ansiSGRModiferClose(75), this);
 
-  /// Alternative font 1. (Not widely supported)
+  /// Alternative font 1. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font1 =>
       _createStyler(_ansiSGRModiferOpen(11), _ansiSGRModiferClose(10), this);
 
-  /// Alternative font 2. (Not widely supported)
+  /// Alternative font 2. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font2 =>
       _createStyler(_ansiSGRModiferOpen(12), _ansiSGRModiferClose(10), this);
 
-  ///Alternative font 3. (Not widely supported)
+  ///Alternative font 3. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font3 =>
       _createStyler(_ansiSGRModiferOpen(13), _ansiSGRModiferClose(10), this);
 
-  /// Alternative font 4. (Not widely supported)
+  /// Alternative font 4. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font4 =>
       _createStyler(_ansiSGRModiferOpen(14), _ansiSGRModiferClose(10), this);
 
-  /// Alternative font 5. (Not widely supported)
+  /// Alternative font 5. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font5 =>
       _createStyler(_ansiSGRModiferOpen(15), _ansiSGRModiferClose(10), this);
 
-  /// Alternative font 6. (Not widely supported)
+  /// Alternative font 6. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font6 =>
       _createStyler(_ansiSGRModiferOpen(16), _ansiSGRModiferClose(10), this);
 
-  /// Alternative font 7. (Not widely supported)
+  /// Alternative font 7. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font7 =>
       _createStyler(_ansiSGRModiferOpen(17), _ansiSGRModiferClose(10), this);
 
-  /// Alternative font 8. (Not widely supported)
+  /// Alternative font 8. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font8 =>
       _createStyler(_ansiSGRModiferOpen(18), _ansiSGRModiferClose(10), this);
 
-  ///Alternative font 9. (Not widely supported)
+  /// Alternative font 9. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font9 =>
       _createStyler(_ansiSGRModiferOpen(19), _ansiSGRModiferClose(10), this);
 
-  ///Alternative font 10. (Not widely supported)
+  /// Alternative font 10. (Not as widely supported, supported in VSCode through my PR)
   Chalk get font10 =>
       _createStyler(_ansiSGRModiferOpen(20), _ansiSGRModiferClose(23), this);
 
   /// blackletter - alternate name for font10, ANSI/ECMA-48 spec refers to font10 specifically as a blackletter or Fraktur (Gothic) font.
-  /// (Not widely supported)
+  /// (Not as widely supported, supported in VSCode through my PR)
   Chalk get blackletter => font10;
 
   /// Wrap this chalk with specified prefix and suffix strings.
@@ -782,7 +924,7 @@ class Chalk {
   }
 
   /// Follow this method with any standard CSS/SVG/X11 color name (remove spaces from name)
-  /// The case/capitalizatiom of the color name is not important.
+  /// The case/capitalization of the color name is not important.
   /// color returns chalk as 'dynamic' so that CSS/SVG/X11 color names can 'dynamically' be
   /// accessed as virtual methods.
   /// ie.  `chalk.color.cornflowerblue('works like this')`
@@ -794,7 +936,7 @@ class Chalk {
   }
 
   /// Follow this method with any standard CSS/SVG/X11 color name (remove spaces from name)
-  /// The case/capitalizatiom of the color name is not important.
+  /// The case/capitalization of the color name is not important.
   /// alias for [color] - alternate method name to use for to get dynamic for virtual color methods
   /// ie.  `chalk.csscolor.cornflowerblue('works like this')`
   ///   (this is the equivalent of `chalk.keyword('cornflowerblue')('same things using keyword()'`)

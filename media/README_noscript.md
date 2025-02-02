@@ -55,7 +55,7 @@ import 'package:chalkdart/chalk.dart';
 print(chalk.yellow.onBlue('Hello world!'));
 ```
 
-or using the Chalk String extentions:
+or using the Chalk String extensions:
 
 ```dart
 import 'package:chalkdart/chalkstrings.dart';

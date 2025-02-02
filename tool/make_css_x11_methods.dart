@@ -11,6 +11,8 @@ import 'package:chalkdart/colorutils.dart';
 const String outputExtensionClassFile = 'lib/src/chalk_x11.g.dart';
 const String outputStringExtensionClassFile = 'lib/src/chalkstrings_x11.g.dart';
 
+bool htmlSpansInsteadOfInlineSvg = false;
+
 void main(List<String> arguments) {
   //arguments = ['-c', '-x', '--out', 'timmy.txt'];
   exitCode = 0; // presume success
@@ -27,6 +29,11 @@ void main(List<String> arguments) {
         negatable: false,
         help:
             'Write String color extension methods to $outputStringExtensionClassFile (override destination with --out)')
+    ..addFlag('htmlSpansInsteadOfInlineSvg',
+        abbr: 'm',
+        negatable: false,
+        help:
+            'Write example color using HTML span instead of Markdown image w/inline SVGs.  Warning VSCode will strip html from Markdown docs.')
     ..addFlag('x11ReadmeTable',
         abbr: 'x',
         negatable: false,
@@ -60,6 +67,7 @@ void main(List<String> arguments) {
 
   final bool dumpColorMethodsFlag = argResults.wasParsed('colorMethods');
   final bool dumpStringColorMethodsFlag = argResults.wasParsed('stringColorMethods');
+  htmlSpansInsteadOfInlineSvg = argResults.wasParsed('htmlSpansInsteadOfInlineSvg');
   final bool dumpX11ReadmeFlag = argResults.wasParsed('x11ReadmeTable');
 
   int numOutputs=0;
@@ -98,7 +106,7 @@ List<String> dumpColorMethods() {
   List<String> out = [];
 
   out.add(
-      '''// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+      '''// Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -142,14 +150,18 @@ extension ChalkX11 on Chalk {''');
       colorSource = 'CSS';
     }
     cssColorCode = cssColorCode.replaceAll('x11', '');
+    //String svgColor = cssColorCode;//"rgb%50$red,$green,$blue%51";
+    String svgColor = "rgb%28$red,$green,$blue%29";//cssColorCode;//
+    String inlineSvgCode = !htmlSpansInsteadOfInlineSvg ? "![$cssColorCode](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='$svgColor'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)" : "";
+    String inlineSpanCode = htmlSpansInsteadOfInlineSvg ? "<span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" : "";
 
     outWithIndent(out,
-        "/// set foreground color to $colorSource color $colorKeyword <span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x$colorHexStr)/rgb($red, $green, $blue)");
+        "/// set foreground color to $colorSource color $colorKeyword  $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
     outWithIndent(
         out, 'Chalk get $entryPoint => makeRGBChalk($red, $green, $blue);');
     outWithIndent(out, '');
     outWithIndent(out,
-        "/// set background color to $colorSource color $colorKeyword <span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x$colorHexStr)/rgb($red, $green, $blue)");
+        "/// set background color to $colorSource color $colorKeyword $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
     outWithIndent(out,
         'Chalk get $onEntryPoint => makeRGBChalk($red, $green, $blue, bg: true);');
     outWithIndent(out, '');
@@ -169,7 +181,7 @@ List<String> dumpStringExtensionColorMethods() {
   List<String> out = [];
 
   out.add(
-      '''// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+      '''// Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -206,14 +218,17 @@ extension ChalkX11Strings on String {
       colorSource = 'CSS';
     }
     cssColorCode = cssColorCode.replaceAll('x11', '');
+    String svgColor = "rgb%28$red,$green,$blue%29";//cssColorCode;//
+    String inlineSvgCode = !htmlSpansInsteadOfInlineSvg ? "![$cssColorCode](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='$svgColor'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)" : "";
+    String inlineSpanCode = htmlSpansInsteadOfInlineSvg ? "<span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" : "";
 
     outWithIndent(out,
-        "/// set foreground color to $colorSource color $colorKeyword <span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x$colorHexStr)/rgb($red, $green, $blue)");
+        "/// set foreground color to $colorSource color $colorKeyword $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
     outWithIndent(
         out, 'String get $entryPoint => _chalk.$entryPoint(this);');
     outWithIndent(out, '');
     outWithIndent(out,
-        "/// set background color to $colorSource color $colorKeyword <span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (0x$colorHexStr)/rgb($red, $green, $blue)");
+        "/// set background color to $colorSource color $colorKeyword $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
     outWithIndent(out,
         'String get $onEntryPoint => _chalk.$onEntryPoint(this);');
     outWithIndent(out, '');

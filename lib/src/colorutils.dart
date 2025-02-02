@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2022, tim maffett.  Please see the AUTHORS file
+// Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -6,10 +6,10 @@ import 'dart:math';
 
 /// This ColorUtils library contains the color space conversion methods
 /// used by the Chalk class to support alternate colors spaces from
-/// RGB.  An attempt is made to be as versitle in input parameters as possible,
+/// RGB.  An attempt is made to be as versatile in input parameters as possible,
 /// many routines accept floating point numbers from 0.0-1.0 (for percentages)
 /// or alternately integers from 0-255.
-/// References with detailed explainations of the various color models included here
+/// References with detailed explanations of the various color models included here
 ///    https://en.wikipedia.org/wiki/HSL_and_HSV
 ///    https://en.wikipedia.org/wiki/HWB_color_model
 /// Complete history of the X11 color names :
@@ -44,7 +44,7 @@ class ColorUtils {
 
   static List<int> hsl2rgb(num hue, num saturation, num lightness) {
     if (saturation <= 1 && lightness <= 1) {
-      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLY want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
       saturation *= 100;
       lightness *= 100;
     }
@@ -127,7 +127,7 @@ class ColorUtils {
 
   static List<int> hsv2rgb(num hue, num saturation, num valueBrightness) {
     if (saturation <= 1 && valueBrightness <= 1) {
-      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLT want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
+      // if both <=1 we assume that are 0-1 range, NOTE that means if REALLY want (0.01 s then you need to pass it like that and not as 1 in to 100 scale)
       saturation *= 100;
       valueBrightness *= 100;
     }

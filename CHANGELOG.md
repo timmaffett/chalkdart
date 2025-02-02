@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.3.0
+
+- Added support for color previews to all dart docs using Markdown images and inline SVGs.  VSCode supports this.
+- Completed the dart docs for all of the string extension methods, including new color previews.
+- Always include all X11/CSS colors without having to import the _x11 variants of the chalk files.
+
 ## 2.2.1
 
 - Dart format on source
