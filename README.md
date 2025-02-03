@@ -1,4 +1,12 @@
+# Chalk'Dart [![Share on Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Dart%Chalk%20plugin!&url=https://github.com/timmaffett/chalkdart&hashtags=flutter,dart,dartlang,console) [![Share on Facebook](https://img.shields.io/badge/share-facebook-blue.svg?longCache=true&style=flat&colorB=%234267b2)](https://www.facebook.com/sharer/sharer.php?u=https%3A//github.com/timmaffett/chalkdart)
 <img src="https://raw.githubusercontent.com/timmaffett/chalkdart/master/media/ChalkDart.png" width="100%">
+
+[![Pub](https://img.shields.io/pub/v/chalkdart.svg)](https://pub.dartlang.org/packages/chalkdart)
+[![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://flutterawesome.com/console-terminal-text-coloring-and-styling-library-for-dart)
+[![License](https://img.shields.io/badge/License-BSD%203.0-blue.svg)](/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/timmaffett/chalkdart)](https://github.com/timmaffett/chalkdart/graphs/contributors)
+[![GitHub forks](https://img.shields.io/github/forks/timmaffett/chalkdart)](https://github.com/timmaffett/chalkdart)
+[![GitHub stars](https://img.shields.io/github/stars/timmaffett/chalkdart?)](https://github.com/timmaffett/chalkdart)
 
 ##### vscode debug console
 
@@ -12,10 +20,12 @@
 
 ### 'Terminal string styling done right'
 
-I created this for my Dart/Flutter development logging almost 2 years ago now, and I have finally taken the time to clean it up and get it released as a package.
-In the mean time I added full ANSI support to the Visual Studio Code debugging console as well as just finishing full ANSI support for the Dart-Pad console as well.  You can use this within your VSCode debugger to enable colorful, styled logging today. 😊
+I created this for my Dart/Flutter development logging back in 2020, and in 2022 I finally took the time to clean it up and get it released as a package.
+In the mean time I added full ANSI support to the Visual Studio Code debugging console and the Dart-Pad console as well.  You can use any of the ANSI capabilities of this package within your VSCode debugger to enable colorful, styled logging today. 😊
 
 Check out `example/chalkdart_example.dart` for some cool examples of what it is capable of.
+Check out `example/chalkdart_string_example.dart` for some cool examples of what it is capable of using the Chalk String extension classes.
+
 
 If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version.
 
@@ -37,9 +47,10 @@ Please file feature requests and bugs at the [issue tracker](https://github.com/
 - [256/Truecolor color support](#256-and-truecolor-color-support)
 - All standard X11/CSS/SVG colors can be accessed for by name.
 - Ignores Auto-detected ANSI color support/as common Dart/Flutter IDE's report this incorrectly.
-- Not an extentension of the `String` class.
+- Ability to use with or without additional extension of the `String` class.
 - Clean and focused
 - Actively maintained
+- Popup documentation within VSCode supports previews of colors.
 
 ## Install
 
@@ -55,12 +66,26 @@ import 'package:chalkdart/chalk.dart';
 print(chalk.yellow.onBlue('Hello world!'));
 ```
 
+Any amount of nesting of colors/styles is fully supported:
+
+```dart
+
+var kind = 'beautiful';
+print(chalk.yellow.onBlue('Hello ${chalk.blue.onGreen.bold(kind)} world!'));
+
+```
+
 or using the Chalk String extensions:
 
 ```dart
 import 'package:chalkdart/chalkstrings.dart';
 
 print('Hello world!'.yellow.onBlue);
+
+// nested colors and styling are supported
+var kind = 'beautiful';
+print('Hello ${kind.blue.onGreen.bold} world!'.yellow.onBlue);
+
 ```
 
 Chalk comes with an easy to use composable API where you just chain and nest the styles you want.
@@ -111,6 +136,7 @@ Alternately using the Chalk String extensions:
 
 ```dart
 import 'package:chalkdart/chalkstrings.dart';
+//(or include import 'package:chalkdart/chalkstrings_x11.dart'; for use of all x11 colors)
 
 // Combine styled and normal strings
 print('Hello'.blue + ' World' + '!'.red);
@@ -163,7 +189,12 @@ print(warning('Warning!'));
 const name = 'Tim Maffett';
 print(chalk.green('Hello $name'));
 //=> 'Hello Tim Maffett'
+
+//or using String extensions
+print('Hello $name'.green);
+//=> 'Hello Tim Maffett'
 ```
+
 
 ## API
 
@@ -292,11 +323,10 @@ chalk.keyword('myfavorite)('Using the keyword() method');
 chalk.color.my2ndfavorite('This is my 2nd favorite color');
 ```
 
-or import the X11 extension methods to get proper methods for each of the X11/CSS/SVG color names.  With that you get code completion for available colors as well as compile time checking of color names.
+There are also extension methods for each of the X11/CSS/SVG color names.  With that you get code completion for available colors as well as compile time checking of color names.
 
 ```dart
 import 'package:chalkdart/chalk.dart';
-import 'package:chalkdart/chalk_x11.dart'; // get methods for x11/css/svg color name keywords
 
 chalk.cornflowerBlue.onLimeGreen('Hey there!);
 

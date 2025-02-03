@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.2
+
+- Fix README.md that got swapped
+
 ## 2.3.1
 
 - Dart format code and fix make_css_x11_methods.dart so it outputs correct dart format.
