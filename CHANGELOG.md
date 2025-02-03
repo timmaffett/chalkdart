@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.1
+
+- Dart format code and fix make_css_x11_methods.dart so it outputs correct dart format.
+
 ## 2.3.0
 
 - Added support for color previews to all dart docs using Markdown images and inline SVGs.  VSCode supports this.

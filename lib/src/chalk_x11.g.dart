@@ -5,7 +5,7 @@
 // BEGIN GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /tool/makeX11EntryPoints.dart
 import 'chalk.dart';
 
-/// This extension class adds proper methods to Chalk for all of the 
+/// This extension class adds proper methods to Chalk for all of the
 /// standard X11/CSS/SVG color names for use by Chalk.
 /// This extension has the added advantage of providing code completion and type
 /// checking at coding/compile time.  Using the dynamic [color] method cannot provide
@@ -13,7 +13,7 @@ import 'chalk.dart';
 /// Example of using this extension for Chalk:
 /// `chalk.lightGoldenrodYellow.onCornflowerBlue(...)`
 /// versus having to use the `color` (or `css` or `x11`) method to get a `dynamic` so
-/// you can use the dynamic lookups: 
+/// you can use the dynamic lookups:
 /// `chalk.color.lightGoldenrodYellow.onCornflowerBlue(...)`
 /// Because of the dynamic lookup is not resolved until run time that method can be
 /// prone to errors which would not be detected until run time.
@@ -911,7 +911,6 @@ extension ChalkX11 on Chalk {
 
   /// set background color to X11/CSS color yellowGreen ![yellowgreen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28154,205,50%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32) (0x9ACD32)/rgb(154, 205, 50)
   Chalk get onYellowGreen => makeRGBChalk(154, 205, 50, bg: true);
-
 }
 
 // END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart

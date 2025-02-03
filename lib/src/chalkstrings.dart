@@ -11,9 +11,9 @@ import 'chalk.dart';
 extension ChalkString on String {
   static final Chalk _chalk = Chalk();
 
-   /// Set foreground base 16 xterm colors black
+  /// Set foreground base 16 xterm colors black
   /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
- String get black => _chalk.black(this);
+  String get black => _chalk.black(this);
 
   /// Set foreground base 16 xterm colors red
   /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
@@ -127,6 +127,7 @@ extension ChalkString on String {
   /// Set background base 16 xterm colors red
   /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
   String get onRed => _chalk.onRed(this);
+
   /// Legacy api, provided only for backwards compatibility, use onRed.
   /// Set background base 16 xterm colors red
   /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%28128,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
@@ -346,12 +347,12 @@ extension ChalkString on String {
   /// doubleUnderline (alternate name for doubleunderline) - alternate for doubleunderline
   String get doubleUnderline => _chalk.doubleUnderline(this);
 
-  /// overlined (alternate name for overline) - Make text overlined. (Not as widely supported, supported in VSCode through my PR)
+  /// overline - Make text overlined. (Not as widely supported, supported in VSCode through my PR)
   String get overline => _chalk.overline(this);
 
   /// overlined (alternate name for overline) - Make text overlined. (Not as widely supported, supported in VSCode through my PR)
   String get overlined => _chalk.overlined(this);
-  
+
   /// blink - Make text blink. (Not as widely supported, supported in VSCode through my PR)
   String get blink => _chalk.blink(this);
 

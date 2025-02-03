@@ -52,7 +52,7 @@ void main(List<String> arguments) {
 
   if (argResults.wasParsed('help') ||
       (!argResults.wasParsed('colorMethods') &&
-        !argResults.wasParsed('stringColorMethods') &&
+          !argResults.wasParsed('stringColorMethods') &&
           !argResults.wasParsed('x11ReadmeTable'))) {
     printUsage(parser);
     exit(0);
@@ -66,22 +66,24 @@ void main(List<String> arguments) {
       dumpToOutFile ? argResults['out'] : outputStringExtensionClassFile;
 
   final bool dumpColorMethodsFlag = argResults.wasParsed('colorMethods');
-  final bool dumpStringColorMethodsFlag = argResults.wasParsed('stringColorMethods');
-  htmlSpansInsteadOfInlineSvg = argResults.wasParsed('htmlSpansInsteadOfInlineSvg');
+  final bool dumpStringColorMethodsFlag =
+      argResults.wasParsed('stringColorMethods');
+  htmlSpansInsteadOfInlineSvg =
+      argResults.wasParsed('htmlSpansInsteadOfInlineSvg');
   final bool dumpX11ReadmeFlag = argResults.wasParsed('x11ReadmeTable');
 
-  int numOutputs=0;
-  if(dumpColorMethodsFlag) numOutputs++;
-  if(dumpStringColorMethodsFlag) numOutputs++;
-  if(dumpX11ReadmeFlag) numOutputs++;
-  if(numOutputs>1) {
+  int numOutputs = 0;
+  if (dumpColorMethodsFlag) numOutputs++;
+  if (dumpStringColorMethodsFlag) numOutputs++;
+  if (dumpX11ReadmeFlag) numOutputs++;
+  if (numOutputs > 1) {
     print('ERROR - only a single output type flag can be used at one time.');
     exit(0);
   }
 
   List<String> out = [];
 
-  if(dumpStringColorMethodsFlag) {
+  if (dumpStringColorMethodsFlag) {
     out = dumpStringExtensionColorMethods();
   } else if (dumpColorMethodsFlag) {
     out = dumpColorMethods();
@@ -89,7 +91,7 @@ void main(List<String> arguments) {
     out = dumpX11ReadmeTable();
   }
 
-  if(dumpStringColorMethodsFlag) {
+  if (dumpStringColorMethodsFlag) {
     File(stringOutputFileName).writeAsStringSync(out.join('\n').toString());
   } else if (dumpColorMethodsFlag || dumpToOutFile) {
     File(outputFileName).writeAsStringSync(out.join('\n').toString());
@@ -115,7 +117,7 @@ List<String> dumpColorMethods() {
   out.add('''
 import 'chalk.dart';
 
-/// This extension class adds proper methods to Chalk for all of the 
+/// This extension class adds proper methods to Chalk for all of the
 /// standard X11/CSS/SVG color names for use by Chalk.
 /// This extension has the added advantage of providing code completion and type
 /// checking at coding/compile time.  Using the dynamic [color] method cannot provide
@@ -129,8 +131,11 @@ import 'chalk.dart';
 /// prone to errors which would not be detected until run time.
 extension ChalkX11 on Chalk {''');
 
-  colorKeywords.forEach((colorKeyword, hexColorValue) {
-    if (colorKeyword.startsWith('@')) return; // skip ansi colors
+  final keyList = colorKeywords.keys.toList();
+  for (int i = 0; i < keyList.length; i++) {
+    final colorKeyword = keyList[i];
+    final hexColorValue = colorKeywords[colorKeyword] ?? 0;
+    if (colorKeyword.startsWith('@')) continue; // skip ansi colors
     num red = (hexColorValue >> 16) & 0xFF;
     num green = (hexColorValue >> 8) & 0xFF;
     num blue = hexColorValue & 0xFF;
@@ -151,9 +156,13 @@ extension ChalkX11 on Chalk {''');
     }
     cssColorCode = cssColorCode.replaceAll('x11', '');
     //String svgColor = cssColorCode;//"rgb%50$red,$green,$blue%51";
-    String svgColor = "rgb%28$red,$green,$blue%29";//cssColorCode;//
-    String inlineSvgCode = !htmlSpansInsteadOfInlineSvg ? "![$cssColorCode](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='$svgColor'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)" : "";
-    String inlineSpanCode = htmlSpansInsteadOfInlineSvg ? "<span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" : "";
+    String svgColor = "rgb%28$red,$green,$blue%29"; //cssColorCode;//
+    String inlineSvgCode = !htmlSpansInsteadOfInlineSvg
+        ? "![$cssColorCode](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='$svgColor'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)"
+        : "";
+    String inlineSpanCode = htmlSpansInsteadOfInlineSvg
+        ? "<span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+        : "";
 
     outWithIndent(out,
         "/// set foreground color to $colorSource color $colorKeyword  $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
@@ -165,7 +174,7 @@ extension ChalkX11 on Chalk {''');
     outWithIndent(out,
         'Chalk get $onEntryPoint => makeRGBChalk($red, $green, $blue, bg: true);');
     outWithIndent(out, '');
-  });
+  }
   out.add('}');
 
   out.add('');
@@ -175,7 +184,6 @@ extension ChalkX11 on Chalk {''');
 
   return out;
 }
-
 
 List<String> dumpStringExtensionColorMethods() {
   List<String> out = [];
@@ -191,14 +199,16 @@ List<String> dumpStringExtensionColorMethods() {
 import 'chalk.dart';
 import 'chalk_x11.g.dart';
 
-/// This extension class adds proper methods to Chalk for all of the 
+/// This extension class adds proper methods to Chalk for all of the
 /// standard X11/CSS/SVG color names for use by Chalk.
 extension ChalkX11Strings on String {
   static final Chalk _chalk = Chalk();
 ''');
-
-  colorKeywords.forEach((colorKeyword, hexColorValue) {
-    if (colorKeyword.startsWith('@')) return; // skip ansi colors
+  final keyList = colorKeywords.keys.toList();
+  for (int i = 0; i < keyList.length; i++) {
+    final colorKeyword = keyList[i];
+    final hexColorValue = colorKeywords[colorKeyword] ?? 0;
+    if (colorKeyword.startsWith('@')) continue; // skip ansi colors
     num red = (hexColorValue >> 16) & 0xFF;
     num green = (hexColorValue >> 8) & 0xFF;
     num blue = hexColorValue & 0xFF;
@@ -218,21 +228,24 @@ extension ChalkX11Strings on String {
       colorSource = 'CSS';
     }
     cssColorCode = cssColorCode.replaceAll('x11', '');
-    String svgColor = "rgb%28$red,$green,$blue%29";//cssColorCode;//
-    String inlineSvgCode = !htmlSpansInsteadOfInlineSvg ? "![$cssColorCode](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='$svgColor'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)" : "";
-    String inlineSpanCode = htmlSpansInsteadOfInlineSvg ? "<span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" : "";
+    String svgColor = "rgb%28$red,$green,$blue%29"; //cssColorCode;//
+    String inlineSvgCode = !htmlSpansInsteadOfInlineSvg
+        ? "![$cssColorCode](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='$svgColor'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)"
+        : "";
+    String inlineSpanCode = htmlSpansInsteadOfInlineSvg
+        ? "<span style='background-color: $cssColorCode;border: black solid 2px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+        : "";
 
     outWithIndent(out,
         "/// set foreground color to $colorSource color $colorKeyword $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
-    outWithIndent(
-        out, 'String get $entryPoint => _chalk.$entryPoint(this);');
+    outWithIndent(out, 'String get $entryPoint => _chalk.$entryPoint(this);');
     outWithIndent(out, '');
     outWithIndent(out,
         "/// set background color to $colorSource color $colorKeyword $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
-    outWithIndent(out,
-        'String get $onEntryPoint => _chalk.$onEntryPoint(this);');
-    outWithIndent(out, '');
-  });
+    outWithIndent(
+        out, 'String get $onEntryPoint => _chalk.$onEntryPoint(this);');
+    if (i < (keyList.length - 1)) outWithIndent(out, '');
+  }
   out.add('}');
 
   out.add('');
