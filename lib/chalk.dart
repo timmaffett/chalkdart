@@ -5,7 +5,7 @@
 // ChalkDart library
 import 'src/supports_ansi.dart'
     if (dart.library.io) 'src/supports_ansi_io.dart'
-    if (dart.library.html) 'src/supports_ansi_web.dart';
+    if (dart.library.js_interop) 'src/supports_ansi_web.dart';
 import 'src/chalk.dart';
 export 'src/chalk.dart';
 export 'src/chalk_x11.g.dart';
@@ -33,5 +33,5 @@ final bool ansiColorDisabled = !supportsAnsiColor;
 /// Read only, informational only.
 /// Name of the ansi include file used `supports_ansi.dart` is the default,
 /// or the dart.libary.io version `supports_ansi_io.dart`
-/// or the dart.library.html version `supports_ansi_web.dart`.
+/// or the dart.library.js_interop version `supports_ansi_web.dart`.
 final String chalkUsedAnsiInclude = usedAnsiInclude;

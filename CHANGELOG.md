@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.3.3
+
+- add Wasm support, Since dart:html is not supported when compiling to Wasm, the
+  correct alternative now is to use dart.library.js_interop to differentiate
+  between native and web.
+- Add topics to pubspec.yaml
+
 ## 2.3.2
 
 - Fix README.md that got swapped
