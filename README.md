@@ -12,7 +12,7 @@
 ##### vscode debug console
 
 > Now includes support for full ANSI coloring/styling while debugging/running Flutter apps within XCode from VSCode on Mac OSX!  ANSI styling has never before been available via XCode - but it is now!  Upgrade your OSX Flutter logging to the next level with the colored output capabilities made trivial with ChalkDart.
-> (XCode support requires the companion ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging))
+> (XCode support requires the companion ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging)).  More details found below.
 
 <img src="https://github.com/timmaffett/chalkdart/raw/master/media/ABasic.png" width="100%">
 
@@ -242,7 +242,7 @@ Some of these ANSI styles are not widely supported within all terminal emulators
 
 The exact RGB values for the base ANSI colors are rendered console/terminal dependent - and can be configured on some terminals such Windows Terminal - [more info here](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)
 
-I include original JS Chalk 'xxxxBright' method names for users that may want legacy compatability with original JS Chalk).
+I include original JS Chalk 'xxxxBright' method names for users that may want legacy compatibility with original JS Chalk).
 
 - `black`
 - `red`
@@ -376,6 +376,32 @@ The terminals and debug consoles in current versions of both Android Studio, Int
 Visual Studio Code support 24bit/16M color ansi codes and most attributes.  However, they
 both report that they DO NOT support ANSI codes.  For this reason Chalk'Dart defaults to
 supporting full level 3 (24 bit) ANSI codes.
+
+## XCode Support on OSX
+
+Full ANSI coloring/styling support is finally available when debugging or running within XCode via VSCode.  XCode has always corrupted and truncated all messages that contained escape sequences (including valid ANSI ones), making colored logging from XCode impossible.  I have surmounted this while running within XCode by encoding all ASCII 27 (\\u001B) ESC characters as `[^ESC}` and adding my ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging) to VSCode to translate these back so that the ANSI escape sequence can be properly interpreted by VSCode.
+
+The only additional code that needs to be added is setting `Chalk.xcodeSafeEsc=true` to activate the XCode safe ESC mode within the ChalkDart package.
+
+Once that is done ChalkDart will output the properly encoded escape sequences and this VSCode extension will automatically convert the encoded escape
+sequences back to standard ANSI sequences for the VSCode debug console to interpret.
+
+```dart
+import 'package:chalkdart/chalkstrings.dart';
+
+void main() {
+    Chalk.xcodeSafeEsc = true;  // activate XCode Safe ESC mode within ChalkDart Package
+    print('Hello world!'.yellow.onBlue);
+
+    ...the rest of your flutter app which will be debugged within VSCode via execution within XCode...
+}
+```
+
+![Color debug console messages via XCode WITH this extension](https://github.com/timmaffett/chalkdart/raw/master/media/with_xcodefluttercolordebugging.png)
+
+> When debugging a Flutter app via XCode WITHOUT this extension you would just see something like the following, raw broken ansi sequences AND *truncated* messages, anytime you attempt to output color:
+
+![Broken debug console messages via XCode without this extension](https://github.com/timmaffett/chalkdart/raw/master/media/without_xcodefluttercolordebugging.png)
 
 ## VSCode
 
