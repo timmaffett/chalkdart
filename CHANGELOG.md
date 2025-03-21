@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.4.0
+
+- add the first ever color debugging support for Flutter apps within VSCode via XCode.
+  `Chalk.xcodeSafeEsc = true;` to activate XCode safe mode.
+  (Requires the use of my "XCode Flutter Color Debugging" VSCode Extension found at
+  https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging)
+- Update docs in README.md and change out inline base64 url images for server pngs (The inline base64 encoded url images no longer worked on pub.dev/github)
+
 ## 2.3.3
 
 - add Wasm support, Since dart:html is not supported when compiling to Wasm, the

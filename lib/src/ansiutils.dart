@@ -3,9 +3,34 @@
 */
 
 // ansi regex from
+import 'dart:io';
+
 class AnsiUtils {
-  static final String pattern = [
-    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+
+  static String safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC = '[^ESC]';
+
+  static void setActivateXCodeSafeESCString( bool activate ) {
+    if(Platform.isIOS) {
+      if(activate) {
+        ESC = safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
+      } else {
+        // Switch back to DIRECT ascii ESC output
+        ESC = '\\u001B';
+      }
+      _resetPatternToCurrentESC();
+    }
+  }
+
+  static String ESC = Platform.isIOS ? '[^ESC]' : '\\u001B';
+
+  static void _resetPatternToCurrentESC() {
+      pattern = [
+                  '[$ESC\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+                  '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
+                ].join('|');
+  }
+  static String pattern = [
+    '[$ESC\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
     '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
   ].join('|');
 

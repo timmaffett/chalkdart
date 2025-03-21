@@ -1,6 +1,8 @@
 // Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
+import 'dart:io';
+
 import 'ansiutils.dart';
 import 'colorutils.dart';
 
@@ -31,6 +33,38 @@ class Chalk {
   /// Set to true to prevent scaling of rgb values when all 3 fall between 0<=r,g,b<=1.0
   static bool noZeroToOneScaling = false;
 
+  /// Set XCode Safe ESC sequence for IOS platform (this is a NO-OP on other platforms)
+  /// Use:   Chalk.xcodeSafeEsc = true;
+  /// This requires the use of my XCode Flutter Color Debugging extension in VSCode to
+  /// automatically convert the XCode safe ESC string `[^ESC]` back to the
+  /// ASCII ESC character 27 (\u001B) in all flutter/dart `print()`/`debugPrint()`
+  /// statements to the debug console.  The proper ANSI escape sequences will then be present
+  /// for the VSCode debug console to display the proper output.
+  /// (This is required because XCode filters all use of actual ascii ESC characters and also
+  /// this also triggers XCode to truncates the message)
+  static set xcodeSafeEsc( bool activate ) {
+    if(Platform.isIOS) {
+      if(activate != _xcodeSafeEsc) {
+        if( activate ) {
+          ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
+        } else {
+          ESC = '\u001B';
+        }
+        _xcodeSafeEsc = activate;
+        _resetAnsiCloseStringsToCurrentESC();
+      }
+    }
+  }
+  
+  /// Allows checking if the XCode Safe ESC sequences have been turned on or off using Chalk.xcodeSafeEsc = true (or false);
+  static bool get xcodeSafeEsc => _xcodeSafeEsc;
+
+  // internal flag to 
+  static bool _xcodeSafeEsc = false;
+
+  // String representing the ASCII ESC character 27.  This can change if xcodeSafeEsc(true) is set. 
+  static String ESC = '\u001B';
+
   /// Use full resets to close attributes (reset all attributes with SGR 0) ON EACH call to Chalk()
   /// (Not usually desired, this will reset all attributes, but some terminals, like VSCode,
   /// need this because buggy implementations)
@@ -40,26 +74,32 @@ class Chalk {
   static bool useFullResetToClose = false;
 
   static String _ansiSGRModiferOpen(dynamic code) {
-    return '\u001B[${code}m';
+    return '$ESC[${code}m';
   }
 
   static String _ansiSGRModiferClose(dynamic code) {
     if (useFullResetToClose) code = 0;
-    return '\u001B[${code}m';
+    return '$ESC[${code}m';
   }
 
   static String Function(int) _wrapAnsi256([int offset = 0]) {
-    return (int code) => '\u001B[${38 + offset};5;${code}m';
+    return (int code) => '$ESC[${38 + offset};5;${code}m';
   }
 
   static String Function(int, int, int) _wrapAnsi16m([int offset = 0]) {
     return (int red, int green, int blue) =>
-        '\u001B[${38 + offset};2;$red;$green;${blue}m';
+        '$ESC[${38 + offset};2;$red;$green;${blue}m';
   }
 
-  static const String _ansiClose = '\u001B[39m';
-  static const String _ansiBgClose = '\u001B[49m';
-  static const String _ansiUnderlineClose = '\u001B[59m';
+  static void _resetAnsiCloseStringsToCurrentESC() {
+    _ansiClose = '$ESC[39m';
+    _ansiBgClose = '$ESC[49m';
+    _ansiUnderlineClose = '$ESC[59m';
+  }
+
+  static String _ansiClose = '$ESC[39m';
+  static String _ansiBgClose = '$ESC[49m';
+  static String _ansiUnderlineClose = '$ESC[59m';
 
   static final String Function(int) _ansi256 = _wrapAnsi256();
   static final String Function(int, int, int) _ansi16m = _wrapAnsi16m();
@@ -93,23 +133,23 @@ class Chalk {
 
   /* Method useful for debugging escape sequences - removes escape characters and replaces with '[ESC]'
   static String makePrintableForDebug( String str ) {
-    return str.replaceAll('\u001B', '[ESC]');
+    return str.replaceAll('$ESC', '[ESC]');
   }
   */
 
   /// most useful for debugging to dump the guts
   @override
   String toString() {
-    return "Chalk(open:'${_openAll.replaceAll('\u001B', 'ESC')}',close:'${_closeAll.replaceAll('\u001B', 'ESC')}')";
+    return "Chalk(open:'${_openAll.replaceAll('$ESC', 'ESC')}',close:'${_closeAll.replaceAll('$ESC', 'ESC')}')";
   }
 
   /// more detailed dump of the guts, following parent links and dumping
   String toStringWalkUp({int level = 0}) {
     String thisOne =
-        "[$level] Chalk(open:'${_open.replaceAll('\u001B', 'ESC')}',close:'${_close.replaceAll('\u001B', 'ESC')}')";
+        "[$level] Chalk(open:'${_open.replaceAll('$ESC', 'ESC')}',close:'${_close.replaceAll('$ESC', 'ESC')}')";
     if (level == 0) {
       thisOne +=
-          "[$level] ALL Chalk(open:'${_openAll.replaceAll('\u001B', 'ESC')}',close:'${_closeAll.replaceAll('\u001B', 'ESC')}')";
+          "[$level] ALL Chalk(open:'${_openAll.replaceAll('$ESC', 'ESC')}',close:'${_closeAll.replaceAll('$ESC', 'ESC')}')";
     }
     String parentStr = '';
     if (_parent != null) {
@@ -1044,7 +1084,7 @@ class Chalk {
       return arg0;
     }
 
-    if (arg0!.indexOf('\u001B') != -1) {
+    if (arg0!.indexOf('$ESC') != -1) {
       while (styler != null && styler._hasStyle) {
         // Replace any instances already present with a re-opening code
         // otherwise only the part of the string until said closing code
