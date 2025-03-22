@@ -11,7 +11,7 @@
 
 ##### vscode debug console
 
-> Now includes support for full ANSI coloring/styling while debugging/running Flutter apps within XCode from VSCode on Mac OSX!  ANSI styling has never before been available via XCode - but it is now!  Upgrade your OSX Flutter logging to the next level with the colored output capabilities made trivial with ChalkDart.
+> 🔥 Now includes support for full ANSI coloring/styling 🌈 while debugging/running Flutter apps within XCode from VSCode on Mac OSX!  ANSI styling has never before been available via XCode - but it is now!  Upgrade your OSX Flutter logging to the next level with the colored output capabilities made trivial with ChalkDart. 🚀 💥
 > (XCode support requires the companion ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging)).  More details found below.
 
 <img src="https://github.com/timmaffett/chalkdart/raw/master/media/ABasic.png" width="100%">
@@ -75,24 +75,22 @@ print(chalk.yellow.onBlue('Hello world!'));
 Any amount of nesting of colors/styles is fully supported:
 
 ```dart
+import 'package:chalkdart/chalk.dart';
 
-var kind = 'beautiful';
-print(chalk.yellow.onBlue('Hello ${chalk.blue.onGreen.bold(kind)} world!'));
-
+print(chalk.yellow.onBlue('Hello ${chalk.blue.onGreen.bold('beautiful')} world!'));
 ```
+
 ![Hello beautiful world](https://github.com/timmaffett/chalkdart/raw/master/media/hello_beautiful_world_example.png)
+
 or using the Chalk String extensions:
 
 ```dart
 import 'package:chalkdart/chalkstrings.dart';
 
-print('Hello world!'.yellow.onBlue);
-
 // nested colors and styling are supported
-var kind = 'beautiful';
-print('Hello ${kind.blue.onGreen.bold} world!'.yellow.onBlue);
-
+print('Hello ${'beautiful'.blue.onGreen.bold} world!'.yellow.onBlue);
 ```
+
 ![Hello beautiful world](https://github.com/timmaffett/chalkdart/raw/master/media/hello_beautiful_world_example.png)
 
 Chalk comes with an easy to use composable API where you just chain and nest the styles you want.
@@ -179,6 +177,9 @@ print('Yay for orange colored text!'.keyword('orange'));
 print('Underlined reddish color'.rgb(123, 45, 67).underline);
 print('Bold gray!'.hex('#9e9e9e').bold);
 ```
+
+Output from either of the above examples:
+
 ![Output from either of above examples](https://github.com/timmaffett/chalkdart/raw/master/media/complex_example.png)
 
 
@@ -396,6 +397,8 @@ void main() {
     ...the rest of your flutter app which will be debugged within VSCode via execution within XCode...
 }
 ```
+
+> With the ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging) you can enjoy full color messages/console logging from within your Flutter app, EVEN when debugging via XCode.
 
 ![Color debug console messages via XCode WITH this extension](https://github.com/timmaffett/chalkdart/raw/master/media/with_xcodefluttercolordebugging.png)
 
