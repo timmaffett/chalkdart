@@ -6,6 +6,13 @@ import 'dart:io';
 import 'ansiutils.dart';
 import 'colorutils.dart';
 
+
+enum ChalkOutputMode {
+  ansi,
+  html,
+  htmlSimple
+}
+
 /// Chalk - A Library for printing styled text to the console using ANSI
 /// control sequences.
 /// Documentation of the ANSI code system:
@@ -33,8 +40,43 @@ class Chalk {
   /// Set to true to prevent scaling of rgb values when all 3 fall between 0<=r,g,b<=1.0
   static bool noZeroToOneScaling = false;
 
+  // Support for HTML Styling mode
+
+  // Chalk instance flag to indicate we are outputting HTML styling codes instead of ANSI styling codes
+  bool _htmlOutputModeForThisChalk = false;
+
+  // Chalk instance flag to indicate if the HTML styling will use Style sheet classes or direct style codes on each tag
+  bool _htmlOutputModeNoStylesheets = false;
+
+  // Chalk instance flag tracking if we have output the stylesheet yet - THIS IS A static FOR ALL INSTANCES - 
+  // we will ONLY OUTPUT THE STYLE SHEET AUTOMATICALLY ONCE! - if the package is being used where are are MULTIPLE STREAMS
+  // that chalk is getting output to with MULTIPLE Chalk() instances, then the Stylesheet must be output manually by the user.
+  static bool _htmlOutputModeHasSentStyleSheet = false;
+
+  void setOutputMode(ChalkOutputMode outputMode) {
+    switch (outputMode) {
+      case ChalkOutputMode.ansi:
+        _htmlOutputModeForThisChalk = false;
+        break;
+      case ChalkOutputMode.html:
+        _htmlOutputModeForThisChalk = true;
+        _htmlOutputModeNoStylesheets = false;
+        _htmlOutputModeHasSentStyleSheet = false;
+        break;
+      case ChalkOutputMode.htmlSimple:
+        _htmlOutputModeForThisChalk = true;
+        _htmlOutputModeNoStylesheets = true;
+        _htmlOutputModeHasSentStyleSheet = true;  // because we don't output stylesheets for simple mode
+        break;
+    }
+  }
+
+  // static DEFAULT safe ESC code flag for new Chalks 
+  static bool _xcodeSafeEscDefaultForNewChalks = false;
+
   /// Set XCode Safe ESC sequence for IOS platform (this is a NO-OP on other platforms)
-  /// Use:   Chalk.xcodeSafeEsc = true;
+  /// for new chalk instances as well as the global `chalk` instance.
+  /// Use:   Chalk.setXCodeSafeEscDefault = true;
   /// This requires the use of my XCode Flutter Color Debugging extension in VSCode to
   /// automatically convert the XCode safe ESC string `[^ESC]` back to the
   /// ASCII ESC character 27 (\u001B) in all flutter/dart `print()`/`debugPrint()`
@@ -42,25 +84,62 @@ class Chalk {
   /// for the VSCode debug console to display the proper output.
   /// (This is required because XCode filters all use of actual ascii ESC characters and also
   /// this also triggers XCode to truncates the message)
-  static set xcodeSafeEsc( bool activate ) {
+  static set setXCodeSafeEscDefault( bool activate ) {
     if(Platform.isIOS) {
-      if(activate != _xcodeSafeEsc) {
+      if(activate != _xcodeSafeEscDefaultForNewChalks) {
         if( activate ) {
           ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
         } else {
           ESC = '\u001B';
         }
-        _xcodeSafeEsc = activate;
+        _xcodeSafeEscDefaultForNewChalks = activate;
+      }
+    }
+  }
+
+  // Returns the default XCode safe ESC sequence mode for NEW chalk instances 
+  static bool get getXCodeSafeEscDefault => _xcodeSafeEscDefaultForNewChalks;
+
+  /// AFFECTS IOS ONLY
+  /// Allows checking if the XCode Safe ESC sequences have been turned on or off using Chalk.xcodeSafeEsc = true (or false);
+  /// We default to NULL so that it will get the default `_xcodeSafeEscDefaultForNewChalks` the first time it is used
+  /// NOTE: WE DO NOT allow this to be changed on other platforms - it is ALWAYS `false`.
+  bool? _instanceSpecificXCodeSafeEsc = Platform.isIOS ? null : false;  // The `null` default on IOS will allow us to set it to `_xcodeSafeEscDefaultForNewChalks` the first
+                                                        // time it is accessed.  (This allows the default `chalk` instance to get the proper value
+
+  /// Allows checking if the XCode Safe ESC sequences have been turned on or off using Chalk.xcodeSafeEsc = true (or false);
+  /// (THIS FLAG IS USED ON IOS ONLY - on other platforms it is ALWAYS `false`.
+  bool get xcodeSafeEsc {
+    if(_instanceSpecificXCodeSafeEsc==null) {
+      if(_xcodeSafeEscDefaultForNewChalks) {
+        // USING THE SETTER HERE will ensure that the ESC and other instance variables will also get set
+        xcodeSafeEsc = true;
+      } else {
+        // this just ensures that on IOS (where it could be null) it will get set to false (it would be getting set to 
+        // true in the above if statement if `_xcodeSafeEscDefaultForNewChalks` was true
+        _instanceSpecificXCodeSafeEsc = false;
+      }
+    }
+    return _instanceSpecificXCodeSafeEsc!;  
+  }
+
+  // Chalk instance level call to set xcodeSafeEsc mode - this allows loggers to have the capabilities to 
+  // have a chalk instance that outputs via XCode terminal while still logging proper ANSI codes through
+  // ANOTHER chalk instance.
+  set xcodeSafeEsc( bool activate ) {
+    if(Platform.isIOS) {
+      if(activate != _instanceSpecificXCodeSafeEsc) {
+        if( activate ) {
+          ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
+        } else {
+          ESC = '\u001B';
+        }
+        _instanceSpecificXCodeSafeEsc = activate;
         _resetAnsiCloseStringsToCurrentESC();
       }
     }
   }
-  
-  /// Allows checking if the XCode Safe ESC sequences have been turned on or off using Chalk.xcodeSafeEsc = true (or false);
-  static bool get xcodeSafeEsc => _xcodeSafeEsc;
 
-  // internal flag to 
-  static bool _xcodeSafeEsc = false;
 
   // String representing the ASCII ESC character 27.  This can change if xcodeSafeEsc(true) is set. 
   static String ESC = '\u001B';
@@ -73,44 +152,45 @@ class Chalk {
   /// This is now all available in production version of VSCode - timmaffett)
   static bool useFullResetToClose = false;
 
-  static String _ansiSGRModiferOpen(dynamic code) {
+  String _ansiSGRModiferOpen(dynamic code) {
     return '$ESC[${code}m';
   }
 
-  static String _ansiSGRModiferClose(dynamic code) {
+  String _ansiSGRModiferClose(dynamic code) {
     if (useFullResetToClose) code = 0;
     return '$ESC[${code}m';
   }
 
-  static String Function(int) _wrapAnsi256([int offset = 0]) {
+  String Function(int) _wrapAnsi256([int offset = 0]) {
     return (int code) => '$ESC[${38 + offset};5;${code}m';
   }
 
-  static String Function(int, int, int) _wrapAnsi16m([int offset = 0]) {
+  String Function(int, int, int) _wrapAnsi16m([int offset = 0]) {
     return (int red, int green, int blue) =>
         '$ESC[${38 + offset};2;$red;$green;${blue}m';
   }
 
-  static void _resetAnsiCloseStringsToCurrentESC() {
+  // This switches all of the root level open/close functions over to the HTML Versions
+  void _resetEverythingForHTMLOutput() {
+    _ansiClose = _ansiBgClose = _ansiUnderlineClose = '</span>';    
+  }
+
+  void _resetAnsiCloseStringsToCurrentESC() {
     _ansiClose = '$ESC[39m';
     _ansiBgClose = '$ESC[49m';
     _ansiUnderlineClose = '$ESC[59m';
   }
 
-  static String _ansiClose = '$ESC[39m';
-  static String _ansiBgClose = '$ESC[49m';
-  static String _ansiUnderlineClose = '$ESC[59m';
+  String get _ansiClose => '$ESC[39m';
+  String get _ansiBgClose => '$ESC[49m';
+  String get _ansiUnderlineClose => '$ESC[59m';
 
-  static final String Function(int) _ansi256 = _wrapAnsi256();
-  static final String Function(int, int, int) _ansi16m = _wrapAnsi16m();
-  static final String Function(int) _bgAnsi256 =
-      _wrapAnsi256(ansiBackgroundOffset);
-  static final String Function(int, int, int) _bgAnsi16m =
-      _wrapAnsi16m(ansiBackgroundOffset);
-  static final String Function(int) _underlineAnsi256 =
-      _wrapAnsi256(ansiUnderlineOffset);
-  static final String Function(int, int, int) _underlineAnsi16m =
-      _wrapAnsi16m(ansiUnderlineOffset);
+  String Function(int) _ansi256 = _wrapAnsi256();
+  String Function(int, int, int) _ansi16m = _wrapAnsi16m();
+  String Function(int) _bgAnsi256 = _wrapAnsi256(ansiBackgroundOffset);
+  String Function(int, int, int) _bgAnsi16m = _wrapAnsi16m(ansiBackgroundOffset);
+  String Function(int) _underlineAnsi256 = _wrapAnsi256(ansiUnderlineOffset);
+  String Function(int, int, int) _underlineAnsi16m = _wrapAnsi16m(ansiUnderlineOffset);
 
   Chalk? _parent;
   String _open = '';
@@ -161,8 +241,8 @@ class Chalk {
 
   /// Use to create a new 'root' instance of Chalk, with the option of setting
   /// the ANSI color level (root instances start with no style).
-  static Chalk instance({int level = -1}) {
-    final instance = Chalk._internal(null, hasStyle: false);
+  static Chalk instanceFUCK({int level = -1, ChalkOutputMode outputMode = ChalkOutputMode.ansi}) {
+    final instance = Chalk._internal(null, hasStyle: false, outputMode: outputMode);
     if (level != -1) {
       instance.level = level;
     }
@@ -171,27 +251,61 @@ class Chalk {
 
   // This is alias for [instance()] for users coming from javascript syntax.
   // ignore: non_constant_identifier_names
-  static Chalk Instance({int level = -1}) {
-    return instance(level: level);
+  static Chalk InstanceFUCK({int level = -1, ChalkOutputMode outputMode = ChalkOutputMode.ansi}) {
+    return instanceFUCK(level: level, outputMode: outputMode);
   }
 
   /// Factory function typically used for creating new 'root' instances of Chalk
   /// (root instances start with no style)
   factory Chalk() {
-    return Chalk._internal(null, hasStyle: false);
+    return Chalk._internal(null, hasStyle: false, outputMode: ChalkOutputMode.ansi);
   }
 
   /// private internal Chalk() constructor
-  Chalk._internal(Chalk? parent, {bool hasStyle = true}) {
+  Chalk._internal(Chalk? parent, {bool hasStyle = true, ChalkOutputMode outputMode = ChalkOutputMode.ansi}) {
+    // WE ONLY LOOK AT THE outputMode WHEN we are creating a TOP LEVEL parent - otherwise this is ALWAYS 
+    // THE SAME AS IT'S PARENT
+    if(parent==null) {
+      switch (outputMode) {
+        case ChalkOutputMode.ansi:
+          _htmlOutputModeForThisChalk = false;
+          break;
+        case ChalkOutputMode.html:
+          _htmlOutputModeForThisChalk = true;
+          _htmlOutputModeNoStylesheets = false;
+          break;
+        case ChalkOutputMode.htmlSimple:
+          _htmlOutputModeForThisChalk = true;
+          _htmlOutputModeNoStylesheets = true;
+          break;
+      }
+    }
+
     _parent = parent;
     if (parent != null) {
       level = parent.level; // inherit level from parent
       _joinString = parent._joinString;
+      _htmlOutputModeForThisChalk = parent._htmlOutputModeForThisChalk;
+      _htmlOutputModeNoStylesheets = parent._htmlOutputModeNoStylesheets;
     }
     _hasStyle = hasStyle;
+
+    if(_htmlOutputModeForThisChalk) {
+        _resetEverythingForHTMLOutput();
+    } else {
+      if(Platform.isIOS && _xcodeSafeEscDefaultForNewChalks) {
+        if(_xcodeSafeEscDefaultForNewChalks) {
+          ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
+          xcodeSafeEsc = true;
+          _resetAnsiCloseStringsToCurrentESC();
+        }
+      } else {
+        xcodeSafeEsc = false;
+      }
+    }
   }
 
-  static Chalk _createStyler(String open, String close, [Chalk? parent]) {
+  Chalk _createStyler(String open, String close, [Chalk? parent]) {
     final chalk = Chalk._internal(parent);
     chalk._open = open;
     chalk._close = close;
@@ -1188,6 +1302,16 @@ class _StringUtils {
     return returnValue;
   }
 
+  // This funciton is used to ensure that we close the styling ON EACH LINE using the approriate ANSI CLOSE codes and
+  // then START the next line with the appropriate ANSI OPEN codes to have the identical styling that was active on
+  // the line before it.
+  // Close the styling before a linebreak and reopen after next line to fix a bleed issue on
+  // macOS: https://github.com/chalk/chalk/pull/92
+  // This is called like this 
+  // ```    var lfIndex = arg0.indexOf('\n');
+  //  if (lfIndex != -1) {
+  //    arg0 = _StringUtils.stringEncaseCRLFWithFirstIndex( arg0, _closeAll, _openAll, lfIndex);
+  //  }
   static String stringEncaseCRLFWithFirstIndex(
       String string, String prefix, String postfix, int index) {
     int endIndex = 0;
