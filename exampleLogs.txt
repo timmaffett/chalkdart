@@ -1,0 +1,15 @@
+
+[^ESC][31m[^ESC][46m[^ESC][53mTesting Chalk`Dart!!! OVERLINE red.onCyan[^ESC][55m[^ESC][49m[^ESC][39m
+flutter: [^ESC][94m[^ESC][42mTesting Chalk`Dart!!! blueBright.onGreen[^ESC][49m[^ESC][39m
+flutter: [^ESC][34m[^ESC][48;2;233;150;122mTesting Chalk`Dart!!! blue.x11.onDarkSalmon[^ESC][49m[^ESC][39m
+flutter: [^ESC][103m[^ESC][34mTesting Chalk`Dart!!! .bgBrightYellow.blue[^ESC][39m[^ESC][49m
+flutter: [^ESC][33m[^ESC][40mTesting Chalk`Dart!!! yellow.onBlack[^ESC][49m[^ESC][39m
+flutter: [^ESC][38;2;244;232;122m[^ESC][40mrgb(244,232,122).onBlack !!![^ESC][49m[^ESC][39m
+flutter: [^ESC][34m[^ESC][58;2;255;0;0m[^ESC][4mTesting Chalk`Dart!!! blue WITH Red underline[^ESC][24m[^ESC][59m[^ESC][39m
+flutter: [^ESC][33m[^ESC][58;2;0;255;0m[^ESC][4mTesting Chalk`Dart!!! yellow WITH Green underline[^ESC][24m[^ESC][59m[^ESC][39m
+flutter: [^ESC][33m[^ESC][58;2;0;0;255m[^ESC][9mTesting Chalk`Dart!!! yellow WITH blue strikethrough[^ESC][29m[^ESC][59m[^ESC][39m
+flutter: [^ESC][33m[^ESC][58;2;255;0;255m[^ESC][4m[^ESC][53m[^ESC][9mTesting Chalk`Dart!!! yellow WITH magenta overline underline AND strikethrough[^ESC][29m[^ESC][55m[^ESC][24m[^ESC][59m[^ESC][39m
+[^ESC][33m[^ESC][58;2;255;0;255m[^ESC][4m[^ESC][53m[^ESC][9m[^ESC][29m[^ESC][55m[^ESC][24m[^ESC][59m[^ESC][39m
+flutter: 
+[^ESC][38;2;106;90;205m[^ESC][47mTesting Chalk`Dart With Closures - This is return from closure #1!!! DIM blue[^ESC][49m[^ESC][39m[^ESC][37m[^ESC][48;2;128;0;128m and this is the return from closure #2 then back to blue[^ESC][49m[^ESC][39m
+flutter: [^ESC][32mI am a green line [^ESC][34m[^ESC][4m[^ESC][1mwith a blue bold underline substring [^ESC][22m[^ESC][24m[^ESC][39m[^ESC][32m[^ESC][0m[^ESC][0m[^ESC][31m[^ESC][53m[^ESC][3mwith a red italic overline substring[^ESC][23m[^ESC][55m[^ESC][39m[^ESC][32m that becomes green again![^ESC][39m
