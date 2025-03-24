@@ -14,6 +14,10 @@
 > 🔥 Now includes support for full ANSI coloring/styling 🌈 while debugging/running Flutter apps within XCode from VSCode on Mac OSX!  ANSI styling has never before been available via XCode - but it is now!  Upgrade your OSX Flutter logging to the next level with the colored output capabilities made trivial with ChalkDart. 🚀 💥
 > (XCode support requires the companion ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging)).  More details found below.
 
+> 📡 ⚡ 💻 🚀  Now includes a HTML mode so that coloring/styling uses HTML tags rather than ANSI codes, so that ChalkDart can be used to color/style logs
+that may be sent to a database/server for viewing within a browser environment.  (Honestly, makes ChalkDart the only logical choice for logging packages that wish to
+additionally support logging to firebase/files/server as well as traditional ANSI console/terminal support.😉)
+
 <img src="https://github.com/timmaffett/chalkdart/raw/master/media/ABasic.png" width="100%">
 
 ##### windows terminal

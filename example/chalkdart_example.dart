@@ -1,8 +1,58 @@
-import 'package:chalkdart/chalk.dart';
+import 'package:chalkdart/chalkstrings.dart';
 import 'package:chalkdart/chalk_x11.dart';
 import 'chalkdart_charts.dart'; // for making color charts for example
 
-void main() {
+bool htmlModeRequested = false;
+ChalkAnsiColorSet htmlBasicANSIColorSetMode = ChalkAnsiColorSet.darkBackground;
+
+void realPrint(String s) {
+  print(s);
+}
+
+void main(List<String> arguments) {
+  // lowercase the args first off
+  for(int i=0;i<arguments.length;i++) {
+    arguments[i] = arguments[i].toLowerCase();
+  }
+  if (arguments.contains('--html')) {
+    htmlModeRequested = true;
+  }
+  if(arguments.contains('--lightmode') || arguments.contains('--light')) {
+    // Select color mode for HTML output - 
+    //  This will also affect what colors are used for the SIMPLE ANSI Xterm Colors 0-15
+    htmlBasicANSIColorSetMode = ChalkAnsiColorSet.lightBackground;
+  } else if(arguments.contains('--highcontrastmode') || arguments.contains('--highcontrast')|| arguments.contains('--hc')) {
+    htmlBasicANSIColorSetMode = ChalkAnsiColorSet.highContrast;
+  }
+
+  void print(String s) {
+    if(htmlModeRequested) {
+      realPrint('${s.htmlSafeSpaces}<br/>');
+      //Alternatively using Chalk static method:>>> 
+      //   realPrint('${Chalk.htmlSafeSpaces(s)}<br/>');
+    } else {
+      realPrint(s);
+    }
+  }
+
+  if(htmlModeRequested) {
+    // Activatge HTML mode 
+    chalk.setOutputMode(ChalkOutputMode.html);  // set already created chalk object to html mode
+    Chalk.setHTMLModeAsDefault = true; // set all FUTURE created Chalk objects to HTML mode as default
+    Chalk.htmlBasicANSIColorSet = htmlBasicANSIColorSetMode;
+    realPrint('<html><head>');
+    realPrint(chalk.inlineStylesheet);
+    // set dark mode colors as default
+    String defaultBackgroundColor = 'black';
+    String defaultTextColor = 'cornflowerblue';
+    if(htmlBasicANSIColorSetMode == ChalkAnsiColorSet.lightBackground) {
+      // light mode
+      defaultBackgroundColor = 'white';
+      defaultTextColor = 'darkBlue';
+    }
+    realPrint('</head><body style="font-family: courier; color:$defaultTextColor; background-color:$defaultBackgroundColor">');
+  }
+
   print(chalk.cornflowerBlue
       .onBisque("            Chalk'Dart example program           "));
 
@@ -98,7 +148,7 @@ void main() {
   print(chalk.blue(
       'Hello', 45, 45.6, true, {'mymap': 23.4}, 'Foo', 'bar', 'biz', 'baz'));
   print(chalk.blink('Hello this is a blink test'));
-  print(chalk.doubleunderline('Hello this is a doublenderline test'));
+  print(chalk.doubleunderline('Hello this is a double underline test'));
   print(chalk.blue(
       'Hello',
       //dump the contents of chalk    'chalk.red.doubleunderline.onBrightBlue=',
@@ -211,24 +261,26 @@ void main() {
   print(chalk.reset.font6.white("FONT 6  ", fontTestString, '\n'));
 
   print(chalk.reset.font6.blueBright(
-      "  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
+      ("  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>").htmlSafeGtLt) );
 
   print(chalk.reset.font7.white("FONT 7  ", fontTestString, '\n'));
   print(chalk.reset.font7
-      .white("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
+      .white(Chalk.htmlSafeGtLt("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>")));
 
   print(chalk.reset.font8.white("FONT 8  ", fontTestString, '\n'));
 
   print(chalk.reset.font9.white("FONT 9  ", fontTestString, '\n'));
   print(chalk.reset.font9
-      .blue("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"));
+      .blue(Chalk.htmlSafeGtLt("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>")));
+
+  print("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>".htmlSafeGtLt.reset.font9.blue);
 
   print(chalk.reset.font10
       .white("FONT 10  -extra wide font - no ligatures ", fontTestString));
 
   print(chalk.reset.blue.font1('Hello BLUE font 1') +
       ' World' +
-      chalk.reset.red.font3('! <same line font change)     font 3 RED'));
+      chalk.reset.red.font3(Chalk.htmlSafeGtLt('! <same line font change)     font 3 RED')));
 
   // Compose multiple styles using the chainable API
   print(chalk.hsl(180, 1, 0.5).font1('Hello World! Font 1'));
@@ -377,6 +429,11 @@ DISK: ${chalk.rgb(255, 131, 0)((0.76 * 100))}%
   demolines = ChalkDartCharts.dumpLabChart(85);
   for (var i = 0; i < demolines.length; i++) {
     print(demolines[i]);
+  }
+
+  // insert closing HTML tag if in html mode
+  if(htmlModeRequested) {
+    realPrint('</html>');
   }
 }
 

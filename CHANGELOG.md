@@ -1,5 +1,25 @@
 # Change Log
 
+## 3.0.0
+
+- add support for HTML output mode with new supporting methods for Chalk and Chalk string support
+  The intention of this is to allow the use of Chalk for loggers which may be sending output to a 
+  server/database for viewing in a browser/non comamndline/ANSI environment.
+  The viewed HTML will appear as it does in the VSCode debug console.
+- extend example to take command line arguments to allow having all of it's output use the new HTML mode
+  so that the output can be redirected to a file and viewed in a browser
+  Example usage of example program to demonstrate new html functionality
+  `dart run chalkdart_example.dart --html --light >testlightmode.html`
+  `dart run chalkdart_example.dart --html --highcontrast >testhighcontrastmode.html`
+  `dart run chalkdart_example.dart --html --dark >testdarkmode.html`
+- `Chalk.htmlBasicANSIColorSet` = [ChalkAnsiColorSet.lightBackground] | [ChalkAnsiColorSet.darkBackground] | [ChalkAnsiColorSet.highContrast];
+- `chalk.setOutputMode(ChalkOutputMode outputMode)`  [ChalkOutputMode.ansi] | [ChalkOutputMode.html]   (instance method)
+- `Chalk.setHTMLModeAsDefault` = true | false (default for creating subsequent Chalk objects)
+- Add support to chalk.strip to strip HTML tags if HTML mode is active
+- Add `chalk.stripHtmlTags()`, add `Chalk.htmlSafeSpaces()`, `Chalk.htmlSafeGtLt()`
+- For Chalk string extensions added `stripHtmlTags`, `htmlSafeGtLt`, `htmlSafeSpaces`
+  (and `strip` extended to strip html tags if in html mode)
+
 ## 2.4.0
 
 - add the first ever color debugging support for Flutter apps within VSCode via XCode.

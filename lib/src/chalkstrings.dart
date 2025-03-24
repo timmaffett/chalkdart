@@ -412,9 +412,32 @@ extension ChalkString on String {
   /// visible - Prints the text only when Chalk has a color level > 0. Can be useful for things that are purely cosmetic.
   String get visible => _chalk.visible(this);
 
+  /// Strips any HTML strings present from the string and returns the result
+  String get stripHtmlTags => _chalk.stripHtmlTags(this);
+
   /// Strip all ANSI SGR commands from the target string and return the 'stripped'
   /// result string.
+  /// NOTE:  If HTML mode is activated then this strips all HMTL tags from the input string
   String get strip => _chalk.strip(this);
+
+  /// Replaces and < or > characters found within the string the &lt; and &gt;
+  /// so that text is safe for html rendering.
+  /// NOTE: When using HTML mode this must be the FIRST method called before
+  /// any styling calls so that any HTML created for styling is rendered
+  /// invalid by the entity conversion.
+  /// ie.
+  /// OK:  `'my string with < and > '.safeHtml.red.onWhite;`
+  /// versus 
+  ///      `'my string with < and > '.red.onWhite.safeHtml;`
+  /// (The second version will have no styling and instead show all of the html tags
+  /// inserted for styling).
+  String get htmlSafeGtLt => Chalk.htmlSafeGtLt(this);
+
+  /// Converts all spaces (outside of html tags) in the string with the
+  /// html entity `&nbsp;`
+  /// This can be useful to preserve spacing when rendering the string in a
+  /// browser where all spacing would otherwise be collapsed.
+  String get htmlSafeSpaces => Chalk.htmlSafeSpaces(this);
 
   /// Returns a String with the foreground color set to the passed in RGB Hex code.
   /// This dynamically accepts color hex codes as integer codes (0xAABBCC) or (0xABC)
