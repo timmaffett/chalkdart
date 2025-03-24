@@ -8,11 +8,22 @@ import 'colorutils.dart';
 
 import 'chalk_html.dart';
 
+const DUMP_HTML_INFO_OBJECTS = false;
+
+/// Available output modes for the color and styled text.  The default is
+/// ANSI output mode, `setOutputMode()` can be used on specific Chalk instances
+/// to change this.
+/// `Chalk.setDefaultOutputMode = true | false;' can be used to change the
+/// default for future construction of Chalk instances.
+/// The default is ChalkOutputMode.ansi
 enum ChalkOutputMode {
   ansi,
   html,
 }
 
+/// Color sets available for the basic ANSI colors 0 - 15.  These match 
+/// the colors I used for DartPad and VSCode also.  There are versions
+/// for light mode, dark mode and high contrast mode.
 enum ChalkAnsiColorSet {
   lightBackground,
   darkBackground,
@@ -59,16 +70,29 @@ class Chalk {
   // Chalk instance flag to indicate we are outputting HTML styling codes instead of ANSI styling codes
   bool _htmlOutputModeForThisChalk = false;
 
-
+  /// Sets the output mode for THIS Chalk object.  Used to change an existing Chalk's output mode
+  /// NOTE: Use `Chalk.setDefaultOutputMode` to set the default output mode for all future created Chalk
+  /// objects (Created using the Chalk(...) constructor, Chalk objects automatically created by instance methods
+  /// always inherit their *parent* Chalk objects output mode.)
+  /// You can also pass the outputMode when calling the Chalk constructor, but this method is
+  /// intended for altering an ALREADY create chalk object, like the DEFAULT global `chalk` object.
+  /// ie. `chalk.setOutputMode = ChalkOutputMode.html` if we want to alter the `chalk` global to
+  /// produce children in HTML mode.
+  /// Typically when creating a new Chalk styler for HTML output within a program you would just
+  /// specify the ChalkOutputMode in the constructor instead of using this method.
+  /// ```dart
+  /// final myErrorStyleForServerLogging = Chalk(outputMode:ChalkOutputMode.html);
+  /// ``` 
   void setOutputMode(ChalkOutputMode outputMode) {
-    switch (outputMode) {
-      case ChalkOutputMode.ansi:
-        _htmlOutputModeForThisChalk = false;
-        break;
-      case ChalkOutputMode.html:
-        _htmlOutputModeForThisChalk = true;
-        break;
-    }
+    //IF we have more modes someday//switch (outputMode) {
+    //IF we have more modes someday//  case ChalkOutputMode.ansi:
+    //IF we have more modes someday//    _htmlOutputModeForThisChalk = false;
+    //IF we have more modes someday//    break;
+    //IF we have more modes someday//  case ChalkOutputMode.html:
+    //IF we have more modes someday//    _htmlOutputModeForThisChalk = true;
+    //IF we have more modes someday//    break;
+    //IF we have more modes someday//}
+    _htmlOutputModeForThisChalk = (outputMode == ChalkOutputMode.html);
 
     _setAllWrapperFunctionsAccordingToMode();
   }
@@ -77,7 +101,7 @@ class Chalk {
   static bool _xcodeSafeEscDefaultForNewChalks = false;
 
   // If true we create new Chalk objects in HTML mode
-  static bool _htmlModeDefaultForNewChalks = false;
+  static ChalkOutputMode _defaultOutputModeForNewChalks = ChalkOutputMode.ansi;
 
   /// Set XCode Safe ESC sequence for IOS platform (this is a NO-OP on other platforms)
   /// for new chalk instances as well as the global `chalk` instance.
@@ -105,10 +129,19 @@ class Chalk {
   /// This allows setting the default HTML mode for all subsequent Chalk() objects.
   /// If [newChalksUseHtmlMode] is `true` then HTML will used or styling instead of ANSI codes.
   /// If `false` then the default ANSI codes will be used for styling.
-  static set setHTMLModeAsDefault( bool newChalksUseHtmlMode ) {
-    _htmlModeDefaultForNewChalks = newChalksUseHtmlMode;
+  /// You can also pass the ChalkOutputMode to the Chalk(...) constructor, but this method
+  /// is intended to allow a one line change to switch all Chalk constructor calls to
+  /// switch to the new mode without having to alter all Chalk(...) constructor calls.
+  /// For example in the example app we can switch everything to `ChalkOutputMode.html`
+  /// in one place at the start of main() by doing:
+  /// ```dart
+  /// chalk.setOutputMode(ChalkOutputMode.html);  // set already created chalk object to html mode
+  /// Chalk.setDefaultOutputMode = ChalkOutputMode.html; // set all FUTURE created Chalk objects to HTML mode as default
+  /// ```
+  /// without having to alter the existing code in any other place.
+  static set setDefaultOutputMode( ChalkOutputMode defaultModeForNewChalks ) {
+    _defaultOutputModeForNewChalks = defaultModeForNewChalks;
   }
-
 
   // Returns the default XCode safe ESC sequence mode for NEW chalk instances 
   static bool get getXCodeSafeEscDefault => _xcodeSafeEscDefaultForNewChalks;
@@ -165,11 +198,14 @@ class Chalk {
   /// This is now all available in production version of VSCode - timmaffett)
   static bool useFullResetToClose = false;
 
+
   String _ansiSGRModiferOpen(dynamic code) {
     if(_htmlOutputModeForThisChalk) {
+      _htmlStyleInfo = ChalkHTML.getHTMLStyleFromANSICode( [ code ] );
 
-      return '<span ${ChalkHTML.getStyleFromANSICode( [ code ] )} >';
+      if(DUMP_HTML_INFO_OBJECTS) print('_ansiSGRModiferOpen($code) = HTMLINFO = ${_htmlStyleInfo}');
 
+      return ChalkHTML.makeHTMLSpanFromInfo(_htmlStyleInfo!);
     } else {
       return '$ESC[${code}m';
     }
@@ -262,6 +298,8 @@ class Chalk {
   String _close = '';
   String _openAll = '';
   String _closeAll = '';
+  ChalkHTMLStyleInfo? _htmlStyleInfo;
+  ChalkHTMLStyleInfo? _htmlStyleInfoWithParents;
 
   /// ANSI Color level support for this chalk instance - this will effect what colors
   /// this chalk instance can use.
@@ -306,8 +344,10 @@ class Chalk {
 
   /// Use to create a new 'root' instance of Chalk, with the option of setting
   /// the ANSI color level (root instances start with no style).
-  static Chalk instance({int level = -1, ChalkOutputMode outputMode = ChalkOutputMode.ansi}) {
+  static Chalk instance({int? level, ChalkOutputMode? outputMode}) {
+    outputMode ??= _defaultOutputModeForNewChalks;
     final instance = Chalk._internal(null, hasStyle: false, outputMode: outputMode);
+    level ??= -1;
     if (level != -1) {
       instance.level = level;
     }
@@ -316,53 +356,30 @@ class Chalk {
 
   // This is alias for [instance()] for users coming from javascript syntax.
   // ignore: non_constant_identifier_names
-  static Chalk Instance({int level = -1, ChalkOutputMode? outputMode}) {
-    if(outputMode==null) {
-      if(_htmlModeDefaultForNewChalks) {
-        outputMode = ChalkOutputMode.html;
-      } else {
-        outputMode = ChalkOutputMode.ansi;
-      }
-    }
-    return instance(level: level, outputMode: outputMode);
+  static Chalk Instance({int? level, ChalkOutputMode? outputMode}) {
+    outputMode ??= _defaultOutputModeForNewChalks;
+    return instance(level: level ?? -1, outputMode: outputMode);
   }
 
   /// Factory function typically used for creating new 'root' instances of Chalk
-  /// (root instances start with no style)
-  factory Chalk() {
-    late ChalkOutputMode outputMode;
-    if(_htmlModeDefaultForNewChalks) {
-      outputMode = ChalkOutputMode.html;
-    } else {
-      outputMode = ChalkOutputMode.ansi;
-    }
-    return Chalk._internal(null, hasStyle: false, outputMode: outputMode);
+  /// The outputMode can be set explicitly on creation, otherwise it will
+  /// assume the default output mode of `ChalkOutputMode.ansi` (unless a different
+  /// output mode has been set with the `Chalk.setDefaultOutputMode()` method).
+  /// The `level` argument allows specifying ANSI output level that a terminal
+  /// ('Root level' Chalk instances start with no style)
+  factory Chalk({int? level, ChalkOutputMode? outputMode}) {
+    return Chalk._internal(null, hasStyle: false, outputMode: outputMode ?? _defaultOutputModeForNewChalks);
   }
 
   /// private internal Chalk() constructor
   Chalk._internal(Chalk? parent, {bool hasStyle = true, ChalkOutputMode? outputMode}) {
-    if(outputMode==null) {
-      if(_htmlModeDefaultForNewChalks) {
-        outputMode = ChalkOutputMode.html;
-      } else {
-        outputMode = ChalkOutputMode.ansi;
-      }
-    }  
+    outputMode ??= _defaultOutputModeForNewChalks;
     // WE ONLY LOOK AT THE outputMode WHEN we are creating a TOP LEVEL parent - otherwise this is ALWAYS 
     // THE SAME AS IT'S PARENT
     if(parent==null) {
-      switch (outputMode) {
-        case ChalkOutputMode.ansi:
-          _htmlOutputModeForThisChalk = false;
-          break;
-        case ChalkOutputMode.html:
-          _htmlOutputModeForThisChalk = true;
-          break;
-      }
-    }
-
-    _parent = parent;
-    if (parent != null) {
+      _htmlOutputModeForThisChalk = (outputMode == ChalkOutputMode.html);
+    } else {
+      _parent = parent;
       level = parent.level; // inherit level from parent
       _joinString = parent._joinString;
       _htmlOutputModeForThisChalk = parent._htmlOutputModeForThisChalk;
@@ -386,519 +403,44 @@ class Chalk {
     _setAllWrapperFunctionsAccordingToMode();
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  final RegExp extractSpanRegex = RegExp(r'style="([^"]*)"');
-  final RegExp extractClassRegex = RegExp(r'class="([^"]*)"');
-
-  final RegExp replaceSpanClassRegex = RegExp(r'(?<=class=")[^"]*(?=")');
-  final RegExp replaceSpanStyleRegex = RegExp(r'(?<=style=")[^"]*(?=")');
-
-
-  String removeCssAttributes(String styleString, List<String> attributesToRemove) {
-    String result = styleString;
-    for (String attribute in attributesToRemove) {
-      String regExStr = '(?<!-)$attribute\\s*:\\s*[^;]+;+\\s*';
-      final RegExp removeCSSAttributeRegex = RegExp(regExStr);
-      result = result.replaceAll(removeCSSAttributeRegex, '');
-    }
-    return result.trim().replaceAll(RegExp(r';+$'), ''); // Remove trailing semicolons
-  }
-
-
-  String? extractCssAttribute(String styleString, String attributeName) {
-
-    String regExStr='(?<!-)$attributeName\\s*:\\s*([^;]+)(;|\$)';
-
-//print('extractCssAttribute() styleString=`$styleString` regExStr=`$regExStr`');
-
-    final RegExp extractCSSAttributerRegex = RegExp(regExStr);
-    final Match? match = extractCSSAttributerRegex.firstMatch(styleString);
-
-//print('match=$match');
-    if (match != null) {
-      final p1 = match.group(1)?.trim();
-      final p2 = match.group(2)?.trim();
-      return (p1 ?? '')+(p2 ?? '');
-    }
-    return null;
-  }
-
-  String replaceCssAttribute(String styleString, String attributeName, String newValue) {
-
-
-    //print('replaceCssAttribute(styleString=$styleString  attributeName=$attributeName   newValue=$newValue');
-
-    String regExStr = '(?<!-)$attributeName\\s*:\\s*([^;]+)(;|\$)';
-    final RegExp extractCSSAttributerRegex = RegExp(regExStr);
-    final Match? match = extractCSSAttributerRegex.firstMatch(styleString);
-
-    if (match != null) {
-      return styleString.replaceRange(
-        match.start,
-        match.end,
-        '$attributeName: $newValue',
-      );
-    } else {
-      if (styleString.isNotEmpty) {
-        return '$styleString $attributeName: $newValue';
-      } else {
-        return '$attributeName: $newValue';
-      }
-    }
-  }
-
-  String extractSpanStyle(String htmlSpan) {
-    final Match? match = extractSpanRegex.firstMatch(htmlSpan);
-
-    if (match != null && match.groupCount > 0) {
-      return match.group(1) ?? '';
-    } else {
-      return '';
-    }
-  }
-
-  String extractSpanClass(String htmlSpan) {
-    final Match? match = extractClassRegex.firstMatch(htmlSpan);
-
-    if (match != null && match.groupCount > 0) {
-      return match.group(1) ?? '';
-    } else {
-      return '';
-    }
-  }
-
-
-/* USING SMARTER VERSIONS that can insert style/class also...
-  String? extractAndReplaceSpanStyle(String htmlSpan, String replacement) {
-    final Match? match = replaceSpanStyleRegex.firstMatch(htmlSpan);
-
-    if (match != null) {
-      return htmlSpan.replaceRange(match.start, match.end, replacement);
-    } else {
-      return null;
-    }
-  }
-
-String? extractAndReplaceSpanClass(String htmlSpan, String replacement) {
-  final Match? match = replaceSpanClassRegex.firstMatch(htmlSpan);
-
-  if (match != null) {
-    return htmlSpan.replaceRange(match.start, match.end, replacement);
-  } else {
-    return null;
-  }
-}
-*/
-
-
-  String extractAndReplaceSpanStyle(String htmlSpan, String replacement) {
-    final Match? existingStyleMatch = replaceSpanStyleRegex.firstMatch(htmlSpan);
-
-    if (existingStyleMatch != null) {
-      return htmlSpan.replaceRange(existingStyleMatch.start, existingStyleMatch.end, replacement);
-    } else {
-      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
-      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
-
-      if (spanTagMatch != null) {
-        return htmlSpan.replaceRange(spanTagMatch.end, spanTagMatch.end, ' style="$replacement"');
-      } else {
-        return htmlSpan; // Return original if no span tag is found.
-      }
-    }
-  }
-
-  String extractAndReplaceSpanClass(String htmlSpan, String replacement) {
-    final Match? existingClassMatch = replaceSpanClassRegex.firstMatch(htmlSpan);
-
-    if (existingClassMatch != null) {
-      return htmlSpan.replaceRange(existingClassMatch.start, existingClassMatch.end, replacement);
-    } else {
-      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
-      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
-
-      if (spanTagMatch != null) {
-        return htmlSpan.replaceRange(spanTagMatch.end, spanTagMatch.end, ' class="$replacement"');
-      } else {
-        return htmlSpan; // Return original if no span tag is found.
-      }
-    }
-  }
-
-  String extractAndAddSpanStyle(String htmlSpan, String newStyle) {
-    final Match? existingStyleMatch = replaceSpanStyleRegex.firstMatch(htmlSpan);
-
-    if (existingStyleMatch != null) {
-      final existingStyle = existingStyleMatch.group(0);
-      return htmlSpan.replaceRange(
-        existingStyleMatch.start,
-        existingStyleMatch.end,
-        '$existingStyle; $newStyle',
-      );
-    } else {
-      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
-      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
-
-      if (spanTagMatch != null) {
-        return htmlSpan.replaceRange(
-          spanTagMatch.end,
-          spanTagMatch.end,
-          ' style="$newStyle"',
-        );
-      } else {
-        return htmlSpan;
-      }
-    }
-  }
-
-  String extractAndAddSpanClass(String htmlSpan, String newClassList) {
-    final Match? existingClassMatch = replaceSpanClassRegex.firstMatch(htmlSpan);
-
-    //print('extractAndAddSpanClas  htmlSpan=$htmlSpan     newClass=$newClassList');
-    if (existingClassMatch != null) {
-      final existingClass = existingClassMatch.group(0) ?? '';
-
-
-      List<String> existingClasses = existingClass.split(' ');
-      List<String> newClasses = newClassList.split(' ');
-
-//print('existingClasses=$existingClasses');
-//print('newClasses=$newClasses');
-
-      for(var newclass in newClasses) {
-        newclass = newclass.trim();
-        if(newclass.isNotEmpty && !existingClasses.contains(newclass)) {
-          existingClasses.add(newclass);
-        }
-      }
-      String combinedClasses = existingClasses.join(' ');
-
-      //print('extractAndAddSpanClass  combinedClasses=$combinedClasses');
-
-      final out = htmlSpan.replaceRange(
-        existingClassMatch.start,
-        existingClassMatch.end,
-        combinedClasses,
-      );
-
-      //print('extractAndAddSpanClass() out=`$out`');
-      return out;
-    } else {
-      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
-      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
-
-      if (spanTagMatch != null) {
-        String out = htmlSpan.replaceRange(
-          spanTagMatch.end,
-          spanTagMatch.end,
-          ' class="$newClassList"',
-        );
-
-        //print('extractAndAddSpanClass() out=`$out`');
-        return out;
-
-      } else {
-        return htmlSpan;
-      }
-    }
-  }
-
-  void textRegExes() {
-    String htmlSpan1 = '<span style="color:rgb(10,10,10);">';
-    String htmlSpan2 = '<span style="font-size:16px; font-weight:bold;">';
-    String htmlSpan3 = '<span>No style here</span>';
-    String htmlSpan4 = '<span style="background-color:#f0f0f0; border:1px solid black;">';
-    String htmlSpan5 = '<span style="color:red">'; //test without semicolon
-
-
-    print(extractSpanStyle(htmlSpan1)); // Output: color:rgb(10,10,10);
-    print(extractSpanStyle(htmlSpan2)); // Output: font-size:16px; font-weight:bold;
-    print(extractSpanStyle(htmlSpan3)); // Output: null
-    print(extractSpanStyle(htmlSpan4)); // output: background-color:#f0f0f0; border:1px solid black;
-    print(extractSpanStyle(htmlSpan5)); // output: color:red
-
-    String htmlSpan1C = '<span class=".red.underline">';
-    String htmlSpan2C = '<span class="my-class another-class">';
-    String htmlSpan3C = '<span>No class here</span>';
-    String htmlSpan4C = '<span class="only-one">';
-    String htmlSpan5C = '<span class="">'; // test for empty class attribute
-
-    print(extractSpanClass(htmlSpan1C)); // Output: .red.underline
-    print(extractSpanClass(htmlSpan2C)); // Output: my-class another-class
-    print(extractSpanClass(htmlSpan3C)); // Output: null
-    print(extractSpanClass(htmlSpan4C)); // output: only-one
-    print(extractSpanClass(htmlSpan5C)); // output: ""
-
-    String htmlSpan1R = '<span style="color:rgb(10,10,10);">';
-    String htmlSpan2R = '<span class="my-class another-class">';
-    String htmlSpan3R = '<span>No style or class here</span>';
-    String htmlSpan4R = '<span id="test">';
-    String htmlSpan5R = '<div> not a span </div>';
-
-    print(extractAndReplaceSpanStyle(htmlSpan1R, "font-weight: bold;"));
-    // Output: <span style="font-weight: bold;">
-
-    print(extractAndReplaceSpanClass(htmlSpan2R, "new-class"));
-    // Output: <span class="new-class">
-
-    print(extractAndReplaceSpanStyle(htmlSpan3R, "font-weight: bold;"));
-    // Output: <span style="font-weight: bold;">No style or class here</span>
-
-    print(extractAndReplaceSpanClass(htmlSpan3R, "new-class"));
-    // Output: <span class="new-class">No style or class here</span>
-
-    print(extractAndReplaceSpanStyle(htmlSpan4R, "font-weight: bold;"));
-    // Output: <span id="test" style="font-weight: bold;">
-
-    print(extractAndReplaceSpanClass(htmlSpan4R, "new-class"));
-    // Output: <span id="test" class="new-class">
-
-    print(extractAndReplaceSpanStyle(htmlSpan5R, "font-weight: bold;"));
-    // Output: <div> not a span </div>
-
-    print(extractAndReplaceSpanClass(htmlSpan5R, "new-class"));
-    // Output: <div> not a span </div>
-
-    //-------
-    String htmlSpan1A = '<span style="color:rgb(10,10,10);">';
-    String htmlSpan2A = '<span class="my-class another-class">';
-    String htmlSpan3A = '<span>No style or class here</span>';
-    String htmlSpan4A = '<span id="test">';
-    String htmlSpan5A = '<div> not a span </div>';
-
-    print(extractAndAddSpanStyle(htmlSpan1A, "font-weight: bold;"));
-    // Output: <span style="color:rgb(10,10,10);; font-weight: bold;">
-
-    print(extractAndAddSpanClass(htmlSpan2A, "new-class"));
-    // Output: <span class="my-class another-class new-class">
-
-    print(extractAndAddSpanStyle(htmlSpan3A, "font-weight: bold;"));
-    // Output: <span style="font-weight: bold;">No style or class here</span>
-
-    print(extractAndAddSpanClass(htmlSpan3A, "new-class"));
-    // Output: <span class="new-class">No style or class here</span>
-
-    print(extractAndAddSpanStyle(htmlSpan4A, "font-weight: bold;"));
-    // Output: <span id="test" style="font-weight: bold;">
-
-    print(extractAndAddSpanClass(htmlSpan4A, "new-class"));
-    // Output: <span id="test" class="new-class">
-
-    print(extractAndAddSpanStyle(htmlSpan5A, "font-weight: bold;"));
-    // Output: <div> not a span </div>
-
-    print(extractAndAddSpanClass(htmlSpan5A, "new-class"));
-    // Output: <div> not a span </div>
-
-  String style = 'color: red; font-size: 16px; background-color: blue;';
-
-  print(extractCssAttribute(style, 'font-size')); // Output: 16px
-  print(extractCssAttribute(style, 'padding')); // Output: null
-
-  print(replaceCssAttribute(style, 'font-size', '18px'));
-  // Output: color: red; font-size: 18px; background-color: blue;
-
-  print(replaceCssAttribute(style, 'padding', '10px'));
-  // Output: color: red; font-size: 16px; background-color: blue; padding: 10px;
-
-  print(replaceCssAttribute('', 'color', 'green'));
-  //output: color: green;
-
-  print(replaceCssAttribute('color:red', 'background-color', 'yellow'));
-  //output: color:red; background-color: yellow;
-
-  /////----------------
-  style = 'color: red; font-size: 16px; background-color: blue; text-decoration: underline;';
-
-  String updatedStyle = removeCssAttributes(style, ['font-size', 'background-color']);
-  print(updatedStyle); // Output: color: red; text-decoration: underline;
-
-  updatedStyle = removeCssAttributes(updatedStyle, ['color']);
-  print(updatedStyle); // Output: text-decoration: underline;
-
-  updatedStyle = removeCssAttributes(updatedStyle, ['text-decoration']);
-  print(updatedStyle); // Output:
-
-  style = 'color: red; font-size: 16px; background-color: blue; text-decoration: underline'; //test without trailing semicolon
-
-  updatedStyle = removeCssAttributes(style, ['font-size', 'background-color']);
-  print(updatedStyle); // Output: color: red; text-decoration: underline
-
-  style = 'color: red; font-size: 16px; background-color: blue; text-decoration: underline;';
-  updatedStyle = removeCssAttributes(style, ['not-present']);
-  print(updatedStyle); //output: color: red; font-size: 16px; background-color: blue; text-decoration: underline;
-
-  style = '';
-  updatedStyle = removeCssAttributes(style, ['color']);
-  print(updatedStyle); //output: ""
-
-  }
-
-  String setUnderlineColor(String styleString, String color) {
-      // text-decoration-color only works if text-decoration is set.
-      // so we will add text-decoration: underline; if it does not exist.
-      if (extractCssAttribute(styleString, 'text-decoration') == null){
-          styleString = replaceCssAttribute(styleString, 'text-decoration', 'underline');
-      }
-    return replaceCssAttribute(styleString, 'text-decoration-color', color);
-  }
-
-
-  /// Custom Ansi foreground color (or null if none).
-  String? _customFgColor;
-
-  /// Custom Ansi background color (or null if none).
-  String? _customBgColor;
-
-  /// Custom Ansi underline color (or null if none).
-  String? _customUnderlineColor;
-
-  /// Have foreground and background colors been reversed ?
-  bool _colorsInverted = false;
-
-  List<String> _customStyles = [];
-
-
-  /// Set the member variable corresponding to [colorType] to the css
-  /// 'rgb(...)' color string computed from [rgbcolor] (or specified by
-  /// [colorAsString]).
-  /// [colorType] can be `'foreground'`,`'background'` or `'underline'`
-  /// if [rgbcolor] is null then [colorAsString] will attempt to be used, if both
-  /// are null then the corresponding color will be reset/cleared.
-  void changeSpecifiedCustomColor(String colorType, int? rgbcolor,
-      [String? colorAsString]) {
-    if (colorType == 'foreground') {
-      _customFgColor = ChalkHTML.makeCSSColorString(rgbcolor, colorAsString);
-    } else if (colorType == 'background') {
-      _customBgColor = ChalkHTML.makeCSSColorString(rgbcolor, colorAsString);
-    } else if (colorType == 'underline') {
-      _customUnderlineColor = ChalkHTML.makeCSSColorString(rgbcolor, colorAsString);
-    }
-  }
-
-  /// Swap foregfrouned and background colors.  Used for color inversion.
-  /// Caller should check [_colorsInverted] flag to make sure it is appropriate
-  /// to turn ON or OFF (if it is already inverted don't call.
-  void reverseForegroundAndBackgroundColors() {
-    final String? oldFgColor = _customFgColor;
-    changeSpecifiedCustomColor('foreground', null,
-        _customBgColor); // We have strings already, so pass those.
-    changeSpecifiedCustomColor('background', null, oldFgColor);
-  }
-
-  //OBSOLETEstatic bool doneit=false;
-
-  String combineParentSpanAndThisSpan( String parentSpan, String thisSpan ) {
-    //late String combinedSpan = parentSpan;
-//OBSOLETE  if(!doneit) {
-//OBSOLETE    doneit=true;
-//OBSOLETEtextRegExes();
-//OBSOLETE  }
-
-    //print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    //print('combineParentSpanAndThisSpan()');
-    //print(' parentSpan=`$parentSpan`');
-    //print('  thisSpan=`$thisSpan`');
-
-    String existingParentStyle = extractSpanStyle(parentSpan);
-
-    //print('  EXTRACT existingParentStyle=`$existingParentStyle`');
-
-    String? parentForeground;
-    String? parentBackground; 
-    String? parentUnderline; 
-    String? thisForeground;
-    String? thisBackground; 
-    String? thisUnderline; 
-
-    if(existingParentStyle.isNotEmpty) {
-      parentForeground = extractCssAttribute( existingParentStyle, 'color' );
-      parentBackground = extractCssAttribute( existingParentStyle, 'background-color' );
-      parentUnderline = extractCssAttribute( existingParentStyle, 'text-decoration-color' );
-
-      existingParentStyle = removeCssAttributes( existingParentStyle, ['color', 'background-color', 'text-decoration-color'] );
-      //print('parentForeground=`$parentForeground` parentBackground=`$parentBackground` parentUnderline=`$parentUnderline`');
-      //print(' striped existingParentStyle=`$existingParentStyle`');
-    }
-    String existingStyle = extractSpanStyle(thisSpan);
-    //print('   EXTRACT existingStyle=`$existingStyle`');
-    if(existingStyle.isNotEmpty) {
-      thisForeground = extractCssAttribute( existingStyle, 'color' );
-      thisBackground = extractCssAttribute( existingStyle, 'background-color' );
-      thisUnderline = extractCssAttribute( existingStyle, 'text-decoration-color' );
-
-      //print('thisForeground=`$thisForeground` thisBackground=`$thisBackground` thisUnderline=`$thisUnderline`');
-    }
-
-    if(thisForeground==null && parentForeground!=null && parentForeground.isNotEmpty) {
-      existingStyle = replaceCssAttribute(existingStyle, 'color', parentForeground);
-    }
-    if(thisBackground==null && parentBackground!=null && parentBackground.isNotEmpty) {
-      existingStyle = replaceCssAttribute(existingStyle, 'background-color', parentBackground);
-    }
-    if(thisUnderline==null && parentUnderline!=null && parentUnderline.isNotEmpty) {
-      existingStyle = replaceCssAttribute(existingStyle, 'text-decoration-color', parentUnderline);
-    }
-
-    //print('AFTER PARENT REPLACEMENT OF existingStyle=`$existingStyle`');
-
-    // Combine the style attributes
-    String combinedSpan = extractAndReplaceSpanStyle( thisSpan, existingStyle );
-
-    //print('After combining styles combinedSpan=`$combinedSpan`');
-
-
-    //if(!_htmlOutputModeNoStylesheets) {
-      // we are ALSO using class attributes ALSO, combine thoses
-      final String parentClasses = extractSpanClass(parentSpan);
-
-      //print('EXTRACT parentClasses=`$parentClasses`');
-
-      combinedSpan = extractAndAddSpanClass( combinedSpan, parentClasses );
-    //}
-    return combinedSpan;
-  }
-
-
   Chalk _createStyler(String open, String close, [Chalk? parent]) {
     final chalk = Chalk._internal(parent);
 
     if(_htmlOutputModeForThisChalk) {
+      // FIRST me must take the open <span class="" style="color:XYZ background-color:YYZ; text-decoration-color:ZZZ;">
+      // and convert it into a ChalkHTMLStyleInfo object
+      chalk._htmlStyleInfo = ChalkHTML.convertHTMLSpanToChalkHTMLStyleInfo( open );
 
-      //print('=====================================');
-      //print('_createStyler open=`$open`  close=`$close`');
-      //if(parent!=null) print('   parent.openAll = ${parent._openAll}');
-        // For HTML mode we are using the open to contain the STYLE or CLASS for this <span> 
-        // (depending on _htmlOutputModeNoStylesheets flag)
+      //DEBUG//bool errorDump = false;
+      
       chalk._open = open;
       chalk._close = close;
       if (parent == null) {
         chalk._openAll = open;
-        chalk._closeAll = '</span noparent>';//close;
+        chalk._closeAll = '</span>'; //THIS *could* be `close`, as it is always '</span>', but `x11`, `color` and other NO-OP chalks have EMPTY `close`
+        chalk._htmlStyleInfoWithParents = chalk._htmlStyleInfo;
       } else {
-        chalk._openAll = combineParentSpanAndThisSpan(parent._openAll, open);
-        chalk._closeAll = '</span>'; //close;  // ALL CLOSES are ALWAYS the same '</span>'
+        chalk._htmlStyleInfoWithParents = ChalkHTML.combineParentHtmlInfoAndThisInfo( parent._htmlStyleInfoWithParents, chalk._htmlStyleInfo! );
+        chalk._openAll = ChalkHTML.makeHTMLSpanFromInfo( chalk._htmlStyleInfoWithParents! );
+        chalk._closeAll = '</span>'; //THIS *could* be `close`, as it is always '</span>', but `x11`, `color` and other NO-OP chalks have EMPTY `close`
       }
-
-      //print('_createStyler EXIT openAll=${chalk._openAll} ');
-
+      if(DUMP_HTML_INFO_OBJECTS /* || errorDump */) {
+        //DEBUG//if(errorDump) {
+        //DEBUG//  try {
+        //DEBUG//    throw('_createStyler ERROR DUMP SET');
+        //DEBUG//  } catch (ex, stackTrace) {
+        //DEBUG//    print('_createStyler() ERROR DUMP SET - ${stackTrace.toString()}');
+        //DEBUG//  }
+        //DEBUG//}
+        print('_createStyler()');
+        print('  child = ${chalk._htmlStyleInfo}');
+        print('  parent = ${parent!=null ? parent._htmlStyleInfoWithParents.toString() : 'null'}');
+        print('  COMBINED = ${chalk._htmlStyleInfoWithParents}');
+        //print('=====================================');
+        //print('_createStyler open=`$open`  close=`$close`');
+        //if(parent!=null) print('   parent.openAll = ${parent._openAll}');
+        //print('_createStyler EXIT openAll=${chalk._openAll} ');
+      }
     } else {
       // HANDLE ANSI open and close and getting that information from parent as well
       chalk._open = open;
@@ -914,6 +456,11 @@ String? extractAndReplaceSpanClass(String htmlSpan, String replacement) {
     return chalk;
   }
 
+  /// Creates a Chalk based on red, green and blue values.  This is *intended* to be a 
+  /// an internal method. Use rgb(), rgb16m(), onRgb() or onRgb16m() instead,
+  /// NOTE: I have added deprecated() annotation to guide users.
+  // @deprecated('Use rgb(), rgb16m(), onRgb() or onRgb16m() instead.')  // GETS ERROR ??
+  // Not called _makeRGBChalk() so it can be accessed from chalk_x11.dart/chalk_x11.g.dart.
   Chalk makeRGBChalk(num nred, num ngreen, num nblue,
       {bool bg = false, bool force16M = false}) {
     if (nred <= 1.0 && ngreen <= 1.0 && nblue <= 1.0 && !noZeroToOneScaling) {
@@ -1764,14 +1311,25 @@ String? extractAndReplaceSpanClass(String htmlSpan, String replacement) {
   /// NOTE: This returns the *styles* only - Use [inlineStylesheet] to return
   /// the the stylesheet within <style>..styles..</style> tags for use directly in the
   /// output html.
-  String get stylesheet => myvsCodeDebugConsoleStylesheet;
+  String stylesheet({String? foregroundColor, String? backgroundColor,
+                String? font1, String? font2, String? font3, String? font4, String? font5,
+                String? font6, String? font7, String? font8, String? font9, String? font10
+              }) => _getHTMLStyleSheetIncludingColors(foregroundColor:foregroundColor,backgroundColor:backgroundColor,
+                                                    font1:font1, font2:font2, font3:font3, font4:font4, font5:font5,
+                                                    font6:font6, font7:font7, font8:font8, font9:font9, font10:font10
+              );
 
   /// Returns the CSS styles required to render the HTML produced in HTML mode
   /// The stylesheet os wrapped within <style>..styles..</style> tags for use directly
   /// in the output html.
   /// Typically when using HMTL mode this would be called at the beginning of your output
   /// with a something like `print(mychalk.inlineStylesheet);`
-  String get inlineStylesheet => '<style>\n$myvsCodeDebugConsoleStylesheet\n</style>\n';
+  String inlineStylesheet({String? foregroundColor, String? backgroundColor,
+                String? font1, String? font2, String? font3, String? font4, String? font5,
+                String? font6, String? font7, String? font8, String? font9, String? font10
+              }) => '<style>\n${_getHTMLStyleSheetIncludingColors(foregroundColor:foregroundColor,backgroundColor:backgroundColor,
+                                                                font1:font1, font2:font2, font3:font3, font4:font4, font5:font5,
+                                                                font6:font6, font7:font7, font8:font8, font9:font9, font10:font10)})}\n</style>\n';
 
   // This method handles turning all the dynamic items in the list to strings,
   // and recurses if it finds Lists.
@@ -1932,6 +1490,88 @@ String? extractAndReplaceSpanClass(String htmlSpan, String replacement) {
   static void addColorKeywordHex(String colorname, dynamic hex) {
     ColorUtils.addColorKeywordHex(colorname, hex);
   }
+
+  // Returns the style sheet for our HTML output mode support.  Allows customizing 
+  String _getHTMLStyleSheetIncludingColors({String? foregroundColor, String? backgroundColor,
+        String? font1, String? font2, String? font3, String? font4, String? font5,
+        String? font6, String? font7, String? font8, String? font9, String? font10} ) {
+    // Get the default foreground/background colors based on the current `htmlBasicANSIColorSet`
+    //  (if they are not specified we use the values or BLACK and BRIGHT WHITE  based on the current `htmlBasicANSIColorSet`)
+    if( foregroundColor==null || backgroundColor==null ) {
+      const int blackColorIndex = 0; // ANSI 0 is black we use to index into our ChalkHTML.lightModeAnsiColors/darkModeAnsiColors/highContrastModeAnsiColors tables
+      const int whiteColorIndex = 15; // ANSI 15 is bright white (ANSI 7 would be white (dim white)
+      switch(htmlBasicANSIColorSet) {
+        case ChalkAnsiColorSet.lightBackground:
+          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.lightModeAnsiColors[blackColorIndex]);
+          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.lightModeAnsiColors[whiteColorIndex]);      
+        case ChalkAnsiColorSet.darkBackground:
+          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.darkModeAnsiColors[blackColorIndex]);
+          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.darkModeAnsiColors[whiteColorIndex]);      
+        case ChalkAnsiColorSet.highContrast:
+          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.highContrastModeAnsiColors[blackColorIndex]);
+          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.highContrastModeAnsiColors[whiteColorIndex]);      
+      }
+    }
+
+    return '''
+  /* We always keep these `--bg` and `--fg` CSS variables updated it with current color and background-color
+     (since we can't read those from CSS unfortunately). They are only used to allow us to handle the 
+     .ansi-invert-colors class.  For systems which may not support css variables the .ansi-invert-colors
+     that is the only functionality that will be lost.
+  */
+  @property --bg {syntax: "<color>";inherits: true;initial-value: $backgroundColor;}
+  @property --fg {syntax: "<color>";inherits: true;initial-value: $foregroundColor;}
+
+  .ansi-invert-colors {
+    background-color: var(--fg);
+    color: var(--bg);
+  }
+
+  /* ANSI Codes */
+  .ansi-bold	{ font-weight: bold; }
+  .ansi-italic	{ font-style: italic; }
+  .ansi-underline { text-decoration: underline;  text-decoration-style:solid; }
+  .ansi-double-underline { text-decoration: underline;  text-decoration-style:double; }
+  .ansi-strike-through { text-decoration:line-through;  text-decoration-style:solid; }
+  .ansi-overline { text-decoration:overline;  text-decoration-style:solid; }
+  /* because they can exist at same time we need all the possible underline(or double-underline),overline and strike-through combinations */
+  .ansi-overline.ansi-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:solid; }
+  .ansi-overline.ansi-underline { text-decoration: overline underline; text-decoration-style:solid; }
+  .ansi-overline.ansi-strike-through { text-decoration: overline line-through; text-decoration-style:solid; }
+  .ansi-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:solid; }
+  .ansi-overline.ansi-double-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:double; }
+  .ansi-overline.ansi-double-underline { text-decoration: overline underline; text-decoration-style:double; }
+  .ansi-double-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:double; }
+  .ansi-dim	{ opacity: 0.4; }
+  .ansi-hidden { opacity: 0; }
+  .ansi-blink { animation: ansi-blink-key 1s cubic-bezier(1, 0, 0, 1) infinite alternate; }
+  .ansi-rapid-blink { animation: ansi-blink-key 0.3s cubic-bezier(1, 0, 0, 1) infinite alternate; }
+  @keyframes ansi-blink-key {
+    to { opacity: 0.4; }
+  }
+  .ansi-subscript { vertical-align: sub; font-size: smaller; line-height: normal; }
+  .ansi-superscript { vertical-align: super; font-size: smaller; line-height: normal; }
+  /**
+   * Alternate ansi-font-# classes, note the font-family stacks here are somewhat arbitrary but will resolve to different 'standard' css fonts.
+   * ansi-font-10 is called the 'blackletter' font within ANSI SGR docs so attempt is made to resolve a blackletter font on users system.
+   * ('F25 BlackletterTypewriter' is monospaced Blackletter font used or recommended by other terminal emulators (ie. mintty, etc.)
+   * None of these fonts are required and all font-family stacks will resolve to some font.
+   * 
+   * These defaults match what I used in the ANSI support I added to the DartPad console.
+   */
+  .ansi-font-1 { font-family: ${font1 ?? 'Verdana,Arial,sans-serif'}; }
+  .ansi-font-2 { font-family: ${font2 ?? 'Georgia,"Times New Roman",serif'}; }
+  .ansi-font-3 { font-family: ${font3 ?? 'Papyrus,Impact,fantasy'}; }
+  .ansi-font-4 { font-family: ${font4 ?? '"Apple Chancery","Lucida Calligraphy",cursive'}; }
+  .ansi-font-5 { font-family: ${font5 ?? '"Courier New", Courier, monospace'}; }
+  .ansi-font-6 { font-family: ${font6 ?? '"Segoe WPC", "Segoe UI",-apple-system, BlinkMacSystemFont, system-ui, "Ubuntu", "Droid Sans", sans-serif'}; }
+  .ansi-font-7 { font-family: ${font7 ?? 'Menlo, Monaco, Consolas,"Droid Sans Mono", "Inconsolata", "Courier New", monospace, "Droid Sans Fallback"'}; }
+  .ansi-font-8 { font-family: ${font8 ?? '"SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace'}; }
+  .ansi-font-9 { font-family: ${font9 ?? '"SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace'}; }
+  .ansi-font-10 { font-family:${font10 ?? '"F25 BlackletterTypewriter", UnifrakturCook, Luminari, Apple Chancery, fantasy, Papyrus'}; }
+''';
+
+  }
 }
 
 /// This _StringUtils class handles heavy lifting for Chalk() on string
@@ -1985,87 +1625,3 @@ class _StringUtils {
     return returnValue;
   }
 }
-
-String myDartPadConsoleStylesheet = r'''
-.console {
-  .ansi-bold	{ font-weight: bold; }
-  .ansi-italic	{ font-style: italic; }
-  .ansi-underline { text-decoration: underline;  text-decoration-style:solid; }
-  .ansi-dim	{ opacity: 0.5; }
-  .ansi-hidden { opacity: 0; }
-  .ansi-blink { animation: code-blink-key 0.3s cubic-bezier(1, 0, 0, 1) infinite alternate; }
-  .ansi-rapid-blink { animation: code-blink-key 0.01s cubic-bezier(1, 0, 0, 1) infinite alternate; }
-  @keyframes code-blink-key {
-    to { opacity: 0; }
-  }
-  .ansi-double-underline { text-decoration: underline;  text-decoration-style:double; }
-  .ansi-strike-through { text-decoration:line-through;  text-decoration-style:solid; }
-  .ansi-overline { text-decoration:overline;  text-decoration-style:solid; }
-  .ansi-overline.code-underline.code-line-through { text-decoration: overline underline line-through; text-decoration-style:solid; }
-  .ansi-overline.code-underline { text-decoration: overline underline; text-decoration-style:solid; }
-  .ansi-overline.code-line-through { text-decoration: overline line-through; text-decoration-style:solid; }
-  .ansi-underline.code-line-through { text-decoration: underline line-through; text-decoration-style:solid; }
-  .ansi-overline.code-double-underline.code-line-through { text-decoration: overline underline line-through; text-decoration-style:double; }
-  .ansi-overline.code-double-underline { text-decoration: overline underline; text-decoration-style:double; }
-  .ansi-double-underline.code-line-through { text-decoration: underline line-through; text-decoration-style:double; }
-  .ansi-subscript { vertical-align: sub; font-size: smaller; line-height: normal; }
-  .ansi-superscript { vertical-align: super; font-size: smaller; line-height: normal; }
-  .ansi-font-1 { font-family: Verdana,Arial,sans-serif; }
-  .ansi-font-2 { font-family: Georgia,'Times New Roman',serif; }
-  .ansi-font-3 { font-family: Papyrus,Impact,fantasy; }
-  .ansi-font-4 { font-family: 'Cascadia Mono', 'Apple Chancery','Lucida Calligraphy',cursive; }
-  .ansi-font-5 { font-family: 'Courier New', 'Courier', monospace; }
-  .ansi-font-6 { font-size: 14px; font-family: 'Cascadia Code PL', 'Segoe WPC', 'Segoe UI',-apple-system, BlinkMacSystemFont, system-ui, "Ubuntu", "Droid Sans", sans-serif; }
-  .ansi-font-7 { font-size: 16px; font-family: 'Cascadia Mono PL', Menlo, Monaco, Consolas,"Droid Sans Mono", "Inconsolata", "Courier New", monospace, "Droid Sans Fallback"; }
-  .ansi-font-8 { font-size: 18px; font-family: 'Cascadia Code PL',"SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace; }
-  .ansi-font-9 { font-size: 20px; font-family: 'JetBrains Mono', "SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace; }
-  .ansi-font-10 { font-stretch: ultra-expanded; font-weight: bold; font-family: 'League Mono', 'F25 BlackletterTypewriter', UnifrakturCook, Luminari, Apple Chancery, fantasy, Papyrus; }
-}
-''';
-
-String myvsCodeDebugConsoleStylesheet = r'''
-
-/* ANSI Codes */
-.ansi-bold	{ font-weight: bold; }
-.ansi-italic	{ font-style: italic; }
-.ansi-underline { text-decoration: underline;  text-decoration-style:solid; }
-.ansi-double-underline { text-decoration: underline;  text-decoration-style:double; }
-.ansi-strike-through { text-decoration:line-through;  text-decoration-style:solid; }
-.ansi-overline { text-decoration:overline;  text-decoration-style:solid; }
-/* because they can exist at same time we need all the possible underline(or double-underline),overline and strike-through combinations */
-.ansi-overline.ansi-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:solid; }
-.ansi-overline.ansi-underline { text-decoration: overline underline; text-decoration-style:solid; }
-.ansi-overline.ansi-strike-through { text-decoration: overline line-through; text-decoration-style:solid; }
-.ansi-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:solid; }
-.ansi-overline.ansi-double-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:double; }
-.ansi-overline.ansi-double-underline { text-decoration: overline underline; text-decoration-style:double; }
-.ansi-double-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:double; }
-.ansi-dim	{ opacity: 0.4; }
-.ansi-hidden { opacity: 0; }
-.ansi-blink { animation: ansi-blink-key 1s cubic-bezier(1, 0, 0, 1) infinite alternate; }
-.ansi-rapid-blink { animation: ansi-blink-key 0.3s cubic-bezier(1, 0, 0, 1) infinite alternate; }
-@keyframes ansi-blink-key {
-	to { opacity: 0.4; }
-}
-.ansi-subscript { vertical-align: sub; font-size: smaller; line-height: normal; }
-.ansi-superscript { vertical-align: super; font-size: smaller; line-height: normal; }
-/**
- * Alternate ansi-font-# classes, note the font-family stacks here are somewhat arbitrary but will resolve to different 'standard' css fonts
- * or are font-family stacks found other places in within VSCode.
- * ansi-font-10 is called the 'blackletter' font within ANSI SGR docs so attempt is made to resolve a blackletter font on users system.
- * ('F25 BlackletterTypewriter' is monospaced Blackletter font used or recommended by other terminal emulators (ie. mintty, etc.)
- * None of these fonts are required and all font-family stacks will resolve to some font.
- * User can change the fonts used by these classes custom css using a extension such as Customize UI/Monkey Patch
- */
-.ansi-font-1 { font-family: Verdana,Arial,sans-serif; }
-.ansi-font-2 { font-family: Georgia,'Times New Roman',serif; }
-.ansi-font-3 { font-family: Papyrus,Impact,fantasy; }
-.ansi-font-4 { font-family: 'Apple Chancery','Lucida Calligraphy',cursive; }
-.ansi-font-5 { font-family: 'Courier New', 'Courier', monospace; }
-.ansi-font-6 { font-family: "Segoe WPC", "Segoe UI",-apple-system, BlinkMacSystemFont, system-ui, "Ubuntu", "Droid Sans", sans-serif; }
-.ansi-font-7 { font-family: Menlo, Monaco, Consolas,"Droid Sans Mono", "Inconsolata", "Courier New", monospace, "Droid Sans Fallback"; }
-.ansi-font-8 { font-family: "SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace; }
-.ansi-font-9 { font-family: "SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace; }
-.ansi-font-10 { font-family: "F25 BlackletterTypewriter", UnifrakturCook, Luminari, Apple Chancery, fantasy, Papyrus; }
-
-''';

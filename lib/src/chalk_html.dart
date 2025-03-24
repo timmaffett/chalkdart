@@ -3,6 +3,20 @@
 
 import 'package:chalkdart/chalkdart.dart';
 
+class ChalkHTMLStyleInfo {
+  List<String>? styleNames;
+  String? customFgColor;
+  String? customBgColor;
+  String? customUnderlineColor;
+  bool colorsInverted;
+  ChalkHTMLStyleInfo({this.styleNames, this.customFgColor, this.customBgColor, this.customUnderlineColor, this.colorsInverted = false } );
+
+  @override
+  String toString() {
+    return 'styleNames=${styleNames!=null? styleNames.toString() : 'null'} customFgColor="$customFgColor" customBgColor="$customBgColor" customUnderlineColor="$customUnderlineColor" colorsInverted=$colorsInverted';
+  }
+}
+
 class ChalkHTML {
 
   /// Dark mode basic ansi colors 0-15.
@@ -83,7 +97,7 @@ class ChalkHTML {
                               ChalkAnsiColorSet.darkBackground => darkModeAnsiColors[colorIndex],
                               ChalkAnsiColorSet.lightBackground => lightModeAnsiColors[colorIndex],
                               ChalkAnsiColorSet.highContrast => highContrastModeAnsiColors[colorIndex] };
-          return makeCSSColorString(colorRGBAInt,null) ?? 'cyan';
+          return makeCSSColorString(rgbAsInt:colorRGBAInt) ?? 'cyan';
       }
       return 'orange';
     } else if (ansiColorNumber >= 16 && ansiColorNumber <= 231) {
@@ -122,22 +136,21 @@ class ChalkHTML {
   /// passed in [colorAsString] is returned (this could also be null,
   /// but in cases of swapping foreground/background colors for the inverse
   /// operation is is the previously computed rgb string for the colors).
-  static String? makeCSSColorString(int? rgbcolor, String? colorAsString) {
-    if (rgbcolor == null) {
-      return colorAsString; // Caller may have passed color as string.
+  static String? makeCSSColorString({int? rgbAsInt, String? colorAsString}) {
+    if (rgbAsInt == null) {
+      return colorAsString ?? 'red'; // Caller may have passed color as string - not indicate ERROR by returning red
     }
-    return 'rgb(${(rgbcolor >> 16) & 0xFF},${(rgbcolor >> 8) & 0xFF},${rgbcolor & 0xFF})';
+    return 'rgb(${(rgbAsInt >> 16) & 0xFF},${(rgbAsInt >> 8) & 0xFF},${rgbAsInt & 0xFF})';
   }
 
 
-  static String getStyleFromANSICode( List<int> codes ) {
+  static ChalkHTMLStyleInfo getHTMLStyleFromANSICode( List<int> codes ) {
     List<String> styleNames = [];
     String? customFgColor;
     String? customBgColor;
     String? customUnderlineColor;
     bool colorsInverted = false;
 
- 
     //
     // * Change the foreground or background color by clearing the current color
     // * and adding the new one.
@@ -206,7 +219,7 @@ class ChalkHTML {
                               ChalkAnsiColorSet.lightBackground => lightModeAnsiColors[colorIndex],
                               ChalkAnsiColorSet.highContrast => highContrastModeAnsiColors[colorIndex] };
         }
-        changeColor(colorType, makeCSSColorString(colorRGBAInt,null));
+        changeColor(colorType, makeCSSColorString(rgbAsInt:colorRGBAInt));
       }
     }
 
@@ -214,6 +227,11 @@ class ChalkHTML {
     for(int code in codes) {
       switch (code) {
         case 0: {  // reset (everything)
+          // Add our `SPECIALFLAG-reset-everything` class to signal to Chalk parent/child style combiner that parent
+          // style list and all colors and EVERYTHING needs to be ignored
+          styleNames.remove('SPECIALFLAG-reset-everything');
+					styleNames.add('SPECIALFLAG-reset-everything');
+
           styleNames = [];
           customFgColor = null;
           customBgColor = null;
@@ -251,10 +269,14 @@ class ChalkHTML {
 					break;
 				}
 				case 7: { // invert foreground and background
-					if (!colorsInverted) {
-						colorsInverted = true;
-						reverseForegroundAndBackgroundColors();
-					}
+          // Add our `ansi-invert-colors` class - This will use our custom CSS variables to invert the colors
+          styleNames.remove('ansi-invert-colors');
+					styleNames.add('ansi-invert-colors');
+          // WE DONT ACTUALLY SWAP/INVERT the colors now - Chalk will do it AFTER it merges parent and child
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//if (!colorsInverted) {
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//	colorsInverted = true;
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//	reverseForegroundAndBackgroundColors();
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//}
 					break;
 				}
 				case 8: { // hidden
@@ -269,54 +291,78 @@ class ChalkHTML {
 				}
 				case 10: { // normal default font
           styleNames.removeWhere((entry) => entry.startsWith('ansi-font'));
-					//styleNames = styleNames.filter(style => !style.startsWith('ansi-font'));
+          // Add our `SPECIALFLAG-font-reset` class to signal to Chalk parent/child style combiner that parent
+          // style list needs to have all fonts removed.
+          styleNames.remove('SPECIALFLAG-font-reset');
+					styleNames.add('SPECIALFLAG-font-reset');
 					break;
 				}
 				case 11: case 12: case 13: case 14: case 15: case 16: case 17: case 18: case 19: case 20: { // font codes (and 20 is 'blackletter' font code)
           styleNames.removeWhere((entry) => entry.startsWith('ansi-font'));
-					//styleNames = styleNames.filter(style => !style.startsWith('ansi-font'));
 					styleNames.add('ansi-font-${code - 10}');
 					break;
 				}
 				case 21: { // double underline
            styleNames.removeWhere((entry) => (entry=='ansi-underline' || entry=='ansi-double-underline'));
-          //styleNames = styleNames.filter(style => (style !== 'ansi-underline' && style !== 'ansi-double-underline'));
 					styleNames.add('ansi-double-underline');
 					break;
 				}
 				case 22: { // normal intensity (bold off and dim off)
           styleNames.removeWhere((entry) => (entry=='ansi-bold' || entry=='ansi-dim'));
-					//styleNames = styleNames.filter(style => (style !== 'ansi-bold' && style !== 'ansi-dim'));
+          // Add our `SPECIALFLAG-normal-intensity` class to signal to Chalk parent/child style combiner that parent
+          // style list needs to have all 'ansi-bold' and entry=='ansi-dim' removed.
+					styleNames.remove('SPECIALFLAG-normal-intensity');
+					styleNames.add('SPECIALFLAG-normal-intensity');
 					break;
 				}
 				case 23: { // Neither italic or blackletter (font 10)
           styleNames.removeWhere((entry) => (entry=='ansi-italic' || entry=='ansi-font-10'));
-					//styleNames = styleNames.filter(style => (style !== 'ansi-italic' && style !== 'ansi-font-10'));
+          // Add our `SPECIALFLAG-neither-italic-or-font-10` class to signal to Chalk parent/child style combiner that parent
+          // style list needs to have 'ansi-italic' and 'ansi-font-10' removed.
+					styleNames.remove('SPECIALFLAG-neither-italic-or-font-10');
+					styleNames.add('SPECIALFLAG-neither-italic-or-font-10');
 					break;
 				}
 				case 24: { // not underlined (Neither singly nor doubly underlined)
           styleNames.removeWhere((entry) => (entry=='ansi-underline' || entry=='ansi-double-underline'));
-					//styleNames = styleNames.filter(style => (style !== 'ansi-underline' && style !== 'ansi-double-underline'));
+          // Add our `SPECIALFLAG-underline-reset` class to signal to Chalk parent/child style combiner that parent
+          // style list needs to have 'ansi-underline' and 'ansi-double-underline' removed.
+					styleNames.remove('SPECIALFLAG-underline-reset');
+					styleNames.add('SPECIALFLAG-underline-reset');
 					break;
 				}
 				case 25: { // not blinking
           styleNames.removeWhere((entry) => (entry=='ansi-blink' || entry=='ansi-rapid-blink'));
-					//styleNames = styleNames.filter(style => (style !== 'ansi-blink' && style !== 'ansi-rapid-blink'));
+          // Add our `SPECIALFLAG-not-blinking` class to signal to Chalk parent/child style combiner that parent
+          // style list needs to have 'ansi-blink' and 'ansi-rapid-blink' removed.
+					styleNames.remove('SPECIALFLAG-not-blinking');
+					styleNames.add('SPECIALFLAG-not-blinking');
 					break;
 				}
 				case 27: { // not reversed/inverted
-					if (colorsInverted) {
-						colorsInverted = false;
-						reverseForegroundAndBackgroundColors();
-					}
+          // Add our `ansi-invert-colors` class to signal to Chalk parent/child style combiner that
+          // colors should NOT be inverted
+					styleNames.remove('SPECIALFLAG-not-invert-colors');
+					styleNames.add('SPECIALFLAG-not-invert-colors');
+          // WE DONT ACTUALLY SWAP/INVERT the colors now - Chalk will do it AFTER it merges parent and child
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//if (colorsInverted) {
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//	colorsInverted = false;
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//	reverseForegroundAndBackgroundColors();
+					//WE DONT DO CAUSE Chalk WILL SWAP/INVERT AFTER MERGING WITH PARENT//KLUDGE WE WILL NEED THIS IF WE ARE USING TO MAKE ANSI PARSER//}
 					break;
 				}
 				case 28: { // not hidden (reveal)
 					styleNames.remove('ansi-hidden');
+          // Add our `SPECIALFLAG-not-hidden` class to signal to Chalk parent/child style combiner
+					styleNames.remove('SPECIALFLAG-not-hidden');
+					styleNames.add('SPECIALFLAG-not-hidden');
 					break;
 				}
 				case 29: { // not crossed-out
 					styleNames.remove('ansi-strike-through');
+          // Add our `SPECIALFLAG-not-strike-through` class to signal to Chalk parent/child style combiner
+					styleNames.remove('SPECIALFLAG-not-strike-through');
+					styleNames.add('SPECIALFLAG-not-strike-through');
 					break;
 				}
 				case 53: { // overlined
@@ -326,35 +372,45 @@ class ChalkHTML {
 				}
 				case 55: { // not overlined
 					styleNames.remove('ansi-overline');
+          // Add our `SPECIALFLAG-not-overline` class to signal to Chalk parent/child style combiner to remove 'ansi-overline'
+					styleNames.remove('SPECIALFLAG-not-overline');
+					styleNames.add('SPECIALFLAG-not-overline');
 					break;
 				}
 				case 39: {  // default foreground color
+					styleNames.remove('SPECIALFLAG-default-foreground');
+					styleNames.add('SPECIALFLAG-default-foreground');
 					changeColor('foreground', null);
 					break;
 				}
 				case 49: {  // default background color
+					styleNames.remove('SPECIALFLAG-default-background');
+					styleNames.add('SPECIALFLAG-default-background');
 					changeColor('background', null);
 					break;
 				}
 				case 59: {  // default underline color
+					styleNames.remove('SPECIALFLAG-default-underlinecolor');
+					styleNames.add('SPECIALFLAG-default-underlinecolor');
 					changeColor('underline', null);
 					break;
 				}
 				case 73: { // superscript
           styleNames.removeWhere((entry) => (entry=='ansi-superscript' || entry=='ansi-subscript'));
-					//styleNames = styleNames.filter(style => (style !== 'ansi-superscript' && style !== 'ansi-subscript'));
 					styleNames.add('ansi-superscript');
 					break;
 				}
 				case 74: { // subscript
           styleNames.removeWhere((entry) => (entry=='ansi-superscript' || entry=='ansi-subscript'));
-					//styleNames = styleNames.filter(style => (style !== 'ansi-superscript' && style !== 'ansi-subscript'));
 					styleNames.add('ansi-subscript');
 					break;
 				}
 				case 75: { // neither superscript or subscript
           styleNames.removeWhere((entry) => (entry=='ansi-superscript' || entry=='ansi-subscript'));
-					//styleNames = styleNames.filter(style => (style !== 'ansi-superscript' && style !== 'ansi-subscript'));
+          // Add our `SPECIALFLAG-reset-super-subscript` class to signal to Chalk parent/child style combiner to
+          // remove 'ansi-superscript' and entry=='ansi-subscript'
+					styleNames.remove('SPECIALFLAG-reset-super-subscript');
+					styleNames.add('SPECIALFLAG-reset-super-subscript');
 					break;
 				}
 				default: {
@@ -363,18 +419,500 @@ class ChalkHTML {
 				}
 			}
 		}
-    String outstyle = "";
-    if(customFgColor!=null) {
-      outstyle += 'color: $customFgColor;';
-    }
-    if(customBgColor!=null) {
-      outstyle += 'background-color: $customBgColor;';
-    }
-    if(customUnderlineColor!=null) {
-      outstyle += 'text-decoration-color: $customUnderlineColor;';
-    }
-    return 'class="${styleNames.join(' ')}" style="$outstyle"';
+    return ChalkHTMLStyleInfo(styleNames:styleNames, customFgColor:customFgColor, customBgColor:customBgColor, customUnderlineColor:customUnderlineColor, colorsInverted:colorsInverted );
   }
+
+  /// Returns a <span class="..." style="...."> open tag which renders the style specified by the ChalkHTMLStyleInfo
+  static String makeHTMLSpanFromInfo( ChalkHTMLStyleInfo info ) {
+    String outStyle = '';
+    String outFGBGCssVariables = ''; // these are use to track fg/bg color across all spans so that we can handle INVERT
+    if(info.customFgColor!=null) {
+      outStyle += 'color:${info.customFgColor};';
+      outFGBGCssVariables += '--fg:${info.customFgColor};';
+    }
+    if(info.customBgColor!=null) {
+      outStyle += 'background-color: ${info.customBgColor};';
+      outFGBGCssVariables += '--bg:${info.customBgColor};';
+    }
+    if(info.customUnderlineColor!=null) {
+      outStyle += 'text-decoration-color: ${info.customUnderlineColor};';
+    }
+
+    String classAttrib='';
+    if(info.styleNames!=null && info.styleNames!.isNotEmpty) {
+      classAttrib = ' class="${info.styleNames!.join(' ')}"';
+    }
+    
+    return '<span$classAttrib style="$outStyle$outFGBGCssVariables">';
+  }
+
+
+  static final RegExp _extractSpanRegex = RegExp(r'style="([^"]*)"');
+  static final RegExp _extractClassRegex = RegExp(r'class="([^"]*)"');
+
+/* OBSOLETE
+  final RegExp replaceSpanClassRegex = RegExp(r'(?<=class=")[^"]*(?=")');
+  final RegExp replaceSpanStyleRegex = RegExp(r'(?<=style=")[^"]*(?=")');
+OBSOLETE */
+/*OBSOLETE
+  String removeCssAttributes(String styleString, List<String> attributesToRemove) {
+    String result = styleString;
+    for (String attribute in attributesToRemove) {
+      String regExStr = '(?<!-)$attribute\\s*:\\s*[^;]+;+\\s*';
+      final RegExp removeCSSAttributeRegex = RegExp(regExStr);
+      result = result.replaceAll(removeCSSAttributeRegex, '');
+    }
+    return result.trim().replaceAll(RegExp(r';+$'), ''); // Remove trailing semicolons
+  }
+OBSOLETE*/
+
+  static String? _extractCssAttribute(String styleString, String attributeName, {bool includeSemicolonInReturn = false}) {
+
+    String regExStr='(?<!-)$attributeName\\s*:\\s*([^;]+)(;|\$)';
+
+//print('extractCssAttribute() styleString=`$styleString` regExStr=`$regExStr`');
+
+    final RegExp extractCSSAttributerRegex = RegExp(regExStr);
+    final Match? match = extractCSSAttributerRegex.firstMatch(styleString);
+
+//print('match=$match');
+    if (match != null) {
+      final p1 = match.group(1)?.trim();
+      if( includeSemicolonInReturn ) {
+        final p2 = match.group(2)?.trim(); // this is the semicolor on not..
+        return (p1 ?? '')+(p2 ?? '');
+      } else {
+        return (p1 ?? '');
+      }
+    }
+    return null;
+  }
+
+/* OBSOLETE
+  String replaceCssAttribute(String styleString, String attributeName, String newValue) {
+
+
+    //print('replaceCssAttribute(styleString=$styleString  attributeName=$attributeName   newValue=$newValue');
+
+    String regExStr = '(?<!-)$attributeName\\s*:\\s*([^;]+)(;|\$)';
+    final RegExp extractCSSAttributerRegex = RegExp(regExStr);
+    final Match? match = extractCSSAttributerRegex.firstMatch(styleString);
+
+    if (match != null) {
+      return styleString.replaceRange(
+        match.start,
+        match.end,
+        '$attributeName: $newValue',
+      );
+    } else {
+      if (styleString.isNotEmpty) {
+        return '$styleString $attributeName: $newValue';
+      } else {
+        return '$attributeName: $newValue';
+      }
+    }
+  }
+OBSOLETE */
+
+  static String _extractSpanStyle(String htmlSpan) {
+    final Match? match = _extractSpanRegex.firstMatch(htmlSpan);
+
+    if (match != null && match.groupCount > 0) {
+      return match.group(1) ?? '';
+    } else {
+      return '';
+    }
+  }
+
+  static String _extractSpanClass(String htmlSpan) {
+    final Match? match = _extractClassRegex.firstMatch(htmlSpan);
+
+    if (match != null && match.groupCount > 0) {
+      return match.group(1) ?? '';
+    } else {
+      return '';
+    }
+  }
+
+
+/* USING SMARTER VERSIONS that can insert style/class also...
+  String? extractAndReplaceSpanStyle(String htmlSpan, String replacement) {
+    final Match? match = replaceSpanStyleRegex.firstMatch(htmlSpan);
+
+    if (match != null) {
+      return htmlSpan.replaceRange(match.start, match.end, replacement);
+    } else {
+      return null;
+    }
+  }
+
+String? extractAndReplaceSpanClass(String htmlSpan, String replacement) {
+  final Match? match = replaceSpanClassRegex.firstMatch(htmlSpan);
+
+  if (match != null) {
+    return htmlSpan.replaceRange(match.start, match.end, replacement);
+  } else {
+    return null;
+  }
+}
+*/
+/* OBSOLETE
+
+  String extractAndReplaceSpanStyle(String htmlSpan, String replacement) {
+    final Match? existingStyleMatch = replaceSpanStyleRegex.firstMatch(htmlSpan);
+
+    if (existingStyleMatch != null) {
+      return htmlSpan.replaceRange(existingStyleMatch.start, existingStyleMatch.end, replacement);
+    } else {
+      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
+      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
+
+      if (spanTagMatch != null) {
+        return htmlSpan.replaceRange(spanTagMatch.end, spanTagMatch.end, ' style="$replacement"');
+      } else {
+        return htmlSpan; // Return original if no span tag is found.
+      }
+    }
+  }
+
+  String extractAndReplaceSpanClass(String htmlSpan, String replacement) {
+    final Match? existingClassMatch = replaceSpanClassRegex.firstMatch(htmlSpan);
+
+    if (existingClassMatch != null) {
+      return htmlSpan.replaceRange(existingClassMatch.start, existingClassMatch.end, replacement);
+    } else {
+      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
+      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
+
+      if (spanTagMatch != null) {
+        return htmlSpan.replaceRange(spanTagMatch.end, spanTagMatch.end, ' class="$replacement"');
+      } else {
+        return htmlSpan; // Return original if no span tag is found.
+      }
+    }
+  }
+
+  String extractAndAddSpanStyle(String htmlSpan, String newStyle) {
+    final Match? existingStyleMatch = replaceSpanStyleRegex.firstMatch(htmlSpan);
+
+    if (existingStyleMatch != null) {
+      final existingStyle = existingStyleMatch.group(0);
+      return htmlSpan.replaceRange(
+        existingStyleMatch.start,
+        existingStyleMatch.end,
+        '$existingStyle; $newStyle',
+      );
+    } else {
+      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
+      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
+
+      if (spanTagMatch != null) {
+        return htmlSpan.replaceRange(
+          spanTagMatch.end,
+          spanTagMatch.end,
+          ' style="$newStyle"',
+        );
+      } else {
+        return htmlSpan;
+      }
+    }
+  }
+
+  String extractAndAddSpanClass(String htmlSpan, String newClassList) {
+    final Match? existingClassMatch = replaceSpanClassRegex.firstMatch(htmlSpan);
+
+    //print('extractAndAddSpanClas  htmlSpan=$htmlSpan     newClass=$newClassList');
+    if (existingClassMatch != null) {
+      final existingClass = existingClassMatch.group(0) ?? '';
+
+
+      List<String> existingClasses = existingClass.split(' ');
+      List<String> newClasses = newClassList.split(' ');
+
+//print('existingClasses=$existingClasses');
+//print('newClasses=$newClasses');
+
+      for(var newclass in newClasses) {
+        newclass = newclass.trim();
+        if(newclass.isNotEmpty && !existingClasses.contains(newclass)) {
+          existingClasses.add(newclass);
+        }
+      }
+      String combinedClasses = existingClasses.join(' ');
+
+      //print('extractAndAddSpanClass  combinedClasses=$combinedClasses');
+
+      final out = htmlSpan.replaceRange(
+        existingClassMatch.start,
+        existingClassMatch.end,
+        combinedClasses,
+      );
+
+      //print('extractAndAddSpanClass() out=`$out`');
+      return out;
+    } else {
+      final RegExp spanTagRegex = RegExp(r'<span(?=[ >])');
+      final Match? spanTagMatch = spanTagRegex.firstMatch(htmlSpan);
+
+      if (spanTagMatch != null) {
+        String out = htmlSpan.replaceRange(
+          spanTagMatch.end,
+          spanTagMatch.end,
+          ' class="$newClassList"',
+        );
+
+        //print('extractAndAddSpanClass() out=`$out`');
+        return out;
+
+      } else {
+        return htmlSpan;
+      }
+    }
+  }
+OBSOLETE */
+/*OBSOLETE
+  String setUnderlineColor(String styleString, String color) {
+      // text-decoration-color only works if text-decoration is set.
+      // so we will add text-decoration: underline; if it does not exist.
+      if (extractCssAttribute(styleString, 'text-decoration') == null){
+          styleString = replaceCssAttribute(styleString, 'text-decoration', 'underline');
+      }
+    return replaceCssAttribute(styleString, 'text-decoration-color', color);
+  }
+OBSOLETE */
+/* OBS
+  /// Custom Ansi foreground color (or null if none).
+  String? _customFgColor;
+
+  /// Custom Ansi background color (or null if none).
+  String? _customBgColor;
+
+  /// Custom Ansi underline color (or null if none).
+  String? _customUnderlineColor;
+
+  /// Have foreground and background colors been reversed ?
+  bool _colorsInverted = false;
+
+  List<String> _customStyles = [];
+OBS*/
+
+/*OBSOLETE
+  /// Set the member variable corresponding to [colorType] to the css
+  /// 'rgb(...)' color string computed from [rgbcolor] (or specified by
+  /// [colorAsString]).
+  /// [colorType] can be `'foreground'`,`'background'` or `'underline'`
+  /// if [rgbcolor] is null then [colorAsString] will attempt to be used, if both
+  /// are null then the corresponding color will be reset/cleared.
+  void changeSpecifiedCustomColor(String colorType, int? rgbcolor,
+      [String? colorAsString]) {
+    if (colorType == 'foreground') {
+      _customFgColor = ChalkHTML.makeCSSColorString(rgbAsInt:rgbcolor, colorAsString:colorAsString);
+    } else if (colorType == 'background') {
+      _customBgColor = ChalkHTML.makeCSSColorString(rgbAsInt:rgbcolor, colorAsString:colorAsString);
+    } else if (colorType == 'underline') {
+      _customUnderlineColor = ChalkHTML.makeCSSColorString(rgbAsInt:rgbcolor, colorAsString:colorAsString);
+    }
+  }
+OBSOLETE */
+/* OBSOLETE?????
+  /// Swap foregfrouned and background colors.  Used for color inversion.
+  /// Caller should check [_colorsInverted] flag to make sure it is appropriate
+  /// to turn ON or OFF (if it is already inverted don't call.
+  void reverseForegroundAndBackgroundColors() {
+    final String? oldFgColor = _customFgColor;
+    changeSpecifiedCustomColor('foreground', null,
+        _customBgColor); // We have strings already, so pass those.
+    changeSpecifiedCustomColor('background', null, oldFgColor);
+  }
+OBSOLETE?? */
+  //OBSOLETEstatic bool doneit=false;
+
+  static ChalkHTMLStyleInfo convertHTMLSpanToChalkHTMLStyleInfo( String thisSpan ) {
+    String? thisForeground;
+    String? thisBackground; 
+    String? thisUnderline; 
+
+    String existingStyle = _extractSpanStyle(thisSpan);
+    //print('   EXTRACT existingStyle=`$existingStyle`');
+    if(existingStyle.isNotEmpty) {
+      thisForeground = _extractCssAttribute( existingStyle, 'color' );
+      thisBackground = _extractCssAttribute( existingStyle, 'background-color' );
+      thisUnderline = _extractCssAttribute( existingStyle, 'text-decoration-color' );
+      //print('thisForeground=`$thisForeground` thisBackground=`$thisBackground` thisUnderline=`$thisUnderline`');
+    }
+
+    final String thisClassesRawClassList = _extractSpanClass(thisSpan);
+    List<String> thisClassesStyleNames = thisClassesRawClassList.split(' ');
+
+    return ChalkHTMLStyleInfo(styleNames:thisClassesStyleNames, customFgColor:thisForeground,
+                                    customBgColor:thisBackground, customUnderlineColor:thisUnderline );
+  }
+
+  /// Add styleClass to existing class list 
+  /// returns THE COMBINED ChalkHTMLStyleInfo of the parent and child
+  static ChalkHTMLStyleInfo combineParentHtmlInfoAndThisInfo( ChalkHTMLStyleInfo? parentInfo, ChalkHTMLStyleInfo childInfo ) {
+    late ChalkHTMLStyleInfo combinedChildPresidentInfo;
+    if(parentInfo!=null) {
+      combinedChildPresidentInfo = ChalkHTMLStyleInfo(styleNames: [... (parentInfo.styleNames ?? []) ],  // COPY THE LIST HERE
+                                                        customFgColor:parentInfo.customFgColor,
+                                                        customBgColor:parentInfo.customBgColor,
+                                                        customUnderlineColor:parentInfo.customUnderlineColor,
+                                                        colorsInverted:parentInfo.colorsInverted );
+    } else {
+      // should never happen in practice, but could if they switched to html mode late...
+      combinedChildPresidentInfo = ChalkHTMLStyleInfo(styleNames:[]);
+    }
+
+    // we start with the state of the parent INVERSION - if the child inverts the colors and the PARENT already had them inverted then THAT IS A NO-OP
+    // and likewise if the parent has them NOTINVERTED and the child turns INVESION OFF then THAT is a NO-OP
+    bool childShouldInvertedColors = combinedChildPresidentInfo.colorsInverted;  
+
+    // we start with the parent style names
+    List<String> styleNames = combinedChildPresidentInfo.styleNames ?? [];
+    // remove any SPECIALFLAG-xxx entries from parent list, we don't care about those
+    /*  ASKJKLJKLJSDstyleNames.remove  Where((entry) => entry.startsWith('SPECIALFLAG')); */
+
+    if(childInfo.styleNames!=null || childInfo.styleNames!.isNotEmpty) {
+      for(final addStyleClassName in childInfo.styleNames!) {
+        switch( addStyleClassName ) {
+          case 'SPECIALFLAG-reset-everything':
+            // so right now, at this POINT, we RESET EVERYTHING in our combined list - and then possibly continue to add to it
+            // we also reset all of the combined colors (which currently are really only the parents colors)
+            styleNames.clear();
+            combinedChildPresidentInfo.customFgColor = null;
+            combinedChildPresidentInfo.customBgColor = null;
+            combinedChildPresidentInfo.customUnderlineColor = null;
+            styleNames.add(addStyleClassName);
+            break;
+
+          case 'ansi-bold' || 'ansi-dim' || 'ansi-italic' || 'ansi-blink' || 'ansi-rapid-blink' || 'ansi-hidden' ||
+                  'ansi-strike-through' || 'ansi-overline':
+            styleNames.remove(addStyleClassName);  // remove it if it is already there
+            styleNames.add(addStyleClassName);   // and add it to the end.
+            break;
+          case 'ansi-underline' || 'ansi-double-underline':
+            styleNames.remove('ansi-underline');
+            styleNames.remove('ansi-double-underline');
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-font-reset': // normal default font
+            // This is just a flag to REMOVE all fonts from parent class list, we don't actually add this class to our list
+            styleNames.removeWhere((entry) => entry.startsWith('ansi-font'));
+            styleNames.add(addStyleClassName);
+            break;
+          case 'ansi-font-1' || 'ansi-font-2' || 'ansi-font-3' || 'ansi-font-4' || 'ansi-font-5' || 'ansi-font-6' ||
+                  'ansi-font-7' || 'ansi-font-8' || 'ansi-font-9' || 'ansi-font-10':
+            styleNames.removeWhere((entry) => entry.startsWith('ansi-font'));
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-normal-intensity':  // normal intensity (bold off and dim off)
+            // This is just a flag to REMOVE 'ansi-bold' and entry=='ansi-dim' from parent class list, we don't actually add this class to our list
+            styleNames.removeWhere((entry) => (entry=='ansi-bold' || entry=='ansi-dim'));
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-neither-italic-or-font-10': // Neither italic or blackletter (font 10)
+            // This is just a flag to REMOVE 'ansi-italic' and entry=='ansi-font-10' from parent class list, we don't actually add this class to our list
+            styleNames.removeWhere((entry) => (entry=='ansi-italic' || entry=='ansi-font-10'));
+            styleNames.add(addStyleClassName);
+            break;
+          case 'ansi-invert-colors':
+            // Our special flag to signal to invert colors - we return this flag as our RETURN value to signal to caller to swap colors
+            // after combining child and parent
+            if (!childShouldInvertedColors) {
+              childShouldInvertedColors = true;
+            }
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-underline-reset': // not underlined (Neither singly nor doubly underlined)
+            // Our special flag to signal to remove 'ansi-underline' and 'ansi-double-underline', we don't actually add this class to our list
+            styleNames.removeWhere((entry) => (entry=='ansi-underline' || entry=='ansi-double-underline'));
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-not-blinking': // not blinking
+            // Our special flag to signal to remove 'ansi-blink' and 'ansi-blink', we don't actually add this class to our list
+            styleNames.removeWhere((entry) => (entry=='ansi-blink' || entry=='ansi-blink'));
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-not-invert-colors':
+            // Our special flag to signal to NOT invert colors - we return this flag as our RETURN value to signal to caller to NOT invert/swap colors
+            // after combining child and parent
+            if (childShouldInvertedColors) {
+              childShouldInvertedColors = false;
+            }
+            styleNames.add(addStyleClassName);
+
+          case 'SPECIALFLAG-not-hidden': // not hidden (reveal)
+            // Our special flag to signal to remove 'ansi-hidden', we don't actually add this class to our list
+            styleNames.remove('ansi-hidden');
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-not-strike-through': // not crossed-out
+            // Our special flag to signal to remove 'ansi-strike-through', we don't actually add this class to our list
+            styleNames.remove('ansi-strike-through');
+            styleNames.add(addStyleClassName);
+            break;
+          case 'SPECIALFLAG-not-overline': // not overlined
+            // Our special flag to signal to remove 'ansi-overline', we don't actually add this class to our list
+            styleNames.remove('ansi-overline');
+            styleNames.add(addStyleClassName);
+  					break;
+          case 'SPECIALFLAG-default-foreground':// default foreground color
+            // special flag to reset foreground color
+            combinedChildPresidentInfo.customFgColor = null;
+            styleNames.add(addStyleClassName);
+  					break;
+          case 'SPECIALFLAG-default-background': // default background color
+            // special flag to reset background color
+            combinedChildPresidentInfo.customBgColor = null;
+            styleNames.add(addStyleClassName);
+  					break;
+          case 'SPECIALFLAG-default-underlinecolor': // default underline color
+            // special flag to reset underline color
+            combinedChildPresidentInfo.customUnderlineColor = null;
+            styleNames.add(addStyleClassName);
+  					break;
+  				case 'ansi-superscript' || 'ansi-subscript': // superscript/subscript
+            styleNames.removeWhere((entry) => (entry=='ansi-superscript' || entry=='ansi-subscript'));
+            styleNames.add(addStyleClassName);
+            break;
+         case 'SPECIALFLAG-reset-super-subscript':
+            // Our special flag to reset 'ansi-superscript' and entry=='ansi-subscript'
+            styleNames.removeWhere((entry) => (entry=='ansi-superscript' || entry=='ansi-subscript'));
+					  break;
+          case _: 
+            // and if nothing else we pass the class along
+            styleNames.remove(addStyleClassName);  // remove it if it is already there
+            styleNames.add(addStyleClassName);  
+            break;
+        }
+      }
+    }
+    // set them back
+    combinedChildPresidentInfo.styleNames = styleNames;
+
+    // Now we need to COMBINE the parent and child colors...
+    if(childInfo.customFgColor!=null) {
+      combinedChildPresidentInfo.customFgColor = childInfo.customFgColor;
+    }
+    if(childInfo.customBgColor!=null) {
+      combinedChildPresidentInfo.customBgColor = childInfo.customBgColor;
+    }
+    if(childInfo.customUnderlineColor!=null) {
+      combinedChildPresidentInfo.customUnderlineColor = childInfo.customUnderlineColor;
+    }
+
+    if( childShouldInvertedColors ) {
+      // INVERT the colors as we have them now
+      String? oldFg = combinedChildPresidentInfo.customFgColor;
+      combinedChildPresidentInfo.customFgColor = combinedChildPresidentInfo.customBgColor;
+      combinedChildPresidentInfo.customBgColor = oldFg;
+    }
+    combinedChildPresidentInfo.colorsInverted = childShouldInvertedColors;
+
+    return combinedChildPresidentInfo;
+  }
+
+
 
 
 

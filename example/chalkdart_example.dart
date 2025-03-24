@@ -3,7 +3,7 @@ import 'package:chalkdart/chalk_x11.dart';
 import 'chalkdart_charts.dart'; // for making color charts for example
 
 bool htmlModeRequested = false;
-ChalkAnsiColorSet htmlBasicANSIColorSetMode = ChalkAnsiColorSet.darkBackground;
+ChalkAnsiColorSet htmlBasicANSIColorSetModeToUse = ChalkAnsiColorSet.darkBackground;
 
 void realPrint(String s) {
   print(s);
@@ -20,9 +20,9 @@ void main(List<String> arguments) {
   if(arguments.contains('--lightmode') || arguments.contains('--light')) {
     // Select color mode for HTML output - 
     //  This will also affect what colors are used for the SIMPLE ANSI Xterm Colors 0-15
-    htmlBasicANSIColorSetMode = ChalkAnsiColorSet.lightBackground;
+    htmlBasicANSIColorSetModeToUse = ChalkAnsiColorSet.lightBackground;
   } else if(arguments.contains('--highcontrastmode') || arguments.contains('--highcontrast')|| arguments.contains('--hc')) {
-    htmlBasicANSIColorSetMode = ChalkAnsiColorSet.highContrast;
+    htmlBasicANSIColorSetModeToUse = ChalkAnsiColorSet.highContrast;
   }
 
   void print(String s) {
@@ -38,14 +38,14 @@ void main(List<String> arguments) {
   if(htmlModeRequested) {
     // Activatge HTML mode 
     chalk.setOutputMode(ChalkOutputMode.html);  // set already created chalk object to html mode
-    Chalk.setHTMLModeAsDefault = true; // set all FUTURE created Chalk objects to HTML mode as default
-    Chalk.htmlBasicANSIColorSet = htmlBasicANSIColorSetMode;
+    Chalk.setDefaultOutputMode = ChalkOutputMode.html; // set all FUTURE created Chalk objects to HTML mode as default
+    Chalk.htmlBasicANSIColorSet = htmlBasicANSIColorSetModeToUse;
     realPrint('<html><head>');
-    realPrint(chalk.inlineStylesheet);
+    realPrint(chalk.inlineStylesheet());
     // set dark mode colors as default
     String defaultBackgroundColor = 'black';
     String defaultTextColor = 'cornflowerblue';
-    if(htmlBasicANSIColorSetMode == ChalkAnsiColorSet.lightBackground) {
+    if(htmlBasicANSIColorSetModeToUse == ChalkAnsiColorSet.lightBackground) {
       // light mode
       defaultBackgroundColor = 'white';
       defaultTextColor = 'darkBlue';

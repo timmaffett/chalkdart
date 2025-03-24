@@ -1,11 +1,15 @@
-# Change Log
+# ChalkDart Change Log
 
 ## 3.0.0
 
 - add support for HTML output mode with new supporting methods for Chalk and Chalk string support
-  The intention of this is to allow the use of Chalk for loggers which may be sending output to a 
-  server/database for viewing in a browser/non comamndline/ANSI environment.
+  The intention of this is to allow the use of Chalk for loggers which may be sending output to a
+  server/database for viewing in a browser or other html capable viewer.
   The viewed HTML will appear as it does in the VSCode debug console.
+- `Chalk.setDefaultOutputMode = ChalkOutputMode.html` to set default mode to html for future constructed Chalk objects.
+- `chalk.setOutputMode = ChalkOutputMode.html` to set the output mode on an existing Chalk object.
+- Use [ChalkOutputMode.ansi] to change back to ANSI mode.  ANSI mode is the default unless the output
+  mode is set explicitly to html by the user.
 - extend example to take command line arguments to allow having all of it's output use the new HTML mode
   so that the output can be redirected to a file and viewed in a browser
   Example usage of example program to demonstrate new html functionality
@@ -14,7 +18,7 @@
   `dart run chalkdart_example.dart --html --dark >testdarkmode.html`
 - `Chalk.htmlBasicANSIColorSet` = [ChalkAnsiColorSet.lightBackground] | [ChalkAnsiColorSet.darkBackground] | [ChalkAnsiColorSet.highContrast];
 - `chalk.setOutputMode(ChalkOutputMode outputMode)`  [ChalkOutputMode.ansi] | [ChalkOutputMode.html]   (instance method)
-- `Chalk.setHTMLModeAsDefault` = true | false (default for creating subsequent Chalk objects)
+- `Chalk.setDefaultOutputMode` = true | false (default for creating subsequent Chalk objects)
 - Add support to chalk.strip to strip HTML tags if HTML mode is active
 - Add `chalk.stripHtmlTags()`, add `Chalk.htmlSafeSpaces()`, `Chalk.htmlSafeGtLt()`
 - For Chalk string extensions added `stripHtmlTags`, `htmlSafeGtLt`, `htmlSafeSpaces`
@@ -25,7 +29,7 @@
 - add the first ever color debugging support for Flutter apps within VSCode via XCode.
   `Chalk.xcodeSafeEsc = true;` to activate XCode safe mode.
   (Requires the use of my "XCode Flutter Color Debugging" VSCode Extension found at
-  https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging)
+  [https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging))
 - Update docs in README.md and change out inline base64 url images for server pngs (The inline base64 encoded url images no longer worked on pub.dev/github)
 
 ## 2.3.3
