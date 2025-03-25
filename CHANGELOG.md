@@ -1,5 +1,9 @@
 # ChalkDart Change Log
 
+## 3.0.2
+
+- Remove html_character_entities dependency and add that code locally
+
 ## 3.0.1
 
 - Fix minor error of old ChalkWhitespaceStyle instead of ChalkWhitespaceTreatment

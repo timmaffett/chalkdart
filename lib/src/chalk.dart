@@ -5,11 +5,9 @@
 
 import 'dart:io';
 import 'dart:convert';
-import 'package:html_character_entities/html_character_entities.dart';
 
 import 'ansiutils.dart';
 import 'colorutils.dart';
-
 import 'chalk_html.dart';
 
 // ignore: constant_identifier_names
