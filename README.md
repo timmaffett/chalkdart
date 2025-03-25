@@ -24,7 +24,8 @@ additionally support logging to firebase/files/server as well as traditional ANS
   - [Example of Light Mode color set (ChalkAnsiColorSet.lightBackground)](https://timmaffett.github.io/chalkdart_examples/testlightmode.html)
   - [Example of High Contrast Mode color set (ChalkAnsiColorSet.highContrast)](https://timmaffett.github.io/chalkdart_examples/testhighcontrastmode.html)
 
-
+- To see the identical ANSI output of the above examples execute chalkdart_example.dart within VSCode and see output to your debug console or
+  `dart run example/chalkdart_example.dart` from your terminal shell that support full color ANSI (I recommend [iTerm2 for MacOSX](https://iterm2.com/#/section/home))
 
 - **Dual Output Modes**: Switch seamlessly between ANSI terminal output and HTML output with a single line of code
 - **Complete Styling Solution**: Use the same intuitive API for both console and web-based logging

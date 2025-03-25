@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:chalkdart/chalkstrings.dart';
 import 'package:chalkdart/chalk_x11.dart';
 import 'chalkdart_charts.dart'; // for making color charts for example
@@ -31,6 +32,12 @@ void main(List<String> arguments) {
     } else {
       realPrint(str);
     }
+  }
+
+  // Use iTerm2 for MacOSX - https://iterm2.com/#/section/home 
+  // It is not perfect though and requires the `useFullResetToClose` setting for buggy ANSI implementations
+  if (Platform.isMacOS) {
+    Chalk.useFullResetToClose = true;
   }
 
   if(htmlModeRequested) {
