@@ -79,6 +79,14 @@ class ChalkHTML {
     0xffffff, // bright white
   ];
 
+  static const _useShortColors = true;
+
+  // Return string with color in #aa00bb format
+  static String _rgbToCssHex(int red, int green, int blue) {
+    // Combine the hexadecimal components into a CSS hex color.
+    return '#${red.toRadixString(16).padLeft(2, '0')}${green.toRadixString(16).padLeft(2, '0')}${blue.toRadixString(16).padLeft(2, '0')}';
+  }
+
   /// Calculate the color for [ansiColorNumber] from the color set defined in
   /// the ANSI 8-bit standard.
   /// [ansiColorNumber] should be a number ranging from 16 to 255 otherwise it
@@ -93,7 +101,7 @@ class ChalkHTML {
       //const colorName = darkModeAnsiColors[colorIndex];
       int? colorRGBAInt;
       if(ansiColorNumber<darkModeAnsiColors.length) {
-          colorRGBAInt = switch(Chalk.htmlBasicANSIColorSet) {
+          colorRGBAInt = switch(Chalk.defaultHtmlBasicANSIColorSet) {
                               ChalkAnsiColorSet.darkBackground => darkModeAnsiColors[colorIndex],
                               ChalkAnsiColorSet.lightBackground => lightModeAnsiColors[colorIndex],
                               ChalkAnsiColorSet.highContrast => highContrastModeAnsiColors[colorIndex] };
@@ -116,19 +124,22 @@ class ChalkHTML {
       green = (green * convFactor).round();
       red = (red * convFactor).round();
 
-      return 'rgb(${red.toInt()}, ${green.toInt()}, ${blue.toInt()})';
+      return _useShortColors ? _rgbToCssHex(red.toInt(),green.toInt(),blue.toInt())
+                                : 'rgb(${red.toInt()}, ${green.toInt()}, ${blue.toInt()})';
     } else if (ansiColorNumber >= 232 && ansiColorNumber <= 255) {
       // Converts to a grayscale value.
       ansiColorNumber -= 232;
       final int colorLevel = (ansiColorNumber / 23 * 255).round();
-      return 'rgb($colorLevel, $colorLevel, $colorLevel)';
+      return _useShortColors ? _rgbToCssHex(colorLevel, colorLevel, colorLevel)
+                                : 'rgb($colorLevel, $colorLevel, $colorLevel)';
     } else {
       return 'purple';  // RETURN CSS 'red' when we have a erroneous value
     }
   }
 
   static String set24BitAnsiColor(int red, int green, int blue) {
-     return 'rgb($red, $green, $blue)';
+     return _useShortColors ? _rgbToCssHex(red,green,blue)
+                              : 'rgb($red, $green, $blue)';
   }
 
 /// Convert the passed in rgbcolor int value to a CSS 'rgb(r,g,b)' string.
@@ -140,7 +151,8 @@ class ChalkHTML {
     if (rgbAsInt == null) {
       return colorAsString ?? 'red'; // Caller may have passed color as string - not indicate ERROR by returning red
     }
-    return 'rgb(${(rgbAsInt >> 16) & 0xFF},${(rgbAsInt >> 8) & 0xFF},${rgbAsInt & 0xFF})';
+    return _useShortColors ? _rgbToCssHex((rgbAsInt >> 16) & 0xFF,(rgbAsInt >> 8) & 0xFF,rgbAsInt & 0xFF)
+                    : 'rgb(${(rgbAsInt >> 16) & 0xFF},${(rgbAsInt >> 8) & 0xFF},${rgbAsInt & 0xFF})';
   }
 
 
@@ -214,7 +226,7 @@ class ChalkHTML {
         //const colorName = darkModeAnsiColors[colorIndex];
         int? colorRGBAInt;
         if(colorIndex>=0 && colorIndex<darkModeAnsiColors.length) {
-          colorRGBAInt = switch(Chalk.htmlBasicANSIColorSet) {
+          colorRGBAInt = switch(Chalk.defaultHtmlBasicANSIColorSet) {
                               ChalkAnsiColorSet.darkBackground => darkModeAnsiColors[colorIndex],
                               ChalkAnsiColorSet.lightBackground => lightModeAnsiColors[colorIndex],
                               ChalkAnsiColorSet.highContrast => highContrastModeAnsiColors[colorIndex] };
@@ -431,16 +443,18 @@ class ChalkHTML {
       outFGBGCssVariables += '--fg:${info.customFgColor};';
     }
     if(info.customBgColor!=null) {
-      outStyle += 'background-color: ${info.customBgColor};';
+      outStyle += 'background-color:${info.customBgColor};';
       outFGBGCssVariables += '--bg:${info.customBgColor};';
     }
     if(info.customUnderlineColor!=null) {
-      outStyle += 'text-decoration-color: ${info.customUnderlineColor};';
+      outStyle += 'text-decoration-color:${info.customUnderlineColor};';
     }
 
     String classAttrib='';
     if(info.styleNames!=null && info.styleNames!.isNotEmpty) {
-      classAttrib = ' class="${info.styleNames!.join(' ')}"';
+      classAttrib = ' class="ansi ${info.styleNames!.join(' ')}"';
+    } else {
+      classAttrib = ' class="ansi"';
     }
     
     return '<span$classAttrib style="$outStyle$outFGBGCssVariables">';
@@ -528,7 +542,7 @@ OBSOLETE */
     final Match? match = _extractClassRegex.firstMatch(htmlSpan);
 
     if (match != null && match.groupCount > 0) {
-      return match.group(1) ?? '';
+      return match.group(1)?.trim() ?? '';
     } else {
       return '';
     }
@@ -626,8 +640,8 @@ String? extractAndReplaceSpanClass(String htmlSpan, String replacement) {
       final existingClass = existingClassMatch.group(0) ?? '';
 
 
-      List<String> existingClasses = existingClass.split(' ');
-      List<String> newClasses = newClassList.split(' ');
+      List<String> existingClasses = existingClass.split(spacesRegEx);
+      List<String> newClasses = newClassList.split(spacesRegEx);
 
 //print('existingClasses=$existingClasses');
 //print('newClasses=$newClasses');
@@ -727,6 +741,8 @@ OBSOLETE */
 OBSOLETE?? */
   //OBSOLETEstatic bool doneit=false;
 
+  static RegExp spacesRegEx = RegExp(r'\s+');
+
   static ChalkHTMLStyleInfo convertHTMLSpanToChalkHTMLStyleInfo( String thisSpan ) {
     String? thisForeground;
     String? thisBackground; 
@@ -742,7 +758,11 @@ OBSOLETE?? */
     }
 
     final String thisClassesRawClassList = _extractSpanClass(thisSpan);
-    List<String> thisClassesStyleNames = thisClassesRawClassList.split(' ');
+    List<String> thisClassesStyleNames = thisClassesRawClassList.split(spacesRegEx);
+
+    // remove any space or empty entries
+    thisClassesStyleNames.remove('');
+    thisClassesStyleNames.remove(' ');
 
     return ChalkHTMLStyleInfo(styleNames:thisClassesStyleNames, customFgColor:thisForeground,
                                     customBgColor:thisBackground, customUnderlineColor:thisUnderline );
@@ -772,9 +792,18 @@ OBSOLETE?? */
     // remove any SPECIALFLAG-xxx entries from parent list, we don't care about those
     /*  ASKJKLJKLJSDstyleNames.remove  Where((entry) => entry.startsWith('SPECIALFLAG')); */
 
+    styleNames.remove('ansi'); // we always add this first
+    // to make things smaller remove these NO-OP classes for foreground and background
+    styleNames.remove('ansi-foreground-colored');
+    styleNames.remove('ansi-background-colored');
+
+
     if(childInfo.styleNames!=null || childInfo.styleNames!.isNotEmpty) {
       for(final addStyleClassName in childInfo.styleNames!) {
         switch( addStyleClassName ) {
+          case 'ansi' || 'ansi-foreground-colored' || 'ansi-background-colored':
+            // WE DO NOTHING WITH THESE, we don't want them in our new list (we just removed them above) - `ansi` will get inserted automatically when making span
+            break;
           case 'SPECIALFLAG-reset-everything':
             // so right now, at this POINT, we RESET EVERYTHING in our combined list - and then possibly continue to add to it
             // we also reset all of the combined colors (which currently are really only the parents colors)
@@ -887,6 +916,7 @@ OBSOLETE?? */
         }
       }
     }
+
     // set them back
     combinedChildPresidentInfo.styleNames = styleNames;
 
@@ -977,4 +1007,89 @@ OBSOLETE?? */
 		}
 	}
 */
+
+
+  // Returns the style sheet for our HTML output mode support.  Allows customizing 
+  static String getHTMLStyleSheetIncludingColors({required ChalkAnsiColorSet htmlBasicANSIColorSet,
+        String? whiteSpaceTreatment, String? foregroundColor, String? backgroundColor,
+        String? font1, String? font2, String? font3, String? font4, String? font5,
+        String? font6, String? font7, String? font8, String? font9, String? font10} ) {
+    // Get the default foreground/background colors based on the current `htmlBasicANSIColorSet`
+    //  (if they are not specified we use the values or BLACK and BRIGHT WHITE  based on the current `htmlBasicANSIColorSet`)
+    if( foregroundColor==null || backgroundColor==null ) {
+      const int blackColorIndex = 0; // ANSI 0 is black we use to index into our ChalkHTML.lightModeAnsiColors/darkModeAnsiColors/highContrastModeAnsiColors tables
+      const int whiteColorIndex = 15; // ANSI 15 is bright white (ANSI 7 would be white (dim white)
+      switch(htmlBasicANSIColorSet) {
+        case ChalkAnsiColorSet.lightBackground:
+          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.lightModeAnsiColors[blackColorIndex]);
+          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.lightModeAnsiColors[whiteColorIndex]);      
+        case ChalkAnsiColorSet.darkBackground:
+          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.darkModeAnsiColors[blackColorIndex]);
+          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.darkModeAnsiColors[whiteColorIndex]);      
+        case ChalkAnsiColorSet.highContrast:
+          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.highContrastModeAnsiColors[blackColorIndex]);
+          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.highContrastModeAnsiColors[whiteColorIndex]);      
+      }
+    }
+    whiteSpaceTreatment ??= ChalkWhitespaceTreatment.preserve.css;
+
+    return '''  span.ansi { white-space:$whiteSpaceTreatment; }
+
+  /* We always keep these `--bg` and `--fg` CSS variables updated it with current color and background-color
+     (since we can't read those from CSS unfortunately). They are only used to allow us to handle the 
+     .ansi-invert-colors class.  For systems which may not support css variables the .ansi-invert-colors
+     that is the only functionality that will be lost.
+  */
+  @property --bg {syntax: "<color>";inherits: true;initial-value: $backgroundColor;}
+  @property --fg {syntax: "<color>";inherits: true;initial-value: $foregroundColor;}
+
+  .ansi-invert-colors {
+    background-color: var(--fg);
+    color: var(--bg);
+  }
+
+  /* ANSI Codes */
+  .ansi-bold	{ font-weight: bold; }
+  .ansi-italic	{ font-style: italic; }
+  .ansi-underline { text-decoration: underline;  text-decoration-style:solid; }
+  .ansi-double-underline { text-decoration: underline;  text-decoration-style:double; }
+  .ansi-strike-through { text-decoration:line-through;  text-decoration-style:solid; }
+  .ansi-overline { text-decoration:overline;  text-decoration-style:solid; }
+  /* because they can exist at same time we need all the possible underline(or double-underline),overline and strike-through combinations */
+  .ansi-overline.ansi-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:solid; }
+  .ansi-overline.ansi-underline { text-decoration: overline underline; text-decoration-style:solid; }
+  .ansi-overline.ansi-strike-through { text-decoration: overline line-through; text-decoration-style:solid; }
+  .ansi-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:solid; }
+  .ansi-overline.ansi-double-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:double; }
+  .ansi-overline.ansi-double-underline { text-decoration: overline underline; text-decoration-style:double; }
+  .ansi-double-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:double; }
+  .ansi-dim	{ opacity: 0.4; }
+  .ansi-hidden { opacity: 0; }
+  .ansi-blink { animation: ansi-blink-key 1s cubic-bezier(1, 0, 0, 1) infinite alternate; }
+  .ansi-rapid-blink { animation: ansi-blink-key 0.3s cubic-bezier(1, 0, 0, 1) infinite alternate; }
+  @keyframes ansi-blink-key {
+    to { opacity: 0.4; }
+  }
+  .ansi-subscript { vertical-align: sub; font-size: smaller; line-height: normal; }
+  .ansi-superscript { vertical-align: super; font-size: smaller; line-height: normal; }
+  /**
+   * Alternate ansi-font-# classes, note the font-family stacks here are somewhat arbitrary but will resolve to different 'standard' css fonts.
+   * ansi-font-10 is called the 'blackletter' font within ANSI SGR docs so attempt is made to resolve a blackletter font on users system.
+   * ('F25 BlackletterTypewriter' is monospaced Blackletter font used or recommended by other terminal emulators (ie. mintty, etc.)
+   * None of these fonts are required and all font-family stacks will resolve to some font.
+   * 
+   * These defaults match what I used in the ANSI support I added to the DartPad console.
+   */
+  .ansi-font-1 { font-family: ${font1 ?? 'Verdana,Arial,sans-serif'}; }
+  .ansi-font-2 { font-family: ${font2 ?? 'Georgia,"Times New Roman",serif'}; }
+  .ansi-font-3 { font-family: ${font3 ?? 'Papyrus,Impact,fantasy'}; }
+  .ansi-font-4 { font-family: ${font4 ?? '"Apple Chancery","Lucida Calligraphy",cursive'}; }
+  .ansi-font-5 { font-family: ${font5 ?? '"Courier New", Courier, monospace'}; }
+  .ansi-font-6 { font-family: ${font6 ?? '"Segoe WPC", "Segoe UI",-apple-system, BlinkMacSystemFont, system-ui, "Ubuntu", "Droid Sans", sans-serif'}; }
+  .ansi-font-7 { font-family: ${font7 ?? 'Menlo, Monaco, Consolas,"Droid Sans Mono", "Inconsolata", "Courier New", monospace, "Droid Sans Fallback"'}; }
+  .ansi-font-8 { font-family: ${font8 ?? '"SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace'}; }
+  .ansi-font-9 { font-family: ${font9 ?? '"SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace'}; }
+  .ansi-font-10 { font-family:${font10 ?? '"F25 BlackletterTypewriter", UnifrakturCook, Luminari, Apple Chancery, fantasy, Papyrus'}; }''';
+
+  }
 }

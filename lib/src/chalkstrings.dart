@@ -433,6 +433,10 @@ extension ChalkString on String {
   /// inserted for styling).
   String get htmlSafeGtLt => Chalk.htmlSafeGtLt(this);
 
+  /// Replaces ANY special character that HTML needs a entity for in order to  renderered
+  /// correctly.
+  String get htmlSafeEntities => Chalk.htmlSafeEntities(this);
+
   /// Converts all spaces (outside of html tags) in the string with the
   /// html entity `&nbsp;`
   /// This can be useful to preserve spacing when rendering the string in a

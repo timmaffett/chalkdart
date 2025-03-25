@@ -25,23 +25,21 @@ void main(List<String> arguments) {
     htmlBasicANSIColorSetModeToUse = ChalkAnsiColorSet.highContrast;
   }
 
-  void print(String s) {
+  void print(String str) {
     if(htmlModeRequested) {
-      realPrint('${s.htmlSafeSpaces}<br/>');
-      //Alternatively using Chalk static method:>>> 
-      //   realPrint('${Chalk.htmlSafeSpaces(s)}<br/>');
+      realPrint('$str<br/>');
     } else {
-      realPrint(s);
+      realPrint(str);
     }
   }
 
   if(htmlModeRequested) {
-    // Activatge HTML mode 
+    // Activate HTML mode 
     chalk.setOutputMode(ChalkOutputMode.html);  // set already created chalk object to html mode
     Chalk.setDefaultOutputMode = ChalkOutputMode.html; // set all FUTURE created Chalk objects to HTML mode as default
-    Chalk.htmlBasicANSIColorSet = htmlBasicANSIColorSetModeToUse;
+    Chalk.setDefaultHtmlBasicANSIColorSet = htmlBasicANSIColorSetModeToUse;
     realPrint('<html><head>');
-    realPrint(chalk.inlineStylesheet());
+    realPrint(chalk.inlineStylesheet(whiteSpaceTreatment:ChalkWhitespaceTreatment.preserveNoWrap.css, colorSetToUse:htmlBasicANSIColorSetModeToUse));
     // set dark mode colors as default
     String defaultBackgroundColor = 'black';
     String defaultTextColor = 'cornflowerblue';

@@ -3,6 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'dart:io';
 import 'dart:convert';
+import 'package:html_character_entities/html_character_entities.dart';
+
 import 'ansiutils.dart';
 import 'colorutils.dart';
 
@@ -29,6 +31,23 @@ enum ChalkAnsiColorSet {
   darkBackground,
   highContrast
 }
+
+enum ChalkWhitespaceTreatment {
+  preserve('pre'),
+  preserveNoWrap('preserve nowrap'),
+  preserveWrap('pre-wrap'),
+  normalHtml('normal');
+
+  final String css;
+
+  const ChalkWhitespaceTreatment( this.css );
+
+  @override
+  String toString() {
+    return css;
+  }
+}
+
 
 /// Chalk - A Library for printing styled text to the console using ANSI
 /// control sequences.
@@ -59,13 +78,25 @@ class Chalk {
 
   // Support for HTML Styling mode
 
-  /// Sets which color set is used for the 8 bit ANSI colors 0-15 
-  /// (Dark mode is default, set to false for light mode colors.
-  /// These colors match what I use
-  /// within DartPad for the standard ANSI colors in the debug console for light/dark mode)
-  /// The high contrast set
-  /// [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground] or [ChalkAnsiColorSet.highContrast]
-  static ChalkAnsiColorSet htmlBasicANSIColorSet = ChalkAnsiColorSet.darkBackground;
+  /// Sets the default HTML Basic ANSI Color Set to use for Basic ANSI colors (0-15) which 
+  /// correspond to [black], [red], [green], [yellow], [blue], [magenta], [cyan], [white]
+  /// [brightBlack], [brightRed], [brightGreen], [brightYellow], [brightBlue], [brightMagenta], 
+  /// [brightCyan], [brightWhite]  (and their [onBlack], [onRed], ... variants)
+  /// 
+  /// This color set are also use for the [black] and [brightWhite] default foreground/background colors
+  /// when generating stylesheets for use in HTML output mode.
+  static ChalkAnsiColorSet defaultHtmlBasicANSIColorSet = ChalkAnsiColorSet.darkBackground;
+
+  /// Sets the default HTML Basic ANSI Color Set to use for Basic ANSI colors (0-15) which 
+  /// correspond to [black], [red], [green], [yellow], [blue], [magenta], [cyan], [white]
+  /// [brightBlack], [brightRed], [brightGreen], [brightYellow], [brightBlue], [brightMagenta], 
+  /// [brightCyan], [brightWhite]  (and their [onBlack], [onRed], ... variants)
+  /// 
+  /// This color set are also use for the [black] and [brightWhite] default foreground/background colors
+  /// when generating stylesheets for use in HTML output mode.
+  /// 
+  /// (Alternate to setting `defaultHtmlBasicANSIColorSet` which has similar naming convention to other setDefaultXXXX() methods/setters)
+  static set setDefaultHtmlBasicANSIColorSet(ChalkAnsiColorSet newDefault) => defaultHtmlBasicANSIColorSet = newDefault;
 
   // Chalk instance flag to indicate we are outputting HTML styling codes instead of ANSI styling codes
   bool _htmlOutputModeForThisChalk = false;
@@ -1266,6 +1297,10 @@ class Chalk {
     return HtmlEscape(HtmlEscapeMode.element).convert(text);
   }
 
+  static String htmlSafeEntities(String text) {
+    return HtmlCharacterEntities.encode(text);
+  }
+
   /// Replaces all spaces outside of html tags found within the string
   /// to the html entity `&nbsp;`.
   /// This can be useful to preserve spacing when rendering the string in a
@@ -1275,6 +1310,7 @@ class Chalk {
   /// If there are < or > characters present in the string [htmlSafeGtLt] should
   /// be called before any styling is applied and before this method.
   static String htmlSafeSpaces(String htmlString) {
+    return htmlString;
     List<Match> tagMatches = _htmlTagRegex.allMatches(htmlString).toList();
 
     String result = '';
@@ -1293,7 +1329,8 @@ class Chalk {
 
   /// Strips any HTML strings present from the string and returns the result
   String stripHtmlTags(String htmlString) {
-    return htmlString.replaceAll(_htmlTagRegex, '');
+    String removeTags = htmlString.replaceAll(_htmlTagRegex, '');
+    return HtmlCharacterEntities.decode(removeTags);
   }
 
   /// Strip all ANSI SGR commands from the target string and return the 'stripped'
@@ -1311,10 +1348,31 @@ class Chalk {
   /// NOTE: This returns the *styles* only - Use [inlineStylesheet] to return
   /// the the stylesheet within <style>..styles..</style> tags for use directly in the
   /// output html.
-  String stylesheet({String? foregroundColor, String? backgroundColor,
+  /// 
+  /// [colorSetToUse] Sets which color set is used for the 8 bit ANSI colors 0-15 
+  ///      (Dark mode is default, set to false for light mode colors.
+  ///      These colors match what I use
+  ///      within DartPad for the standard ANSI colors in the debug console for light/dark mode)
+  ///        (and the high contrast set is available here and in VSCode)
+  ///      [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground] or [ChalkAnsiColorSet.highContrast]
+  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceStyle.preserve.css ( 'pre' )
+  ///     other options:
+  ///     - ChalkWhitespaceStyle.preserveNoWrap.css ('preserve nowrap')
+  ///         to force HTML to preserve all spaces and not wrap.
+  ///     - Use ChalkWhitespaceStyle.preserveWrap.css ('pre wrap')
+  ///  [foregroundColor] - Alternately you can specify or override the css `color` (foreground color) specified by [colorSetToUse]
+  ///  [backgroundColor] - Alternately you can specify or override the css `background-color` specified by [colorSetToUse]
+  ///  [font1] - [font10] - Allows setting the specific css font-family list to use for the corresponding font.
+  ///                       (See output of stylesheet() to check what the default font-family lists are)
+  String stylesheet({
+                ChalkAnsiColorSet? colorSetToUse,
+                String? whiteSpaceTreatment,
+                String? foregroundColor, String? backgroundColor,
                 String? font1, String? font2, String? font3, String? font4, String? font5,
                 String? font6, String? font7, String? font8, String? font9, String? font10
-              }) => _getHTMLStyleSheetIncludingColors(foregroundColor:foregroundColor,backgroundColor:backgroundColor,
+              }) => ChalkHTML.getHTMLStyleSheetIncludingColors(htmlBasicANSIColorSet:colorSetToUse ?? defaultHtmlBasicANSIColorSet,
+                                                    whiteSpaceTreatment:whiteSpaceTreatment,
+                                                    foregroundColor:foregroundColor,backgroundColor:backgroundColor,
                                                     font1:font1, font2:font2, font3:font3, font4:font4, font5:font5,
                                                     font6:font6, font7:font7, font8:font8, font9:font9, font10:font10
               );
@@ -1324,12 +1382,32 @@ class Chalk {
   /// in the output html.
   /// Typically when using HMTL mode this would be called at the beginning of your output
   /// with a something like `print(mychalk.inlineStylesheet);`
-  String inlineStylesheet({String? foregroundColor, String? backgroundColor,
+  /// 
+  /// [colorSetToUse] Sets which color set is used for the 8 bit ANSI colors 0-15 
+  ///      (Dark mode is default, set to false for light mode colors.
+  ///      These colors match what I use
+  ///      within DartPad for the standard ANSI colors in the debug console for light/dark mode)
+  ///        (and the high contrast set is available here and in VSCode)
+  ///      [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground] or [ChalkAnsiColorSet.highContrast]
+  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceStyle.preserve.css ( 'pre' )
+  ///     other options:
+  ///     - ChalkWhitespaceStyle.preserveNoWrap.css ('preserve nowrap')
+  ///         to force HTML to preserve all spaces and not wrap.
+  ///     - Use ChalkWhitespaceStyle.preserveWrap.css ('pre wrap')
+  ///  [foregroundColor] - Alternately you can specify or override the css `color` (foreground color) specified by [colorSetToUse]
+  ///  [backgroundColor] - Alternately you can specify or override the css `background-color` specified by [colorSetToUse]
+  ///  [font1] - [font10] - Allows setting the specific css font-family list to use for the corresponding font.
+  ///                       (See output of stylesheet() to check what the default font-family lists are)
+  String inlineStylesheet({
+                ChalkAnsiColorSet? colorSetToUse,
+                String? whiteSpaceTreatment,
+                String? foregroundColor, String? backgroundColor,
                 String? font1, String? font2, String? font3, String? font4, String? font5,
                 String? font6, String? font7, String? font8, String? font9, String? font10
-              }) => '<style>\n${_getHTMLStyleSheetIncludingColors(foregroundColor:foregroundColor,backgroundColor:backgroundColor,
+              }) => '<style>\n${ChalkHTML.getHTMLStyleSheetIncludingColors(htmlBasicANSIColorSet:colorSetToUse ?? defaultHtmlBasicANSIColorSet, whiteSpaceTreatment: whiteSpaceTreatment, 
+                                                                foregroundColor:foregroundColor,backgroundColor:backgroundColor,
                                                                 font1:font1, font2:font2, font3:font3, font4:font4, font5:font5,
-                                                                font6:font6, font7:font7, font8:font8, font9:font9, font10:font10)})}\n</style>\n';
+                                                                font6:font6, font7:font7, font8:font8, font9:font9, font10:font10)}\n</style>\n';
 
   // This method handles turning all the dynamic items in the list to strings,
   // and recurses if it finds Lists.
@@ -1491,87 +1569,6 @@ class Chalk {
     ColorUtils.addColorKeywordHex(colorname, hex);
   }
 
-  // Returns the style sheet for our HTML output mode support.  Allows customizing 
-  String _getHTMLStyleSheetIncludingColors({String? foregroundColor, String? backgroundColor,
-        String? font1, String? font2, String? font3, String? font4, String? font5,
-        String? font6, String? font7, String? font8, String? font9, String? font10} ) {
-    // Get the default foreground/background colors based on the current `htmlBasicANSIColorSet`
-    //  (if they are not specified we use the values or BLACK and BRIGHT WHITE  based on the current `htmlBasicANSIColorSet`)
-    if( foregroundColor==null || backgroundColor==null ) {
-      const int blackColorIndex = 0; // ANSI 0 is black we use to index into our ChalkHTML.lightModeAnsiColors/darkModeAnsiColors/highContrastModeAnsiColors tables
-      const int whiteColorIndex = 15; // ANSI 15 is bright white (ANSI 7 would be white (dim white)
-      switch(htmlBasicANSIColorSet) {
-        case ChalkAnsiColorSet.lightBackground:
-          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.lightModeAnsiColors[blackColorIndex]);
-          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.lightModeAnsiColors[whiteColorIndex]);      
-        case ChalkAnsiColorSet.darkBackground:
-          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.darkModeAnsiColors[blackColorIndex]);
-          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.darkModeAnsiColors[whiteColorIndex]);      
-        case ChalkAnsiColorSet.highContrast:
-          foregroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.highContrastModeAnsiColors[blackColorIndex]);
-          backgroundColor ??= ChalkHTML.makeCSSColorString(rgbAsInt:ChalkHTML.highContrastModeAnsiColors[whiteColorIndex]);      
-      }
-    }
-
-    return '''
-  /* We always keep these `--bg` and `--fg` CSS variables updated it with current color and background-color
-     (since we can't read those from CSS unfortunately). They are only used to allow us to handle the 
-     .ansi-invert-colors class.  For systems which may not support css variables the .ansi-invert-colors
-     that is the only functionality that will be lost.
-  */
-  @property --bg {syntax: "<color>";inherits: true;initial-value: $backgroundColor;}
-  @property --fg {syntax: "<color>";inherits: true;initial-value: $foregroundColor;}
-
-  .ansi-invert-colors {
-    background-color: var(--fg);
-    color: var(--bg);
-  }
-
-  /* ANSI Codes */
-  .ansi-bold	{ font-weight: bold; }
-  .ansi-italic	{ font-style: italic; }
-  .ansi-underline { text-decoration: underline;  text-decoration-style:solid; }
-  .ansi-double-underline { text-decoration: underline;  text-decoration-style:double; }
-  .ansi-strike-through { text-decoration:line-through;  text-decoration-style:solid; }
-  .ansi-overline { text-decoration:overline;  text-decoration-style:solid; }
-  /* because they can exist at same time we need all the possible underline(or double-underline),overline and strike-through combinations */
-  .ansi-overline.ansi-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:solid; }
-  .ansi-overline.ansi-underline { text-decoration: overline underline; text-decoration-style:solid; }
-  .ansi-overline.ansi-strike-through { text-decoration: overline line-through; text-decoration-style:solid; }
-  .ansi-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:solid; }
-  .ansi-overline.ansi-double-underline.ansi-strike-through { text-decoration: overline underline line-through; text-decoration-style:double; }
-  .ansi-overline.ansi-double-underline { text-decoration: overline underline; text-decoration-style:double; }
-  .ansi-double-underline.ansi-strike-through { text-decoration: underline line-through; text-decoration-style:double; }
-  .ansi-dim	{ opacity: 0.4; }
-  .ansi-hidden { opacity: 0; }
-  .ansi-blink { animation: ansi-blink-key 1s cubic-bezier(1, 0, 0, 1) infinite alternate; }
-  .ansi-rapid-blink { animation: ansi-blink-key 0.3s cubic-bezier(1, 0, 0, 1) infinite alternate; }
-  @keyframes ansi-blink-key {
-    to { opacity: 0.4; }
-  }
-  .ansi-subscript { vertical-align: sub; font-size: smaller; line-height: normal; }
-  .ansi-superscript { vertical-align: super; font-size: smaller; line-height: normal; }
-  /**
-   * Alternate ansi-font-# classes, note the font-family stacks here are somewhat arbitrary but will resolve to different 'standard' css fonts.
-   * ansi-font-10 is called the 'blackletter' font within ANSI SGR docs so attempt is made to resolve a blackletter font on users system.
-   * ('F25 BlackletterTypewriter' is monospaced Blackletter font used or recommended by other terminal emulators (ie. mintty, etc.)
-   * None of these fonts are required and all font-family stacks will resolve to some font.
-   * 
-   * These defaults match what I used in the ANSI support I added to the DartPad console.
-   */
-  .ansi-font-1 { font-family: ${font1 ?? 'Verdana,Arial,sans-serif'}; }
-  .ansi-font-2 { font-family: ${font2 ?? 'Georgia,"Times New Roman",serif'}; }
-  .ansi-font-3 { font-family: ${font3 ?? 'Papyrus,Impact,fantasy'}; }
-  .ansi-font-4 { font-family: ${font4 ?? '"Apple Chancery","Lucida Calligraphy",cursive'}; }
-  .ansi-font-5 { font-family: ${font5 ?? '"Courier New", Courier, monospace'}; }
-  .ansi-font-6 { font-family: ${font6 ?? '"Segoe WPC", "Segoe UI",-apple-system, BlinkMacSystemFont, system-ui, "Ubuntu", "Droid Sans", sans-serif'}; }
-  .ansi-font-7 { font-family: ${font7 ?? 'Menlo, Monaco, Consolas,"Droid Sans Mono", "Inconsolata", "Courier New", monospace, "Droid Sans Fallback"'}; }
-  .ansi-font-8 { font-family: ${font8 ?? '"SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace'}; }
-  .ansi-font-9 { font-family: ${font9 ?? '"SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace'}; }
-  .ansi-font-10 { font-family:${font10 ?? '"F25 BlackletterTypewriter", UnifrakturCook, Luminari, Apple Chancery, fantasy, Papyrus'}; }
-''';
-
-  }
 }
 
 /// This _StringUtils class handles heavy lifting for Chalk() on string
