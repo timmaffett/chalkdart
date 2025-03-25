@@ -10,7 +10,7 @@
 
 ## 🎉 ChalkDart 3.0 - Now with HTML Output Support! 
 
-ChalkDart 3.0 introduces groundbreaking HTML output capabilities, making it the most versatile text styling solution for Dart. While other packages like AnsiColors only handle ANSI terminal output, ChalkDart now offers:
+ChalkDart 3.0 introduces groundbreaking HTML output capabilities, making it the most versatile text styling solution for Dart.  HTML output capabilities allows the option of generating colorized/styled output for server/web based logging.  While other packages like AnsiColors only handle ANSI terminal output, ChalkDart now offers:
 
 > 🔥 Now includes support for full ANSI coloring/styling 🌈 while debugging/running Flutter apps within XCode from VSCode on Mac OSX!  ANSI styling has never before been available via XCode - but it is now!  Upgrade your OSX Flutter logging to the next level with the colored output capabilities made trivial with ChalkDart. 🚀 💥
 > (XCode support requires the companion ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging)).  More details found below.
@@ -49,6 +49,8 @@ Why choose ChalkDart over alternatives?
   - Hex color codes (#RRGGBB)
   - True color and legacy ANSI 256-color mode support for less capable terminals
   - Custom color keyword definition
+
+> Disclaimer: I needed to update the readme for 3.0, so I thought I would download Cursor AI and ask it to summarize my pull request adding the html output capabilities.  The majority of the text above was written by Cursor - it's quite a ChalkDart promoter - lol- it gave me quite a chuckle.  Better than having to take the time to write something up myself - for now at least.  It did come up with some valid points though. 😉 (It apparently likes emojis also.. 😆)  Cursor also wrote the HTML Output section towards the end summarizing the changes, as well as adding detail to my CHANGELOG.md entry.
 
 ##### vscode debug console
 
