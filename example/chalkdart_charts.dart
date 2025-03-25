@@ -1,7 +1,7 @@
 // ignore_for_file: unnecessary_string_interpolations
 
 import 'dart:math';
-import 'package:chalkdart/chalk.dart';
+import 'package:chalkdart/chalkstrings.dart';
 
 /*
   Some different color charts to both exercise the ColorUtils class and the Chalk'Dart Chalk class.
@@ -164,7 +164,7 @@ class ChalkDartCharts {
     final firstLine = out.length;
     var sb = StringBuffer();
     var hb = StringBuffer();
-    final titleLine = '$hue° $title';
+    final titleLine = '$hue° $title'.htmlSafeEntities;
     for (num w = 0; w <= 1; w += .20) {
       sb.clear();
       for (num b = 0; b <= 1; b += .20) {
@@ -237,7 +237,7 @@ class ChalkDartCharts {
     final firstLine = out.length;
     var sb = StringBuffer();
     var hb = StringBuffer();
-    final titleLine = '${chalk.bold("H=$hue°")}';
+    final titleLine = '${chalk.bold("H=$hue°".htmlSafeEntities)}';
     final titleLine2 = '${chalk.bold.black.onWhite("($title)")}';
 
     num sStart = secondHalf ? 0 : 1;
@@ -395,7 +395,7 @@ class ChalkDartCharts {
     final firstLine = out.length;
     var sb = StringBuffer();
     var hb = StringBuffer();
-    final titleLine = '${chalk.bold("H=$hue°")}';
+    final titleLine = '${chalk.bold("H=$hue°".htmlSafeEntities)}';
     final titleLine2 =
         title != '' ? '${chalk.bold.black.onWhite("($title)")}' : '';
 

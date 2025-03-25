@@ -1,11 +1,59 @@
-# Change Log
+# ChalkDart Change Log
+
+## 3.0.0
+
+- add support for HTML output mode with new supporting methods for Chalk and Chalk string support
+  The intention of this is to allow the use of Chalk for loggers which may be sending output to a
+  server/database for viewing in a browser or other html capable viewer.
+  The viewed HTML will appear as it does in the VSCode debug console.
+
+New HTML Output Features:
+- Output Mode Control:
+  - `Chalk.setDefaultOutputMode = ChalkOutputMode.html` to set default mode to html for future constructed Chalk objects
+  - `chalk.setOutputMode = ChalkOutputMode.html` to set the output mode on an existing Chalk object
+  - Use [ChalkOutputMode.ansi] to change back to ANSI mode (default unless explicitly set to html)
+
+- Color Scheme Support:
+  - `Chalk.defaultHtmlBasicANSIColorSet` property for setting default color scheme
+  - `Chalk.setDefaultHtmlBasicANSIColorSet` method for changing color scheme
+  - Available schemes: [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground], [ChalkAnsiColorSet.highContrast]
+
+- HTML Safety Methods:
+  - `chalk.stripHtmlTags()` - Removes HTML tags from text
+  - `Chalk.htmlSafeSpaces()` - Preserves spaces in HTML output
+  - `Chalk.htmlSafeGtLt()` - Converts < and > to HTML entities
+  - `Chalk.htmlSafeEntities()` - Converts all HTML special characters to entities
+
+- Stylesheet Generation:
+  - `chalk.stylesheet()` - Generates CSS styles for HTML output
+  - `chalk.inlineStylesheet()` - Generates CSS wrapped in <style> tags
+  - Customizable options for:
+    - Color schemes
+    - Whitespace treatment
+    - Custom colors
+    - Font families (10 customizable slots)
+
+- String Extension Methods:
+  - Added `stripHtmlTags` for removing HTML tags
+  - Added `htmlSafeGtLt` for safe HTML character conversion
+  - Added `htmlSafeSpaces` for space preservation
+  - Added `htmlSafeEntities` for entity conversion
+  - Extended `strip` to handle HTML tags when in HTML mode
+
+- Example Command Line Options:
+  - Added HTML output examples:
+    ```
+    dart run chalkdart_example.dart --html --light >testlightmode.html
+    dart run chalkdart_example.dart --html --highcontrast >testhighcontrastmode.html
+    dart run chalkdart_example.dart --html --dark >testdarkmode.html
+    ```
 
 ## 2.4.0
 
 - add the first ever color debugging support for Flutter apps within VSCode via XCode.
   `Chalk.xcodeSafeEsc = true;` to activate XCode safe mode.
   (Requires the use of my "XCode Flutter Color Debugging" VSCode Extension found at
-  https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging)
+  [https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging))
 - Update docs in README.md and change out inline base64 url images for server pngs (The inline base64 encoded url images no longer worked on pub.dev/github)
 
 ## 2.3.3

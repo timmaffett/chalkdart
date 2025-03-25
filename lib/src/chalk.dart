@@ -2,9 +2,52 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 import 'dart:io';
+import 'dart:convert';
+import 'package:html_character_entities/html_character_entities.dart';
 
 import 'ansiutils.dart';
 import 'colorutils.dart';
+
+import 'chalk_html.dart';
+
+const DUMP_HTML_INFO_OBJECTS = false;
+
+/// Available output modes for the color and styled text.  The default is
+/// ANSI output mode, `setOutputMode()` can be used on specific Chalk instances
+/// to change this.
+/// `Chalk.setDefaultOutputMode = true | false;' can be used to change the
+/// default for future construction of Chalk instances.
+/// The default is ChalkOutputMode.ansi
+enum ChalkOutputMode {
+  ansi,
+  html,
+}
+
+/// Color sets available for the basic ANSI colors 0 - 15.  These match 
+/// the colors I used for DartPad and VSCode also.  There are versions
+/// for light mode, dark mode and high contrast mode.
+enum ChalkAnsiColorSet {
+  lightBackground,
+  darkBackground,
+  highContrast
+}
+
+enum ChalkWhitespaceTreatment {
+  preserve('pre'),
+  preserveNoWrap('preserve nowrap'),
+  preserveWrap('pre-wrap'),
+  normalHtml('normal');
+
+  final String css;
+
+  const ChalkWhitespaceTreatment( this.css );
+
+  @override
+  String toString() {
+    return css;
+  }
+}
+
 
 /// Chalk - A Library for printing styled text to the console using ANSI
 /// control sequences.
@@ -33,8 +76,67 @@ class Chalk {
   /// Set to true to prevent scaling of rgb values when all 3 fall between 0<=r,g,b<=1.0
   static bool noZeroToOneScaling = false;
 
+  // Support for HTML Styling mode
+
+  /// Sets the default HTML Basic ANSI Color Set to use for Basic ANSI colors (0-15) which 
+  /// correspond to [black], [red], [green], [yellow], [blue], [magenta], [cyan], [white]
+  /// [brightBlack], [brightRed], [brightGreen], [brightYellow], [brightBlue], [brightMagenta], 
+  /// [brightCyan], [brightWhite]  (and their [onBlack], [onRed], ... variants)
+  /// 
+  /// This color set are also use for the [black] and [brightWhite] default foreground/background colors
+  /// when generating stylesheets for use in HTML output mode.
+  static ChalkAnsiColorSet defaultHtmlBasicANSIColorSet = ChalkAnsiColorSet.darkBackground;
+
+  /// Sets the default HTML Basic ANSI Color Set to use for Basic ANSI colors (0-15) which 
+  /// correspond to [black], [red], [green], [yellow], [blue], [magenta], [cyan], [white]
+  /// [brightBlack], [brightRed], [brightGreen], [brightYellow], [brightBlue], [brightMagenta], 
+  /// [brightCyan], [brightWhite]  (and their [onBlack], [onRed], ... variants)
+  /// 
+  /// This color set are also use for the [black] and [brightWhite] default foreground/background colors
+  /// when generating stylesheets for use in HTML output mode.
+  /// 
+  /// (Alternate to setting `defaultHtmlBasicANSIColorSet` which has similar naming convention to other setDefaultXXXX() methods/setters)
+  static set setDefaultHtmlBasicANSIColorSet(ChalkAnsiColorSet newDefault) => defaultHtmlBasicANSIColorSet = newDefault;
+
+  // Chalk instance flag to indicate we are outputting HTML styling codes instead of ANSI styling codes
+  bool _htmlOutputModeForThisChalk = false;
+
+  /// Sets the output mode for THIS Chalk object.  Used to change an existing Chalk's output mode
+  /// NOTE: Use `Chalk.setDefaultOutputMode` to set the default output mode for all future created Chalk
+  /// objects (Created using the Chalk(...) constructor, Chalk objects automatically created by instance methods
+  /// always inherit their *parent* Chalk objects output mode.)
+  /// You can also pass the outputMode when calling the Chalk constructor, but this method is
+  /// intended for altering an ALREADY create chalk object, like the DEFAULT global `chalk` object.
+  /// ie. `chalk.setOutputMode = ChalkOutputMode.html` if we want to alter the `chalk` global to
+  /// produce children in HTML mode.
+  /// Typically when creating a new Chalk styler for HTML output within a program you would just
+  /// specify the ChalkOutputMode in the constructor instead of using this method.
+  /// ```dart
+  /// final myErrorStyleForServerLogging = Chalk(outputMode:ChalkOutputMode.html);
+  /// ``` 
+  void setOutputMode(ChalkOutputMode outputMode) {
+    //IF we have more modes someday//switch (outputMode) {
+    //IF we have more modes someday//  case ChalkOutputMode.ansi:
+    //IF we have more modes someday//    _htmlOutputModeForThisChalk = false;
+    //IF we have more modes someday//    break;
+    //IF we have more modes someday//  case ChalkOutputMode.html:
+    //IF we have more modes someday//    _htmlOutputModeForThisChalk = true;
+    //IF we have more modes someday//    break;
+    //IF we have more modes someday//}
+    _htmlOutputModeForThisChalk = (outputMode == ChalkOutputMode.html);
+
+    _setAllWrapperFunctionsAccordingToMode();
+  }
+
+  // static DEFAULT safe ESC code flag for new Chalks 
+  static bool _xcodeSafeEscDefaultForNewChalks = false;
+
+  // If true we create new Chalk objects in HTML mode
+  static ChalkOutputMode _defaultOutputModeForNewChalks = ChalkOutputMode.ansi;
+
   /// Set XCode Safe ESC sequence for IOS platform (this is a NO-OP on other platforms)
-  /// Use:   Chalk.xcodeSafeEsc = true;
+  /// for new chalk instances as well as the global `chalk` instance.
+  /// Use:   Chalk.setXCodeSafeEscDefault = true;
   /// This requires the use of my XCode Flutter Color Debugging extension in VSCode to
   /// automatically convert the XCode safe ESC string `[^ESC]` back to the
   /// ASCII ESC character 27 (\u001B) in all flutter/dart `print()`/`debugPrint()`
@@ -42,25 +144,79 @@ class Chalk {
   /// for the VSCode debug console to display the proper output.
   /// (This is required because XCode filters all use of actual ascii ESC characters and also
   /// this also triggers XCode to truncates the message)
-  static set xcodeSafeEsc( bool activate ) {
+  static set setXCodeSafeEscDefault( bool activate ) {
     if(Platform.isIOS) {
-      if(activate != _xcodeSafeEsc) {
+      if(activate != _xcodeSafeEscDefaultForNewChalks) {
         if( activate ) {
           ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
         } else {
           ESC = '\u001B';
         }
-        _xcodeSafeEsc = activate;
+        _xcodeSafeEscDefaultForNewChalks = activate;
+      }
+    }
+  }
+
+  /// This allows setting the default HTML mode for all subsequent Chalk() objects.
+  /// If [newChalksUseHtmlMode] is `true` then HTML will used or styling instead of ANSI codes.
+  /// If `false` then the default ANSI codes will be used for styling.
+  /// You can also pass the ChalkOutputMode to the Chalk(...) constructor, but this method
+  /// is intended to allow a one line change to switch all Chalk constructor calls to
+  /// switch to the new mode without having to alter all Chalk(...) constructor calls.
+  /// For example in the example app we can switch everything to `ChalkOutputMode.html`
+  /// in one place at the start of main() by doing:
+  /// ```dart
+  /// chalk.setOutputMode(ChalkOutputMode.html);  // set already created chalk object to html mode
+  /// Chalk.setDefaultOutputMode = ChalkOutputMode.html; // set all FUTURE created Chalk objects to HTML mode as default
+  /// ```
+  /// without having to alter the existing code in any other place.
+  static set setDefaultOutputMode( ChalkOutputMode defaultModeForNewChalks ) {
+    _defaultOutputModeForNewChalks = defaultModeForNewChalks;
+  }
+
+  // Returns the default XCode safe ESC sequence mode for NEW chalk instances 
+  static bool get getXCodeSafeEscDefault => _xcodeSafeEscDefaultForNewChalks;
+
+  /// AFFECTS IOS ONLY
+  /// Allows checking if the XCode Safe ESC sequences have been turned on or off using Chalk.xcodeSafeEsc = true (or false);
+  /// We default to NULL so that it will get the default `_xcodeSafeEscDefaultForNewChalks` the first time it is used
+  /// NOTE: WE DO NOT allow this to be changed on other platforms - it is ALWAYS `false`.
+  bool? _instanceSpecificXCodeSafeEsc = Platform.isIOS ? null : false;  // The `null` default on IOS will allow us to set it to `_xcodeSafeEscDefaultForNewChalks` the first
+                                                        // time it is accessed.  (This allows the default `chalk` instance to get the proper value
+
+  /// Allows checking if the XCode Safe ESC sequences have been turned on or off using Chalk.xcodeSafeEsc = true (or false);
+  /// (THIS FLAG IS USED ON IOS ONLY - on other platforms it is ALWAYS `false`.
+  bool get xcodeSafeEsc {
+    if(_instanceSpecificXCodeSafeEsc==null) {
+      if(_xcodeSafeEscDefaultForNewChalks) {
+        // USING THE SETTER HERE will ensure that the ESC and other instance variables will also get set
+        xcodeSafeEsc = true;
+      } else {
+        // this just ensures that on IOS (where it could be null) it will get set to false (it would be getting set to 
+        // true in the above if statement if `_xcodeSafeEscDefaultForNewChalks` was true
+        _instanceSpecificXCodeSafeEsc = false;
+      }
+    }
+    return _instanceSpecificXCodeSafeEsc!;  
+  }
+
+  // Chalk instance level call to set xcodeSafeEsc mode - this allows loggers to have the capabilities to 
+  // have a chalk instance that outputs via XCode terminal while still logging proper ANSI codes through
+  // ANOTHER chalk instance.
+  set xcodeSafeEsc( bool activate ) {
+    if(Platform.isIOS) {
+      if(activate != _instanceSpecificXCodeSafeEsc) {
+        if( activate ) {
+          ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
+        } else {
+          ESC = '\u001B';
+        }
+        _instanceSpecificXCodeSafeEsc = activate;
         _resetAnsiCloseStringsToCurrentESC();
       }
     }
   }
-  
-  /// Allows checking if the XCode Safe ESC sequences have been turned on or off using Chalk.xcodeSafeEsc = true (or false);
-  static bool get xcodeSafeEsc => _xcodeSafeEsc;
 
-  // internal flag to 
-  static bool _xcodeSafeEsc = false;
 
   // String representing the ASCII ESC character 27.  This can change if xcodeSafeEsc(true) is set. 
   static String ESC = '\u001B';
@@ -73,50 +229,108 @@ class Chalk {
   /// This is now all available in production version of VSCode - timmaffett)
   static bool useFullResetToClose = false;
 
-  static String _ansiSGRModiferOpen(dynamic code) {
-    return '$ESC[${code}m';
+
+  String _ansiSGRModiferOpen(dynamic code) {
+    if(_htmlOutputModeForThisChalk) {
+      _htmlStyleInfo = ChalkHTML.getHTMLStyleFromANSICode( [ code ] );
+
+      if(DUMP_HTML_INFO_OBJECTS) print('_ansiSGRModiferOpen($code) = HTMLINFO = ${_htmlStyleInfo}');
+
+      return ChalkHTML.makeHTMLSpanFromInfo(_htmlStyleInfo!);
+    } else {
+      return '$ESC[${code}m';
+    }
   }
 
-  static String _ansiSGRModiferClose(dynamic code) {
-    if (useFullResetToClose) code = 0;
-    return '$ESC[${code}m';
+  String _ansiSGRModiferClose(dynamic code) {
+    if(_htmlOutputModeForThisChalk) {
+
+      return '</span>';
+
+    } else {
+      if (useFullResetToClose) code = 0;
+      return '$ESC[${code}m';
+    }
   }
 
-  static String Function(int) _wrapAnsi256([int offset = 0]) {
-    return (int code) => '$ESC[${38 + offset};5;${code}m';
+  String Function(int) _wrapAnsi256([int offset = 0]) {
+    if(_htmlOutputModeForThisChalk) {
+      int colorTypeCode = 38 + offset;
+      final String cssAttrib = (colorTypeCode == 38) ? 'color' : ((colorTypeCode == 48) ? 'background-color' : 'text-decoration-color');
+      return (int code) {
+        final String color = ChalkHTML.calcAnsi8bitColor(code);
+        return '<span style="$cssAttrib:$color;">';
+      };
+    } else {
+      return (int code) => '$ESC[${38 + offset};5;${code}m';
+    }    
   }
 
-  static String Function(int, int, int) _wrapAnsi16m([int offset = 0]) {
-    return (int red, int green, int blue) =>
-        '$ESC[${38 + offset};2;$red;$green;${blue}m';
+  String Function(int, int, int) _wrapAnsi16m([int offset = 0]) {
+    if(_htmlOutputModeForThisChalk) {
+      int colorTypeCode = 38 + offset;
+      final String cssAttrib = (colorTypeCode == 38) ? 'color' : ((colorTypeCode == 48) ? 'background-color' : 'text-decoration-color');
+      return (int red, int green, int blue) {
+        final String color = ChalkHTML.set24BitAnsiColor( red, green, blue);
+        return '<span style="$cssAttrib:$color;">';
+      };
+    } else {    
+      return (int red, int green, int blue) =>
+          '$ESC[${38 + offset};2;$red;$green;${blue}m';
+    }
   }
 
-  static void _resetAnsiCloseStringsToCurrentESC() {
-    _ansiClose = '$ESC[39m';
-    _ansiBgClose = '$ESC[49m';
-    _ansiUnderlineClose = '$ESC[59m';
+  String DD_ansiClose = '$ESC[39m';
+  String DD_ansiBgClose = '$ESC[49m';
+  String DD_ansiUnderlineClose = '$ESC[59m';
+
+  // This switches all of the root level open/close functions over to the HTML Versions
+  void _resetEverythingForHTMLOutput() {
+    // FOR HTML we do NOTHING special for the close - it is always te same...
+    DD_ansiClose = DD_ansiBgClose = DD_ansiUnderlineClose = '</span>';    
   }
 
-  static String _ansiClose = '$ESC[39m';
-  static String _ansiBgClose = '$ESC[49m';
-  static String _ansiUnderlineClose = '$ESC[59m';
+  void _resetAnsiCloseStringsToCurrentESC() {
+    DD_ansiClose = '$ESC[39m';
+    DD_ansiBgClose = '$ESC[49m';
+    DD_ansiUnderlineClose = '$ESC[59m';
+  }
 
-  static final String Function(int) _ansi256 = _wrapAnsi256();
-  static final String Function(int, int, int) _ansi16m = _wrapAnsi16m();
-  static final String Function(int) _bgAnsi256 =
-      _wrapAnsi256(ansiBackgroundOffset);
-  static final String Function(int, int, int) _bgAnsi16m =
-      _wrapAnsi16m(ansiBackgroundOffset);
-  static final String Function(int) _underlineAnsi256 =
-      _wrapAnsi256(ansiUnderlineOffset);
-  static final String Function(int, int, int) _underlineAnsi16m =
-      _wrapAnsi16m(ansiUnderlineOffset);
+  String get _ansiClose => DD_ansiClose;
+  String get _ansiBgClose => DD_ansiBgClose;
+  String get _ansiUnderlineClose => DD_ansiUnderlineClose;
+
+  late String Function(int) _ansi256; // = _wrapAnsi256();
+  late String Function(int, int, int) _ansi16m; // = _wrapAnsi16m();
+  late String Function(int) _bgAnsi256; // = _wrapAnsi256(ansiBackgroundOffset);
+  late String Function(int, int, int) _bgAnsi16m; // = _wrapAnsi16m(ansiBackgroundOffset);
+  late String Function(int) _underlineAnsi256; // = _wrapAnsi256(ansiUnderlineOffset);
+  late String Function(int, int, int) _underlineAnsi16m; // = _wrapAnsi16m(ansiUnderlineOffset);
+
+  void _setAllWrapperFunctionsAccordingToMode() {
+    _ansi256 = _wrapAnsi256();
+    _ansi16m = _wrapAnsi16m();
+    _bgAnsi256 = _wrapAnsi256(ansiBackgroundOffset);
+    _bgAnsi16m = _wrapAnsi16m(ansiBackgroundOffset);
+    _underlineAnsi256 = _wrapAnsi256(ansiUnderlineOffset);
+    _underlineAnsi16m = _wrapAnsi16m(ansiUnderlineOffset);
+
+    if(_htmlOutputModeForThisChalk) {
+      _resetEverythingForHTMLOutput();
+    } else {
+      _resetAnsiCloseStringsToCurrentESC();
+    }
+
+  }
+
 
   Chalk? _parent;
   String _open = '';
   String _close = '';
   String _openAll = '';
   String _closeAll = '';
+  ChalkHTMLStyleInfo? _htmlStyleInfo;
+  ChalkHTMLStyleInfo? _htmlStyleInfoWithParents;
 
   /// ANSI Color level support for this chalk instance - this will effect what colors
   /// this chalk instance can use.
@@ -161,8 +375,10 @@ class Chalk {
 
   /// Use to create a new 'root' instance of Chalk, with the option of setting
   /// the ANSI color level (root instances start with no style).
-  static Chalk instance({int level = -1}) {
-    final instance = Chalk._internal(null, hasStyle: false);
+  static Chalk instance({int? level, ChalkOutputMode? outputMode}) {
+    outputMode ??= _defaultOutputModeForNewChalks;
+    final instance = Chalk._internal(null, hasStyle: false, outputMode: outputMode);
+    level ??= -1;
     if (level != -1) {
       instance.level = level;
     }
@@ -171,40 +387,111 @@ class Chalk {
 
   // This is alias for [instance()] for users coming from javascript syntax.
   // ignore: non_constant_identifier_names
-  static Chalk Instance({int level = -1}) {
-    return instance(level: level);
+  static Chalk Instance({int? level, ChalkOutputMode? outputMode}) {
+    outputMode ??= _defaultOutputModeForNewChalks;
+    return instance(level: level ?? -1, outputMode: outputMode);
   }
 
   /// Factory function typically used for creating new 'root' instances of Chalk
-  /// (root instances start with no style)
-  factory Chalk() {
-    return Chalk._internal(null, hasStyle: false);
+  /// The outputMode can be set explicitly on creation, otherwise it will
+  /// assume the default output mode of `ChalkOutputMode.ansi` (unless a different
+  /// output mode has been set with the `Chalk.setDefaultOutputMode()` method).
+  /// The `level` argument allows specifying ANSI output level that a terminal
+  /// ('Root level' Chalk instances start with no style)
+  factory Chalk({int? level, ChalkOutputMode? outputMode}) {
+    return Chalk._internal(null, hasStyle: false, outputMode: outputMode ?? _defaultOutputModeForNewChalks);
   }
 
   /// private internal Chalk() constructor
-  Chalk._internal(Chalk? parent, {bool hasStyle = true}) {
-    _parent = parent;
-    if (parent != null) {
+  Chalk._internal(Chalk? parent, {bool hasStyle = true, ChalkOutputMode? outputMode}) {
+    outputMode ??= _defaultOutputModeForNewChalks;
+    // WE ONLY LOOK AT THE outputMode WHEN we are creating a TOP LEVEL parent - otherwise this is ALWAYS 
+    // THE SAME AS IT'S PARENT
+    if(parent==null) {
+      _htmlOutputModeForThisChalk = (outputMode == ChalkOutputMode.html);
+    } else {
+      _parent = parent;
       level = parent.level; // inherit level from parent
       _joinString = parent._joinString;
+      _htmlOutputModeForThisChalk = parent._htmlOutputModeForThisChalk;
     }
     _hasStyle = hasStyle;
+
+    if(_htmlOutputModeForThisChalk) {
+        _resetEverythingForHTMLOutput();
+    } else {
+      if(Platform.isIOS && _xcodeSafeEscDefaultForNewChalks) {
+        if(_xcodeSafeEscDefaultForNewChalks) {
+          ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
+          xcodeSafeEsc = true;
+          _resetAnsiCloseStringsToCurrentESC();
+        }
+      } else {
+        xcodeSafeEsc = false;
+      }
+    }
+
+    _setAllWrapperFunctionsAccordingToMode();
   }
 
-  static Chalk _createStyler(String open, String close, [Chalk? parent]) {
+  Chalk _createStyler(String open, String close, [Chalk? parent]) {
     final chalk = Chalk._internal(parent);
-    chalk._open = open;
-    chalk._close = close;
-    if (parent == null) {
-      chalk._openAll = open;
-      chalk._closeAll = close;
+
+    if(_htmlOutputModeForThisChalk) {
+      // FIRST me must take the open <span class="" style="color:XYZ background-color:YYZ; text-decoration-color:ZZZ;">
+      // and convert it into a ChalkHTMLStyleInfo object
+      chalk._htmlStyleInfo = ChalkHTML.convertHTMLSpanToChalkHTMLStyleInfo( open );
+
+      //DEBUG//bool errorDump = false;
+      
+      chalk._open = open;
+      chalk._close = close;
+      if (parent == null) {
+        chalk._openAll = open;
+        chalk._closeAll = '</span>'; //THIS *could* be `close`, as it is always '</span>', but `x11`, `color` and other NO-OP chalks have EMPTY `close`
+        chalk._htmlStyleInfoWithParents = chalk._htmlStyleInfo;
+      } else {
+        chalk._htmlStyleInfoWithParents = ChalkHTML.combineParentHtmlInfoAndThisInfo( parent._htmlStyleInfoWithParents, chalk._htmlStyleInfo! );
+        chalk._openAll = ChalkHTML.makeHTMLSpanFromInfo( chalk._htmlStyleInfoWithParents! );
+        chalk._closeAll = '</span>'; //THIS *could* be `close`, as it is always '</span>', but `x11`, `color` and other NO-OP chalks have EMPTY `close`
+      }
+      if(DUMP_HTML_INFO_OBJECTS /* || errorDump */) {
+        //DEBUG//if(errorDump) {
+        //DEBUG//  try {
+        //DEBUG//    throw('_createStyler ERROR DUMP SET');
+        //DEBUG//  } catch (ex, stackTrace) {
+        //DEBUG//    print('_createStyler() ERROR DUMP SET - ${stackTrace.toString()}');
+        //DEBUG//  }
+        //DEBUG//}
+        print('_createStyler()');
+        print('  child = ${chalk._htmlStyleInfo}');
+        print('  parent = ${parent!=null ? parent._htmlStyleInfoWithParents.toString() : 'null'}');
+        print('  COMBINED = ${chalk._htmlStyleInfoWithParents}');
+        //print('=====================================');
+        //print('_createStyler open=`$open`  close=`$close`');
+        //if(parent!=null) print('   parent.openAll = ${parent._openAll}');
+        //print('_createStyler EXIT openAll=${chalk._openAll} ');
+      }
     } else {
-      chalk._openAll = parent._openAll + open;
-      chalk._closeAll = close + parent._closeAll;
+      // HANDLE ANSI open and close and getting that information from parent as well
+      chalk._open = open;
+      chalk._close = close;
+      if (parent == null) {
+        chalk._openAll = open;
+        chalk._closeAll = close;
+      } else {
+        chalk._openAll = parent._openAll + open;
+        chalk._closeAll = close + parent._closeAll;
+      }
     }
     return chalk;
   }
 
+  /// Creates a Chalk based on red, green and blue values.  This is *intended* to be a 
+  /// an internal method. Use rgb(), rgb16m(), onRgb() or onRgb16m() instead,
+  /// NOTE: I have added deprecated() annotation to guide users.
+  // @deprecated('Use rgb(), rgb16m(), onRgb() or onRgb16m() instead.')  // GETS ERROR ??
+  // Not called _makeRGBChalk() so it can be accessed from chalk_x11.dart/chalk_x11.g.dart.
   Chalk makeRGBChalk(num nred, num ngreen, num nblue,
       {bool bg = false, bool force16M = false}) {
     if (nred <= 1.0 && ngreen <= 1.0 && nblue <= 1.0 && !noZeroToOneScaling) {
@@ -998,11 +1285,129 @@ class Chalk {
     return chalk;
   }
 
+  static final RegExp _htmlTagRegex = RegExp(r'<[^>]*>');
+
+  /// Replaces and `<` or `>` characters found within the string their
+  /// html safe entities `&lt;` and `&gt;`.
+  /// This makes the sure the text is safe for html rendering.
+  /// 
+  /// NOTE: This method is NOT safe to call on text that contains HTML code, 
+  /// as it will deactivate the HTML tags.
+  static String htmlSafeGtLt(String text) {
+    return HtmlEscape(HtmlEscapeMode.element).convert(text);
+  }
+
+  static String htmlSafeEntities(String text) {
+    return HtmlCharacterEntities.encode(text);
+  }
+
+  /// Replaces all spaces outside of html tags found within the string
+  /// to the html entity `&nbsp;`.
+  /// This can be useful to preserve spacing when rendering the string in a
+  /// browser where all spacing would otherwise be collapsed.
+  /// 
+  /// NOTE: This is completely safe to call on text that contains HTML code.
+  /// If there are < or > characters present in the string [htmlSafeGtLt] should
+  /// be called before any styling is applied and before this method.
+  static String htmlSafeSpaces(String htmlString) {
+    return htmlString;
+    List<Match> tagMatches = _htmlTagRegex.allMatches(htmlString).toList();
+
+    String result = '';
+    int lastEnd = 0;
+
+    for (Match match in tagMatches) {
+      result += htmlString.substring(lastEnd, match.start).replaceAll(' ', '&nbsp;');
+      result += match.group(0)!;
+      lastEnd = match.end;
+    }
+
+    result += htmlString.substring(lastEnd).replaceAll(' ', '&nbsp;');
+
+    return result;
+  }
+
+  /// Strips any HTML strings present from the string and returns the result
+  String stripHtmlTags(String htmlString) {
+    String removeTags = htmlString.replaceAll(_htmlTagRegex, '');
+    return HtmlCharacterEntities.decode(removeTags);
+  }
+
   /// Strip all ANSI SGR commands from the target string and return the 'stripped'
   /// result string.
+  /// NOTE:  If HTML mode is activated then this strips all HMTL tags from the input string
   String strip(String target) {
-    return AnsiUtils.stripAnsi(target);
+    if(_htmlOutputModeForThisChalk) {
+      return stripHtmlTags(target);
+    } else {
+      return AnsiUtils.stripAnsi(target);
+    }
   }
+
+  /// Returns the CSS styles required to render the HTML produced in HTML mode.
+  /// NOTE: This returns the *styles* only - Use [inlineStylesheet] to return
+  /// the the stylesheet within <style>..styles..</style> tags for use directly in the
+  /// output html.
+  /// 
+  /// [colorSetToUse] Sets which color set is used for the 8 bit ANSI colors 0-15 
+  ///      (Dark mode is default, set to false for light mode colors.
+  ///      These colors match what I use
+  ///      within DartPad for the standard ANSI colors in the debug console for light/dark mode)
+  ///        (and the high contrast set is available here and in VSCode)
+  ///      [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground] or [ChalkAnsiColorSet.highContrast]
+  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceStyle.preserve.css ( 'pre' )
+  ///     other options:
+  ///     - ChalkWhitespaceStyle.preserveNoWrap.css ('preserve nowrap')
+  ///         to force HTML to preserve all spaces and not wrap.
+  ///     - Use ChalkWhitespaceStyle.preserveWrap.css ('pre wrap')
+  ///  [foregroundColor] - Alternately you can specify or override the css `color` (foreground color) specified by [colorSetToUse]
+  ///  [backgroundColor] - Alternately you can specify or override the css `background-color` specified by [colorSetToUse]
+  ///  [font1] - [font10] - Allows setting the specific css font-family list to use for the corresponding font.
+  ///                       (See output of stylesheet() to check what the default font-family lists are)
+  String stylesheet({
+                ChalkAnsiColorSet? colorSetToUse,
+                String? whiteSpaceTreatment,
+                String? foregroundColor, String? backgroundColor,
+                String? font1, String? font2, String? font3, String? font4, String? font5,
+                String? font6, String? font7, String? font8, String? font9, String? font10
+              }) => ChalkHTML.getHTMLStyleSheetIncludingColors(htmlBasicANSIColorSet:colorSetToUse ?? defaultHtmlBasicANSIColorSet,
+                                                    whiteSpaceTreatment:whiteSpaceTreatment,
+                                                    foregroundColor:foregroundColor,backgroundColor:backgroundColor,
+                                                    font1:font1, font2:font2, font3:font3, font4:font4, font5:font5,
+                                                    font6:font6, font7:font7, font8:font8, font9:font9, font10:font10
+              );
+
+  /// Returns the CSS styles required to render the HTML produced in HTML mode
+  /// The stylesheet os wrapped within <style>..styles..</style> tags for use directly
+  /// in the output html.
+  /// Typically when using HMTL mode this would be called at the beginning of your output
+  /// with a something like `print(mychalk.inlineStylesheet);`
+  /// 
+  /// [colorSetToUse] Sets which color set is used for the 8 bit ANSI colors 0-15 
+  ///      (Dark mode is default, set to false for light mode colors.
+  ///      These colors match what I use
+  ///      within DartPad for the standard ANSI colors in the debug console for light/dark mode)
+  ///        (and the high contrast set is available here and in VSCode)
+  ///      [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground] or [ChalkAnsiColorSet.highContrast]
+  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceStyle.preserve.css ( 'pre' )
+  ///     other options:
+  ///     - ChalkWhitespaceStyle.preserveNoWrap.css ('preserve nowrap')
+  ///         to force HTML to preserve all spaces and not wrap.
+  ///     - Use ChalkWhitespaceStyle.preserveWrap.css ('pre wrap')
+  ///  [foregroundColor] - Alternately you can specify or override the css `color` (foreground color) specified by [colorSetToUse]
+  ///  [backgroundColor] - Alternately you can specify or override the css `background-color` specified by [colorSetToUse]
+  ///  [font1] - [font10] - Allows setting the specific css font-family list to use for the corresponding font.
+  ///                       (See output of stylesheet() to check what the default font-family lists are)
+  String inlineStylesheet({
+                ChalkAnsiColorSet? colorSetToUse,
+                String? whiteSpaceTreatment,
+                String? foregroundColor, String? backgroundColor,
+                String? font1, String? font2, String? font3, String? font4, String? font5,
+                String? font6, String? font7, String? font8, String? font9, String? font10
+              }) => '<style>\n${ChalkHTML.getHTMLStyleSheetIncludingColors(htmlBasicANSIColorSet:colorSetToUse ?? defaultHtmlBasicANSIColorSet, whiteSpaceTreatment: whiteSpaceTreatment, 
+                                                                foregroundColor:foregroundColor,backgroundColor:backgroundColor,
+                                                                font1:font1, font2:font2, font3:font3, font4:font4, font5:font5,
+                                                                font6:font6, font7:font7, font8:font8, font9:font9, font10:font10)}\n</style>\n';
 
   // This method handles turning all the dynamic items in the list to strings,
   // and recurses if it finds Lists.
@@ -1084,7 +1489,7 @@ class Chalk {
       return arg0;
     }
 
-    if (arg0!.indexOf('$ESC') != -1) {
+    if (arg0!.indexOf(ESC) != -1) {
       while (styler != null && styler._hasStyle) {
         // Replace any instances already present with a re-opening code
         // otherwise only the part of the string until said closing code
@@ -1163,6 +1568,7 @@ class Chalk {
   static void addColorKeywordHex(String colorname, dynamic hex) {
     ColorUtils.addColorKeywordHex(colorname, hex);
   }
+
 }
 
 /// This _StringUtils class handles heavy lifting for Chalk() on string
@@ -1188,6 +1594,16 @@ class _StringUtils {
     return returnValue;
   }
 
+  // This funciton is used to ensure that we close the styling ON EACH LINE using the approriate ANSI CLOSE codes and
+  // then START the next line with the appropriate ANSI OPEN codes to have the identical styling that was active on
+  // the line before it.
+  // Close the styling before a linebreak and reopen after next line to fix a bleed issue on
+  // macOS: https://github.com/chalk/chalk/pull/92
+  // This is called like this 
+  // ```    var lfIndex = arg0.indexOf('\n');
+  //  if (lfIndex != -1) {
+  //    arg0 = _StringUtils.stringEncaseCRLFWithFirstIndex( arg0, _closeAll, _openAll, lfIndex);
+  //  }
   static String stringEncaseCRLFWithFirstIndex(
       String string, String prefix, String postfix, int index) {
     int endIndex = 0;
