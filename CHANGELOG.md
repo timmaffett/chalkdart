@@ -1,5 +1,9 @@
 # ChalkDart Change Log
 
+## 3.0.4
+
+- Add TLDR summary to readme
+
 ## 3.0.3
 
 - Remove error from README about makeRGBChalk()

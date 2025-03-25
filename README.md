@@ -8,6 +8,30 @@
 [![GitHub forks](https://img.shields.io/github/forks/timmaffett/chalkdart)](https://github.com/timmaffett/chalkdart)
 [![GitHub stars](https://img.shields.io/github/stars/timmaffett/chalkdart?)](https://github.com/timmaffett/chalkdart)
 
+## TLDR Summary - Easy to use console text coloring and styling using ANSI (and now HTML for web logs as well!)
+
+Any amount of nesting of colors/styles is fully supported:
+
+```dart
+import 'package:chalkdart/chalk.dart';
+
+print(chalk.yellow.onBlue('Hello ${chalk.blue.onGreen.bold('beautiful')} world!'));
+```
+
+![Hello beautiful world](https://github.com/timmaffett/chalkdart/raw/master/media/hello_beautiful_world_example.png)
+
+or using the Chalk String extensions:
+
+```dart
+import 'package:chalkdart/chalkstrings.dart';
+
+// nested colors and styling are supported
+print('Hello ${'beautiful'.blue.onGreen.bold} world!'.yellow.onBlue);
+```
+
+![Hello beautiful world](https://github.com/timmaffett/chalkdart/raw/master/media/hello_beautiful_world_example.png)
+
+
 ## 🎉 ChalkDart 3.0 - Now with HTML Output Support! 
 
 ChalkDart 3.0 introduces groundbreaking HTML output capabilities, making it the most versatile text styling solution for Dart.  HTML output capabilities allows the option of generating colorized/styled output for server/web based logging.  While other packages like AnsiColors only handle ANSI terminal output, ChalkDart now offers:
