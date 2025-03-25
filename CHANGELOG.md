@@ -1,5 +1,10 @@
 # ChalkDart Change Log
 
+## 3.0.1
+
+- Fix minor error of old ChalkWhitespaceStyle instead of ChalkWhitespaceTreatment
+- Added note about being about to use any valid `white-space` CSS value for [whiteSpaceTreatment]
+
 ## 3.0.0
 
 - add support for HTML output mode with new supporting methods for Chalk and Chalk string support
