@@ -1358,11 +1358,12 @@ class Chalk {
   ///      within DartPad for the standard ANSI colors in the debug console for light/dark mode)
   ///        (and the high contrast set is available here and in VSCode)
   ///      [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground] or [ChalkAnsiColorSet.highContrast]
-  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceStyle.preserve.css ( 'pre' )
+  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceTreatment.preserve.css ( 'pre' )
   ///     other options:
-  ///     - ChalkWhitespaceStyle.preserveNoWrap.css ('preserve nowrap')
+  ///     - ChalkWhitespaceTreatment.preserveNoWrap.css ('preserve nowrap')
   ///         to force HTML to preserve all spaces and not wrap.
-  ///     - Use ChalkWhitespaceStyle.preserveWrap.css ('pre wrap')
+  ///     - Use ChalkWhitespaceTreatment.preserveWrap.css ('pre wrap')
+  ///     - You can also specify any other valid value for the CSS ` white-space` property
   ///  [foregroundColor] - Alternately you can specify or override the css `color` (foreground color) specified by [colorSetToUse]
   ///  [backgroundColor] - Alternately you can specify or override the css `background-color` specified by [colorSetToUse]
   ///  [font1] - [font10] - Allows setting the specific css font-family list to use for the corresponding font.
@@ -1392,11 +1393,12 @@ class Chalk {
   ///      within DartPad for the standard ANSI colors in the debug console for light/dark mode)
   ///        (and the high contrast set is available here and in VSCode)
   ///      [ChalkAnsiColorSet.lightBackground], [ChalkAnsiColorSet.darkBackground] or [ChalkAnsiColorSet.highContrast]
-  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceStyle.preserve.css ( 'pre' )
+  /// [whiteSpaceTreatment] - defaults to ChalkWhitespaceTreatment.preserve.css ( 'pre' )
   ///     other options:
-  ///     - ChalkWhitespaceStyle.preserveNoWrap.css ('preserve nowrap')
+  ///     - ChalkWhitespaceTreatment.preserveNoWrap.css ('preserve nowrap')
   ///         to force HTML to preserve all spaces and not wrap.
-  ///     - Use ChalkWhitespaceStyle.preserveWrap.css ('pre wrap')
+  ///     - Use ChalkWhitespaceTreatment.preserveWrap.css ('pre wrap')
+  ///     - You can also specify any other valid value for the CSS ` white-space` property
   ///  [foregroundColor] - Alternately you can specify or override the css `color` (foreground color) specified by [colorSetToUse]
   ///  [backgroundColor] - Alternately you can specify or override the css `background-color` specified by [colorSetToUse]
   ///  [font1] - [font10] - Allows setting the specific css font-family list to use for the corresponding font.
