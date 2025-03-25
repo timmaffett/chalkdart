@@ -21,7 +21,8 @@ class AnsiUtils {
     }
   }
 
-  static String ESC = Platform.isIOS ? '[^ESC]' : '\\u001B';
+  // ignore: non_constant_identifier_names
+  static String ESC = '\\u001B';
 
   static void _resetPatternToCurrentESC() {
       pattern = [

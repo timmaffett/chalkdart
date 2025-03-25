@@ -180,22 +180,12 @@ class ChalkHTML {
       } else if (colorType == 'underline') {
         customUnderlineColor = color;
       }
-      styleNames.remove('ansi-${colorType}-colored');
+      styleNames.remove('ansi-$colorType-colored');
       if (color != null) {
-        styleNames.add('ansi-${colorType}-colored');
+        styleNames.add('ansi-$colorType-colored');
       }
     }
 
-    //
-    // * Swap foreground and background colors.  Used for color inversion.  Caller should check
-    // * [] flag to make sure it is appropriate to turn ON or OFF (if it is already inverted don't call
-    // 
-    void reverseForegroundAndBackgroundColors() {
-      var oldFgColor = customFgColor;
-      changeColor('foreground', customBgColor);
-      changeColor('background', oldFgColor);
-    }
-    
     //
     // * Calculate and set styling for basic bright and dark ANSI color codes. Uses
     // * theme colors if available. Automatically distinguishes between foreground

@@ -12,7 +12,8 @@ import 'colorutils.dart';
 
 import 'chalk_html.dart';
 
-const DUMP_HTML_INFO_OBJECTS = false;
+// ignore: constant_identifier_names
+const DUMP_HTML_INFO_OBJECTS = false;  // leave this in for now
 
 /// Available output modes for the color and styled text.  The default is
 /// ANSI output mode, `setOutputMode()` can be used on specific Chalk instances
@@ -221,6 +222,7 @@ class Chalk {
 
 
   // String representing the ASCII ESC character 27.  This can change if xcodeSafeEsc(true) is set. 
+  // ignore: non_constant_identifier_names
   static String ESC = '\u001B';
 
   /// Use full resets to close attributes (reset all attributes with SGR 0) ON EACH call to Chalk()
@@ -236,7 +238,7 @@ class Chalk {
     if(_htmlOutputModeForThisChalk) {
       _htmlStyleInfo = ChalkHTML.getHTMLStyleFromANSICode( [ code ] );
 
-      if(DUMP_HTML_INFO_OBJECTS) print('_ansiSGRModiferOpen($code) = HTMLINFO = ${_htmlStyleInfo}');
+      if(DUMP_HTML_INFO_OBJECTS) print('_ansiSGRModiferOpen($code) = HTMLINFO = $_htmlStyleInfo');
 
       return ChalkHTML.makeHTMLSpanFromInfo(_htmlStyleInfo!);
     } else {
@@ -282,25 +284,25 @@ class Chalk {
     }
   }
 
-  String DD_ansiClose = '$ESC[39m';
-  String DD_ansiBgClose = '$ESC[49m';
-  String DD_ansiUnderlineClose = '$ESC[59m';
+  String _ansiCloseModeBaseValue = '$ESC[39m';
+  String _ansiBgCloseModeBaseValue = '$ESC[49m';
+  String _ansiUnderlineCloseModeBaseValue = '$ESC[59m';
 
   // This switches all of the root level open/close functions over to the HTML Versions
   void _resetEverythingForHTMLOutput() {
     // FOR HTML we do NOTHING special for the close - it is always te same...
-    DD_ansiClose = DD_ansiBgClose = DD_ansiUnderlineClose = '</span>';    
+    _ansiCloseModeBaseValue = _ansiBgCloseModeBaseValue = _ansiUnderlineCloseModeBaseValue = '</span>';    
   }
 
   void _resetAnsiCloseStringsToCurrentESC() {
-    DD_ansiClose = '$ESC[39m';
-    DD_ansiBgClose = '$ESC[49m';
-    DD_ansiUnderlineClose = '$ESC[59m';
+    _ansiCloseModeBaseValue = '$ESC[39m';
+    _ansiBgCloseModeBaseValue = '$ESC[49m';
+    _ansiUnderlineCloseModeBaseValue = '$ESC[59m';
   }
 
-  String get _ansiClose => DD_ansiClose;
-  String get _ansiBgClose => DD_ansiBgClose;
-  String get _ansiUnderlineClose => DD_ansiUnderlineClose;
+  String get _ansiClose => _ansiCloseModeBaseValue;
+  String get _ansiBgClose => _ansiBgCloseModeBaseValue;
+  String get _ansiUnderlineClose => _ansiUnderlineCloseModeBaseValue;
 
   late String Function(int) _ansi256; // = _wrapAnsi256();
   late String Function(int, int, int) _ansi16m; // = _wrapAnsi16m();
@@ -356,16 +358,16 @@ class Chalk {
   /// most useful for debugging to dump the guts
   @override
   String toString() {
-    return "Chalk(open:'${_openAll.replaceAll('$ESC', 'ESC')}',close:'${_closeAll.replaceAll('$ESC', 'ESC')}')";
+    return "Chalk(open:'${_openAll.replaceAll(ESC, 'ESC')}',close:'${_closeAll.replaceAll(ESC, 'ESC')}')";
   }
 
   /// more detailed dump of the guts, following parent links and dumping
   String toStringWalkUp({int level = 0}) {
     String thisOne =
-        "[$level] Chalk(open:'${_open.replaceAll('$ESC', 'ESC')}',close:'${_close.replaceAll('$ESC', 'ESC')}')";
+        "[$level] Chalk(open:'${_open.replaceAll(ESC, 'ESC')}',close:'${_close.replaceAll(ESC, 'ESC')}')";
     if (level == 0) {
       thisOne +=
-          "[$level] ALL Chalk(open:'${_openAll.replaceAll('$ESC', 'ESC')}',close:'${_closeAll.replaceAll('$ESC', 'ESC')}')";
+          "[$level] ALL Chalk(open:'${_openAll.replaceAll(ESC, 'ESC')}',close:'${_closeAll.replaceAll(ESC, 'ESC')}')";
     }
     String parentStr = '';
     if (_parent != null) {
