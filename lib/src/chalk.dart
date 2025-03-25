@@ -1,6 +1,8 @@
 // Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
+// ignore_for_file: dead_code
+
 import 'dart:io';
 import 'dart:convert';
 import 'package:html_character_entities/html_character_entities.dart';
@@ -1310,7 +1312,6 @@ class Chalk {
   /// If there are < or > characters present in the string [htmlSafeGtLt] should
   /// be called before any styling is applied and before this method.
   static String htmlSafeSpaces(String htmlString) {
-    return htmlString;
     List<Match> tagMatches = _htmlTagRegex.allMatches(htmlString).toList();
 
     String result = '';
