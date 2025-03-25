@@ -73,9 +73,6 @@ Check out `example/chalkdart_string_example.dart` for some cool examples of what
 
 If you have used the Chalk.js package within the npm/node.js environment you know how nice and easy it makes text coloring and styling! This ChalkDart version can be used essentially exactly as the js version.
 
-> Minor breaking change for ChalkDart 3.x - The method `makeRGBChalk()`, which was intended to be an internal method, has been changed to `_makeRGBChalk`.  Any calls
-to this method can be replaced with `rgb()` or `rgb16m()` which are the intended way to create rgb Chalks.
-
 ## Full Api Dart Docs can be found [here](https://timmaffett.github.io/chalkdart_docs/index.html)
 
 [ChalkDart API Documentation](https://timmaffett.github.io/chalkdart_docs/index.html)

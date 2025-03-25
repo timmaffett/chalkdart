@@ -1,5 +1,9 @@
 # ChalkDart Change Log
 
+## 3.0.3
+
+- Remove error from README about makeRGBChalk()
+
 ## 3.0.2
 
 - Remove html_character_entities dependency and add that code locally

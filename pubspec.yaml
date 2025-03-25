@@ -3,7 +3,7 @@ description: Console/Logging text coloring and styling library for Dart. 'Termin
              The default mode uses ANSI codes to style the text for Console/Terminal display.
              HTML mode can be activated so that all text is colored and styled using HTML so ChalkDart
              can be use for sending colored/styled logs to the Server for viewing from a browser as well.
-version: 3.0.2
+version: 3.0.3
 homepage: https://github.com/timmaffett/chalkdart
 screenshots:
   - description: 'vscode debug terminal example'
