@@ -15,14 +15,14 @@ class AnsiUtils {
         ESC = safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
       } else {
         // Switch back to DIRECT ascii ESC output
-        ESC = '\\u001B';
+        ESC = '\\x1B';
       }
       _resetPatternToCurrentESC();
     }
   }
 
   // ignore: non_constant_identifier_names
-  static String ESC = '\\u001B';
+  static String ESC = '\\x1B';
 
   static void _resetPatternToCurrentESC() {
       pattern = [

@@ -1,5 +1,9 @@
 # ChalkDart Change Log
 
+## 3.0.5
+
+- Change to \x1B instead of \u001B for shorter strings and slightly faster parsing
+
 ## 3.0.4
 
 - Add TLDR summary to readme

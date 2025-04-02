@@ -485,7 +485,7 @@ supporting full level 3 (24 bit) ANSI codes.
 
 ## XCode Support on OSX
 
-Full ANSI coloring/styling support is finally available when debugging or running within XCode via VSCode.  XCode has always corrupted and truncated all messages that contained escape sequences (including valid ANSI ones), making colored logging from XCode impossible.  I have surmounted this while running within XCode by encoding all ASCII 27 (\\u001B) ESC characters as `[^ESC}` and adding my ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging) to VSCode to translate these back so that the ANSI escape sequence can be properly interpreted by VSCode.
+Full ANSI coloring/styling support is finally available when debugging or running within XCode via VSCode.  XCode has always corrupted and truncated all messages that contained escape sequences (including valid ANSI ones), making colored logging from XCode impossible.  I have surmounted this while running within XCode by encoding all ASCII 27 (\\x1B) ESC characters as `[^ESC}` and adding my ["XCode Flutter Color Debugging" VSCode extension](https://marketplace.visualstudio.com/items?itemName=HiveRight.xcodefluttercolordebugging) to VSCode to translate these back so that the ANSI escape sequence can be properly interpreted by VSCode.
 
 The only additional code that needs to be added is setting `Chalk.xcodeSafeEsc=true` to activate the XCode safe ESC mode within the ChalkDart package.
 

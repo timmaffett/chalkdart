@@ -140,7 +140,7 @@ class Chalk {
   /// Use:   Chalk.setXCodeSafeEscDefault = true;
   /// This requires the use of my XCode Flutter Color Debugging extension in VSCode to
   /// automatically convert the XCode safe ESC string `[^ESC]` back to the
-  /// ASCII ESC character 27 (\u001B) in all flutter/dart `print()`/`debugPrint()`
+  /// ASCII ESC character 27 (\x1B) in all flutter/dart `print()`/`debugPrint()`
   /// statements to the debug console.  The proper ANSI escape sequences will then be present
   /// for the VSCode debug console to display the proper output.
   /// (This is required because XCode filters all use of actual ascii ESC characters and also
@@ -151,7 +151,7 @@ class Chalk {
         if( activate ) {
           ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
         } else {
-          ESC = '\u001B';
+          ESC = '\x1B';
         }
         _xcodeSafeEscDefaultForNewChalks = activate;
       }
@@ -210,7 +210,7 @@ class Chalk {
         if( activate ) {
           ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
         } else {
-          ESC = '\u001B';
+          ESC = '\x1B';
         }
         _instanceSpecificXCodeSafeEsc = activate;
         _resetAnsiCloseStringsToCurrentESC();
@@ -221,7 +221,7 @@ class Chalk {
 
   // String representing the ASCII ESC character 27.  This can change if xcodeSafeEsc(true) is set. 
   // ignore: non_constant_identifier_names
-  static String ESC = '\u001B';
+  static String ESC = '\x1B';
 
   /// Use full resets to close attributes (reset all attributes with SGR 0) ON EACH call to Chalk()
   /// (Not usually desired, this will reset all attributes, but some terminals, like VSCode,

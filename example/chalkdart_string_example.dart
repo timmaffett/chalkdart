@@ -1,7 +1,10 @@
 import 'package:chalkdart/chalkstrings.dart';
 import 'package:chalkdart/chalkstrings_x11.dart';
+import 'dart:developer' as developer;
 
 void main() {
+  developer.log( 'This is a test');
+
   print("            Chalk'Dart example program           "
       .cornflowerBlue
       .onBisque);
