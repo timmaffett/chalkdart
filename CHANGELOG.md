@@ -1,5 +1,13 @@
 # ChalkDart Change Log
 
+## 3.0.6
+
+- Added xterm() method as alternate way of creating ANSI/Xterm colors (instead of using ansi() or onAnsi())
+- Added export of src/chalk_x11.g.dart to package:chalkdart/chalkstrings.dart so that color extensions are available
+  for chalk as well as the string extensions.
+- Added [AnsiStringUtils] String extension to ansiutil.dart for with [lengthWithoutAnsi] and [stripAnsi] getters so
+  the length of a string *not including* hidden ansi codes can be calculated, or the codes can be removed.
+
 ## 3.0.5
 
 - Change to \x1B instead of \u001B for shorter strings and slightly faster parsing

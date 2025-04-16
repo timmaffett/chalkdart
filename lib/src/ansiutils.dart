@@ -100,3 +100,16 @@ class AnsiUtils {
   }
   */
 }
+
+/// A utility extension on [String] to provide ANSI code stripping and length
+/// calculation without ANSI codes.
+extension AnsiStringUtils on String {
+  /// Returns the length of the string without ANSI codes.
+  int get lengthWithoutAnsi {
+    if (!AnsiUtils.hasAnsi(this)) return length;
+    return AnsiUtils.stripAnsi(this).length;
+  }
+
+  /// Returns the string with ANSI codes stripped.
+  String get stripAnsi => AnsiUtils.stripAnsi(this);
+}

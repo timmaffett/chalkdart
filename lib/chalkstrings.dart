@@ -9,6 +9,10 @@ import 'src/supports_ansi.dart'
 import 'src/chalk.dart';
 export 'src/chalk.dart';
 
+// Add all of the standard SVG/CSS/X11 colors to chalkdart
+import 'src/chalk_x11.g.dart';
+export 'src/chalk_x11.g.dart';
+
 // String extensions allowing using chalk methods directly on String's
 export 'src/chalkstrings.dart';
 export 'src/chalkstrings_x11.g.dart';

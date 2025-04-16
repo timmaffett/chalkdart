@@ -334,6 +334,14 @@ class Chalk {
   ChalkHTMLStyleInfo? _htmlStyleInfo;
   ChalkHTMLStyleInfo? _htmlStyleInfoWithParents;
 
+  // compare all that matters
+  @override
+  bool operator ==(other) => other is Chalk && (other._openAll == _openAll) && (other._closeAll == _closeAll) && (other._open == _open) && (other._close == _close);
+
+  /// hashCode is used for comparing instances of Chalk, so we need to make sure that it has the things that matter
+  @override
+  int get hashCode => Object.hashAll([_open,_openAll,_close,_closeAll]);
+
   /// ANSI Color level support for this chalk instance - this will effect what colors
   /// this chalk instance can use.
   int level = Chalk.ansiColorLevelForNewInstances;
@@ -750,6 +758,17 @@ class Chalk {
   /// the ansi color escape code.
   /// https://en.wikipedia.org/wiki/ANSI_escape_code
   Chalk ansi(int ansicode) => _makeAnsiChalk(ansicode);
+
+  /// Creates chalk with the color specified by
+  /// the ansi color escape code.  If the bg argument is true,
+  /// the background color will be set to the ansi color, otherwise
+  /// the foreground color will be set.
+  /// - Setting the second argument to false is the same as calling ansi()
+  /// to set the foreground color.
+  /// - Setting the second argument to true is the same as calling onAnsi()
+  /// to set the background color.
+  /// https://en.wikipedia.org/wiki/ANSI_escape_code
+  Chalk xterm(int ansicode, [ bool bg=false]) => _makeAnsiChalk(ansicode, bg);
 
   /// Creates chalk with the background color specified by
   /// the ansi color escape code.

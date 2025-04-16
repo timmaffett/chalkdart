@@ -554,7 +554,7 @@ Note dart determines VSCode debug console and Android Studio debug console do no
 If you need to change this in a reusable module, create a new instance:
 
 ```dart
-// using contructor
+// using constructor
 var chalkWithLevel0 = Chalk(level: 0);
 // Using the instance accomplishes the same thing
 var chalkWithLevel0 = Chalk.instance(level: 0);
