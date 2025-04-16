@@ -10,6 +10,7 @@ import 'src/chalk.dart';
 export 'src/chalk.dart';
 
 // Add all of the standard SVG/CSS/X11 colors to chalkdart
+// ignore: unused_import
 import 'src/chalk_x11.g.dart';
 export 'src/chalk_x11.g.dart';
 
