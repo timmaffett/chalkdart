@@ -24,3 +24,6 @@ build/
 htmldocs/
 reference/
 remakeDocs.bat
+
+# vscode settings
+.vscode/

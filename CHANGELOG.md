@@ -1,5 +1,12 @@
 # ChalkDart Change Log
 
+## 3.0.6
+
+- setDefaultOutputMode now re-initializes the chalkstrings also
+- Move args package dependency to dev-dependencies
+- clean up dart analyze messages
+- expand dart test from 7 to 493
+
 ## 3.0.5
 
 - Added xterm() method as alternate way of creating ANSI/Xterm colors (instead of using ansi() or onAnsi())

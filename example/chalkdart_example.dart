@@ -1,6 +1,7 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:io' show Platform;
 import 'package:chalkdart/chalkstrings.dart';
-import 'package:chalkdart/chalk_x11.dart';
 import 'chalkdart_charts.dart'; // for making color charts for example
 
 bool htmlModeRequested = false;

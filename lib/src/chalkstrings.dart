@@ -9,7 +9,12 @@ import 'chalk.dart';
 ///    'This will be red on yellow background'.red.onYellow
 ///
 extension ChalkString on String {
-  static final Chalk _chalk = Chalk();
+  static Chalk _chalk = Chalk();
+
+  // Reinitialize the chalk instance. This is useful if you want to change the output mode to html
+  static void reInitializeChalkStringExtensionChalkInstance() {
+    _chalk =  Chalk();
+  }
 
   /// Set foreground base 16 xterm colors black
   /// (terminal dependent) ![linen](data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%3E%3Crect%20width='32'%20height='32'%20fill='rgb%280,0,0%29'%20stroke='black'%20stroke-width='2'/%3E%3C/svg%3E|width=32,height=32)
@@ -622,4 +627,10 @@ extension ChalkString on String {
   /// Wrap this chalk with specified prefix and suffix strings.
   String wrap(String prefix, String suffix) =>
       (_chalk.wrap(prefix, suffix))(this);
+}
+
+
+ // Reinitialize the chalk instance. Called when changing the default output mode
+void reInitializeChalkStringExtensionChalkInstance() {
+  ChalkString.reInitializeChalkStringExtensionChalkInstance();
 }

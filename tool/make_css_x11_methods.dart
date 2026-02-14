@@ -144,7 +144,7 @@ extension ChalkX11 on Chalk {''');
         hexColorValue.toRadixString(16).padLeft(6, '0').toUpperCase();
     String entryPoint = colorKeyword;
     String onEntryPoint =
-        'on' + colorKeyword[0].toUpperCase() + colorKeyword.substring(1);
+        'on${colorKeyword[0].toUpperCase()}${colorKeyword.substring(1)}';
 
     String cssColorCode = colorKeyword.toLowerCase();
     String colorSource = 'X11/CSS';
@@ -217,7 +217,7 @@ extension ChalkX11Strings on String {
         hexColorValue.toRadixString(16).padLeft(6, '0').toUpperCase();
     String entryPoint = colorKeyword;
     String onEntryPoint =
-        'on' + colorKeyword[0].toUpperCase() + colorKeyword.substring(1);
+        'on${colorKeyword[0].toUpperCase()}${colorKeyword.substring(1)}';
 
     String cssColorCode = colorKeyword.toLowerCase();
     String colorSource = 'X11/CSS';
@@ -610,7 +610,7 @@ var sorter = [];
         //String textColor = 'black';
         String backgroundColorCmd = '';
         String onEntryPoint =
-            'on' + colorKeyword[0].toUpperCase() + colorKeyword.substring(1);
+            'on${colorKeyword[0].toUpperCase()}${colorKeyword.substring(1)}';
         if (entry < numX11s) {
           hex = colorKeywords[keyColorKeyword]!;
           colorCode = getCSSColorCode(colorKeyword, hex, builtIn: builtInColor);

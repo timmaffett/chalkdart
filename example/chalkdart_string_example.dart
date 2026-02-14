@@ -1,5 +1,6 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:chalkdart/chalkstrings.dart';
-import 'package:chalkdart/chalkstrings_x11.dart';
 import 'dart:developer' as developer;
 
 void main() {
@@ -50,7 +51,7 @@ void main() {
       .onGrey);
 
   // make a chalk that will join wrap print with newline
-  var chalkNL = chalk.wrap('\n', '');
+  //var chalkNL = chalk.wrap('\n', '');
 
   print('Testing Chalk`Dart!!!  onGreenBright.redBright.strikethrough'
       .onBrightGreen
@@ -201,17 +202,17 @@ void main() {
   // Combine styled and normal strings
   print('Hello BLUE font 1'.reset.blue + ' World' + '! font 3 RED'.reset.red);
 
-  print(("FONT 1  " + fontTestString + '\n').reset.font1.white);
+  print(('FONT 1  $fontTestString\n').reset.font1.white);
 
-  print(("FONT 2  " + fontTestString + '\n').reset.font2.white);
+  print(('FONT 2  $fontTestString\n').reset.font2.white);
 
-  print(("FONT 3  " + fontTestString + '\n').reset.font3.white);
+  print(('FONT 3  $fontTestString\n').reset.font3.white);
 
-  print(("FONT 4  " + fontTestString + '\n').reset.font4.white);
+  print(('FONT 4  $fontTestString\n').reset.font4.white);
 
-  print(("FONT 5  " + fontTestString + '\n').reset.font5.white);
+  print(('FONT 5  $fontTestString\n').reset.font5.white);
 
-  print(("FONT 6  " + fontTestString + '\n').reset.font6.white);
+  print(('"FONT 6  $fontTestString\n').reset.font6.white);
 
   print("  Cascadia Code Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"
       .reset
@@ -224,15 +225,15 @@ void main() {
       .font7
       .white);
 
-  print(("FONT 8  " + fontTestString + '\n').reset.font8.white);
+  print(('FONT 8  $fontTestString\n').reset.font8.white);
 
-  print(("FONT 9  " + fontTestString + '\n').reset.font9.white);
+  print(('FONT 9  $fontTestString\n').reset.font9.white);
   print("  JetBrains Ligatures  <> |=> ++ -> <!-- ~~> ->> /= <= ### |>"
       .reset
       .font9
       .blue);
 
-  print(("FONT 10  -extra wide font - no ligatures " + fontTestString)
+  print(("FONT 10  -extra wide font - no ligatures $fontTestString")
       .reset
       .font10
       .white);

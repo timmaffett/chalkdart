@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unnecessary_string_interpolations, no_leading_underscores_for_local_identifiers
 
 import 'dart:math';
 import 'package:chalkdart/chalkstrings.dart';
@@ -150,7 +150,7 @@ class ChalkDartCharts {
     t4 = dumpHWBTable(t4, 'Magenta-Reds', 330);
 
     for (var i = 0; i < t1.length; i++) {
-      out.add(t1[i] + ' ' + t2[i] + ' ' + t3[i] + ' ' + t4[i]);
+      out.add("${t1[i]} ${t2[i]} ${t3[i]} ${t4[i]}");
     }
 
     Chalk.useFullResetToClose = false;
@@ -171,11 +171,11 @@ class ChalkDartCharts {
         if (w == 0) {
           if (b == 0) hb.write(chalk.black.onWhite(r'W \ B'));
           hb.write(chalk.black
-              .onWhite(_padWithSpace((b * 100).toStringAsFixed(0) + '% ', 5)));
+              .onWhite(_padWithSpace('{(b * 100).toStringAsFixed(0)}% ', 5)));
         }
         if (b == 0) {
           sb.write(chalk.black
-              .onWhite(_padWithSpace((w).toStringAsFixed(0) + '% ', 5)));
+              .onWhite(_padWithSpace('${(w).toStringAsFixed(0)}% ', 5)));
         }
         sb.write(chalk.onHwb(hue, w * 100, b * 100)('     '));
       }
@@ -223,7 +223,7 @@ class ChalkDartCharts {
     t4 = dumpHSLTable(t4, 'Cyan-Green', 150, true);
 
     for (var i = 0; i < t1.length; i++) {
-      out.add(t1[i] + t2[i] + ' ' + t3[i] + t4[i]);
+      out.add('${t1[i]}${t2[i]} ${t3[i]}${t4[i]}');
     }
 
     final len = chalk.strip(out[0]).length;
@@ -335,7 +335,7 @@ class ChalkDartCharts {
     t4 = dumpHSVTable(t4, '', curHue, true);
     curHue += hueStep;
     for (var i = 0; i < t1.length; i++) {
-      out.add(t1[i] + t2[i] + ' ' + t3[i] + t4[i]);
+      out.add('${t1[i]}${t2[i]} ${t3[i]}${t4[i]}');
     }
 
     final len = chalk.strip(out[0]).length;
@@ -381,7 +381,7 @@ class ChalkDartCharts {
     t4 = dumpHSVTable(t4, 'Cyan-Green', 150, true);
 
     for (var i = 0; i < t1.length; i++) {
-      out.add(t1[i] + t2[i] + ' ' + t3[i] + t4[i]);
+      out.add('${t1[i]}${t2[i]} ${t3[i]}${t4[i]}');
     }
 
     final len = chalk.strip(out[0]).length;

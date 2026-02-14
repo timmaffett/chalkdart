@@ -10,6 +10,8 @@ import 'ansiutils.dart';
 import 'colorutils.dart';
 import 'chalk_html.dart';
 
+import 'chalkstrings.dart' hide ChalkString;
+
 // ignore: constant_identifier_names
 const DUMP_HTML_INFO_OBJECTS = false;  // leave this in for now
 
@@ -173,6 +175,12 @@ class Chalk {
   /// without having to alter the existing code in any other place.
   static set setDefaultOutputMode( ChalkOutputMode defaultModeForNewChalks ) {
     _defaultOutputModeForNewChalks = defaultModeForNewChalks;
+    try {
+      reInitializeChalkStringExtensionChalkInstance();
+    } catch (e) {
+      // This will throw an error if the chalk string extension has not been used yet, but that is ok,
+      // it just means we don't have to re-initialize the chalk instance used for that extension yet.
+    }
   }
 
   // Returns the default XCode safe ESC sequence mode for NEW chalk instances 
@@ -1386,6 +1394,18 @@ class Chalk {
   ///  [font1] - [font10] - Allows setting the specific css font-family list to use for the corresponding font.
   ///                       (See output of stylesheet() to check what the default font-family lists are)
   String stylesheet({
+                ChalkAnsiColorSet? colorSetToUse,
+                String? whiteSpaceTreatment,
+                String? foregroundColor, String? backgroundColor,
+                String? font1, String? font2, String? font3, String? font4, String? font5,
+                String? font6, String? font7, String? font8, String? font9, String? font10
+              }) => ChalkHTML.getHTMLStyleSheetIncludingColors(htmlBasicANSIColorSet:colorSetToUse ?? defaultHtmlBasicANSIColorSet,
+                                                    whiteSpaceTreatment:whiteSpaceTreatment,
+                                                    foregroundColor:foregroundColor,backgroundColor:backgroundColor,
+                                                    font1:font1, font2:font2, font3:font3, font4:font4, font5:font5,
+                                                    font6:font6, font7:font7, font8:font8, font9:font9, font10:font10
+              );
+  String styleSheet({
                 ChalkAnsiColorSet? colorSetToUse,
                 String? whiteSpaceTreatment,
                 String? foregroundColor, String? backgroundColor,
