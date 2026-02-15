@@ -1,5 +1,19 @@
 # ChalkDart Change Log
 
+## 3.1.0
+
+- Performance optimization release — significant speed improvements across all major code paths.
+- String Extension Getters — 7-10x faster (base16 and X11/CSS colors)
+- X11/CSS String Extension Getters — 3-4x faster via list-based cache
+- Chalk Getter Chains — 4-6x faster
+- ANSI SGR Code Generation — cached
+- Multi-line Text Processing — 4-6x faster
+- Hex Color Parsing — 13x faster
+- Added `PERF_RECOMMENDATIONS_AND_IMPROVEMENTS.md` with practical performance
+  guidance for library users
+- Added comprehensive performance benchmark suite under `test/perf_*.dart`
+- Expanded test coverage from 493 to 515 tests
+
 ## 3.0.6
 
 - setDefaultOutputMode now re-initializes the chalkstrings also

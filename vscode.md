@@ -41,4 +41,4 @@ Add these to VSCode settings.json, after enabling the "Customize UI" extension:
 
 ##Example screengrab from VSCode Debug Console
  
-<img src="media/AFontsTestVSCode.png" width="100%">
+<img src="media/AFontsTestVSCode.jpg" width="100%">

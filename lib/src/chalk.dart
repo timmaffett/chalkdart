@@ -240,6 +240,19 @@ class Chalk {
   static bool useFullResetToClose = false;
 
 
+  // Cache for ANSI SGR open/close strings to avoid repeated string interpolation.
+  // Invalidated when ESC changes (iOS xcodeSafeEsc mode).
+  static String _sgrCacheESC = ESC;
+  static final List<String?> _sgrCache = List.filled(108, null);
+
+  static String _cachedSGR(int code) {
+    if (_sgrCacheESC != ESC) {
+      _sgrCache.fillRange(0, _sgrCache.length, null);
+      _sgrCacheESC = ESC;
+    }
+    return _sgrCache[code] ??= '$ESC[${code}m';
+  }
+
   String _ansiSGRModiferOpen(dynamic code) {
     if(_htmlOutputModeForThisChalk) {
       _htmlStyleInfo = ChalkHTML.getHTMLStyleFromANSICode( [ code ] );
@@ -248,7 +261,7 @@ class Chalk {
 
       return ChalkHTML.makeHTMLSpanFromInfo(_htmlStyleInfo!);
     } else {
-      return '$ESC[${code}m';
+      return (code is int && code >= 0 && code < 108) ? _cachedSGR(code) : '$ESC[${code}m';
     }
   }
 
@@ -259,7 +272,7 @@ class Chalk {
 
     } else {
       if (useFullResetToClose) code = 0;
-      return '$ESC[${code}m';
+      return (code is int && code >= 0 && code < 108) ? _cachedSGR(code) : '$ESC[${code}m';
     }
   }
 
@@ -423,7 +436,7 @@ class Chalk {
   /// private internal Chalk() constructor
   Chalk._internal(Chalk? parent, {bool hasStyle = true, ChalkOutputMode? outputMode}) {
     outputMode ??= _defaultOutputModeForNewChalks;
-    // WE ONLY LOOK AT THE outputMode WHEN we are creating a TOP LEVEL parent - otherwise this is ALWAYS 
+    // WE ONLY LOOK AT THE outputMode WHEN we are creating a TOP LEVEL parent - otherwise this is ALWAYS
     // THE SAME AS IT'S PARENT
     if(parent==null) {
       _htmlOutputModeForThisChalk = (outputMode == ChalkOutputMode.html);
@@ -432,24 +445,39 @@ class Chalk {
       level = parent.level; // inherit level from parent
       _joinString = parent._joinString;
       _htmlOutputModeForThisChalk = parent._htmlOutputModeForThisChalk;
+      // Inherit pre-computed wrapper functions and close strings from parent
+      // instead of recreating 6 closures on every child chalk construction
+      _ansi256 = parent._ansi256;
+      _ansi16m = parent._ansi16m;
+      _bgAnsi256 = parent._bgAnsi256;
+      _bgAnsi16m = parent._bgAnsi16m;
+      _underlineAnsi256 = parent._underlineAnsi256;
+      _underlineAnsi16m = parent._underlineAnsi16m;
+      _ansiCloseModeBaseValue = parent._ansiCloseModeBaseValue;
+      _ansiBgCloseModeBaseValue = parent._ansiBgCloseModeBaseValue;
+      _ansiUnderlineCloseModeBaseValue = parent._ansiUnderlineCloseModeBaseValue;
     }
     _hasStyle = hasStyle;
 
-    if(_htmlOutputModeForThisChalk) {
-        _resetEverythingForHTMLOutput();
-    } else {
-      if(Platform.isIOS && _xcodeSafeEscDefaultForNewChalks) {
-        if(_xcodeSafeEscDefaultForNewChalks) {
-          ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
-          xcodeSafeEsc = true;
-          _resetAnsiCloseStringsToCurrentESC();
-        }
+    // Only run full mode initialization for root chalks (no parent).
+    // Child chalks inherit everything they need from their parent above.
+    if(parent==null) {
+      if(_htmlOutputModeForThisChalk) {
+          _resetEverythingForHTMLOutput();
       } else {
-        xcodeSafeEsc = false;
+        if(Platform.isIOS && _xcodeSafeEscDefaultForNewChalks) {
+          if(_xcodeSafeEscDefaultForNewChalks) {
+            ESC = AnsiUtils.safeESCStringForIOSThatMyXCodeFlutterColorDebuggingWillConvertBackToESC;
+            xcodeSafeEsc = true;
+            _resetAnsiCloseStringsToCurrentESC();
+          }
+        } else {
+          xcodeSafeEsc = false;
+        }
       }
-    }
 
-    _setAllWrapperFunctionsAccordingToMode();
+      _setAllWrapperFunctionsAccordingToMode();
+    }
   }
 
   Chalk _createStyler(String open, String close, [Chalk? parent]) {
@@ -1625,15 +1653,17 @@ class _StringUtils {
 
     int substringLength = substring.length;
     int endIndex = 0;
-    String returnValue = '';
+    final buf = StringBuffer();
     do {
-      returnValue += string.substring(endIndex, index) + substring + replacer;
+      buf.write(string.substring(endIndex, index));
+      buf.write(substring);
+      buf.write(replacer);
       endIndex = index + substringLength;
       index = string.indexOf(substring, endIndex);
     } while (index != -1);
 
-    returnValue += string.substring(endIndex);
-    return returnValue;
+    buf.write(string.substring(endIndex));
+    return buf.toString();
   }
 
   // This funciton is used to ensure that we close the styling ON EACH LINE using the approriate ANSI CLOSE codes and
@@ -1649,18 +1679,18 @@ class _StringUtils {
   static String stringEncaseCRLFWithFirstIndex(
       String string, String prefix, String postfix, int index) {
     int endIndex = 0;
-    String returnValue = '';
+    final buf = StringBuffer();
     do {
       bool gotCR = (index >= 1) && (string[index - 1] == '\r');
-      returnValue += string.substring(endIndex, (gotCR ? index - 1 : index)) +
-          prefix +
-          (gotCR ? '\r\n' : '\n') +
-          postfix;
+      buf.write(string.substring(endIndex, (gotCR ? index - 1 : index)));
+      buf.write(prefix);
+      buf.write(gotCR ? '\r\n' : '\n');
+      buf.write(postfix);
       endIndex = index + 1;
       index = string.indexOf('\n', endIndex);
     } while (index != -1);
 
-    returnValue += string.substring(endIndex);
-    return returnValue;
+    buf.write(string.substring(endIndex));
+    return buf.toString();
   }
 }

@@ -24,21 +24,51 @@ class AnsiUtils {
   // ignore: non_constant_identifier_names
   static String ESC = '\\x1B';
 
+  /// Matches ANSI escape sequences: both CSI and OSC forms.
+  ///
+  /// CSI (Control Sequence Introducer) — based on ECMA-48:
+  /// \x1b           : The literal ESC character (ASCII 27).
+  /// \[             : The literal '[' character (together with ESC, this forms the CSI).
+  /// [\x30-\x3f]*   : Parameter Bytes (0-9:;<=>?).
+  /// [\x20-\x2f]*   : Intermediate Bytes ( !"#$%&'()*+,-./).
+  /// [\x40-\x7e]    : Final Byte (@A-Z[\]^_`a-z{|}~).
+  ///   Examples: \x1b[31m (red), \x1b[1m (bold), \x1b[0m (reset)
+  ///
+  /// OSC (Operating System Command) — used for hyperlinks, window titles, etc.:
+  /// \x1b           : The literal ESC character (ASCII 27).
+  /// \]             : The literal ']' character (together with ESC, this forms the OSC).
+  /// [^\x07]*       : Any payload characters until the terminator.
+  /// \x07           : BEL character — the OSC string terminator.
+  ///   Examples: \x1b]8;;https://example.com\x07 (hyperlink open)
+  ///             \x1b]8;;\x07 (hyperlink close)
+  ///
+  ///   REGEX = r'\x1b(?:\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]|\][^\x07]*\x07)'
   static void _resetPatternToCurrentESC() {
-      pattern = [
-                  '[$ESC\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
-                  '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
-                ].join('|');
+      if( ESC == '\\x1B') {
+        pattern = r'\x1b(?:\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]|\][^\x07]*\x07)';
+      } else {
+        pattern = ESC + r'(?:\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]|\][^\x07]*\x07)';
+      }
+      ansiRegex = RegExp(pattern);
+      //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//pattern = [
+      //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//            '[$ESC\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+      //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//            '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
+      //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//          ].join('|');
   }
-  static String pattern = [
-    '[$ESC\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
-    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
-  ].join('|');
 
-  static final RegExp ansiRegex = RegExp(pattern);
+  //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//static String pattern = [
+  //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//  '[$ESC\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+  //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//  '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
+  //OLD CODE WITH OVERLY COMPLEX REGEX PATTERN//].join('|');
+  static String pattern = r'\x1b(?:\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]|\][^\x07]*\x07)';
+
+  static RegExp ansiRegex = RegExp(pattern);
 
   static String stripAnsi(String source) {
+    if(hasAnsi(source)) {
     return source.replaceAll(ansiRegex, '');
+    }
+    return source;
   }
 
   static bool hasAnsi(String source) {

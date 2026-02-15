@@ -108,7 +108,7 @@ List<String> dumpColorMethods() {
   List<String> out = [];
 
   out.add(
-      '''// Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
+      '''// Copyright (c) 2020-2026, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -188,8 +188,15 @@ extension ChalkX11 on Chalk {''');
 List<String> dumpStringExtensionColorMethods() {
   List<String> out = [];
 
+  // Count non-@ colors to determine cache size (2 entries per color: fg + bg)
+  final keyList = colorKeywords.keys.toList();
+  int cacheSize = 0;
+  for (final key in keyList) {
+    if (!key.startsWith('@')) cacheSize += 2;
+  }
+
   out.add(
-      '''// Copyright (c) 2020-2025, tim maffett.  Please see the AUTHORS file
+      '''// Copyright (c) 2020-2026, tim maffett.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -203,8 +210,14 @@ import 'chalk_x11.g.dart';
 /// standard X11/CSS/SVG color names for use by Chalk.
 extension ChalkX11Strings on String {
   static final Chalk _chalk = Chalk();
+  static final List<Chalk?> _cache = List<Chalk?>.filled($cacheSize, null);
+
+  /// Reset all cached Chalk instances (called when output mode changes).
+  static void resetCache() {
+    _cache.fillRange(0, _cache.length, null);
+  }
 ''');
-  final keyList = colorKeywords.keys.toList();
+  int cacheIdx = 0;
   for (int i = 0; i < keyList.length; i++) {
     final colorKeyword = keyList[i];
     final hexColorValue = colorKeywords[colorKeyword] ?? 0;
@@ -238,19 +251,22 @@ extension ChalkX11Strings on String {
 
     outWithIndent(out,
         "/// set foreground color to $colorSource color $colorKeyword $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
-    outWithIndent(out, 'String get $entryPoint => _chalk.$entryPoint(this);');
+    outWithIndent(out,
+        'String get $entryPoint => (_cache[$cacheIdx] ??= _chalk.$entryPoint)(this);');
+    cacheIdx++;
     outWithIndent(out, '');
     outWithIndent(out,
         "/// set background color to $colorSource color $colorKeyword $inlineSvgCode$inlineSpanCode (0x$colorHexStr)/rgb($red, $green, $blue)");
-    outWithIndent(
-        out, 'String get $onEntryPoint => _chalk.$onEntryPoint(this);');
+    outWithIndent(out,
+        'String get $onEntryPoint => (_cache[$cacheIdx] ??= _chalk.$onEntryPoint)(this);');
+    cacheIdx++;
     if (i < (keyList.length - 1)) outWithIndent(out, '');
   }
   out.add('}');
 
   out.add('');
   out.add(
-      '''// END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /examples/makeX11EntryPoints.dart
+      '''// END GENERATED CODE - DO NOT MODIFY BY HAND - generating code => /tool/makeX11EntryPoints.dart
 ''');
 
   return out;

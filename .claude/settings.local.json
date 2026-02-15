@@ -3,7 +3,9 @@
     "allow": [
       "Bash(wc:*)",
       "Bash(dart test --help:*)",
-      "Bash(dart test:*)"
+      "Bash(dart test:*)",
+      "Bash(dart analyze:*)",
+      "Bash(dart run:*)"
     ]
   }
 }

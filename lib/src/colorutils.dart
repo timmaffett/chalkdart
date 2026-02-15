@@ -366,38 +366,52 @@ class ColorUtils {
     return [h.round(), (s * 100).round(), (l * 100).round()];
   }
 
-  // This handles any incoming types and trys to get a hex string out of it..
-  // (quick attempt to do equivalent of js code) this goes the 'long' way..
+  /// Convert a hex digit character code to its value (0-15), or -1 if invalid.
+  static int _hexVal(int c) {
+    if (c >= 0x30 && c <= 0x39) return c - 0x30;       // '0'-'9'
+    if (c >= 0x41 && c <= 0x46) return c - 0x41 + 10;   // 'A'-'F'
+    if (c >= 0x61 && c <= 0x66) return c - 0x61 + 10;   // 'a'-'f'
+    return -1;
+  }
+
+  // Parses hex color values from ints or strings.
+  // Accepts: 0xRRGGBB, '#RRGGBB', '#RGB', 'RRGGBB', 'RGB'
   static List<num> hex2rgb(dynamic arg) {
-    if (arg is num || arg is int) {
+    if (arg is int) {
+      return [(arg >> 16) & 0xFF, (arg >> 8) & 0xFF, arg & 0xFF];
+    }
+    if (arg is num) {
       int intval = arg.floor();
-      num r = (intval >> 16) & 0xFF;
-      num g = (intval >> 8) & 0xFF;
-      num b = intval & 0xFF;
-
-      return [r, g, b];
+      return [(intval >> 16) & 0xFF, (intval >> 8) & 0xFF, intval & 0xFF];
     }
-    var str = arg.toString();
-    var hexstuff = RegExp('[a-f0-9]{6}|[a-f0-9]{3}', caseSensitive: false);
-    var match = hexstuff.firstMatch(str);
-    if (match == null) {
-      return [0, 0, 0];
+    final str = arg.toString();
+    final len = str.length;
+    // Skip '#' prefix if present
+    final start = (len > 0 && str.codeUnitAt(0) == 0x23) ? 1 : 0;
+    final hexLen = len - start;
+
+    if (hexLen == 6) {
+      final r1 = _hexVal(str.codeUnitAt(start));
+      final r2 = _hexVal(str.codeUnitAt(start + 1));
+      final g1 = _hexVal(str.codeUnitAt(start + 2));
+      final g2 = _hexVal(str.codeUnitAt(start + 3));
+      final b1 = _hexVal(str.codeUnitAt(start + 4));
+      final b2 = _hexVal(str.codeUnitAt(start + 5));
+      if (r1 < 0 || r2 < 0 || g1 < 0 || g2 < 0 || b1 < 0 || b2 < 0) {
+        return [0, 0, 0];
+      }
+      return [(r1 << 4) | r2, (g1 << 4) | g2, (b1 << 4) | b2];
     }
 
-    var colorString = match[0]!;
-
-    if (colorString.length == 3) {
-      colorString = colorString.split('').map((ch) {
-        return ch + ch;
-      }).join('');
+    if (hexLen == 3) {
+      final r = _hexVal(str.codeUnitAt(start));
+      final g = _hexVal(str.codeUnitAt(start + 1));
+      final b = _hexVal(str.codeUnitAt(start + 2));
+      if (r < 0 || g < 0 || b < 0) return [0, 0, 0];
+      return [(r << 4) | r, (g << 4) | g, (b << 4) | b];
     }
-    int intval = int.parse(colorString, radix: 16);
 
-    num r = (intval >> 16) & 0xFF;
-    num g = (intval >> 8) & 0xFF;
-    num b = intval & 0xFF;
-
-    return [r, g, b];
+    return [0, 0, 0];
   }
 
   /// Add RGB color to the colorKeywords[] map that is used for dynamic lookup of colors by name.

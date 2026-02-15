@@ -2,3 +2,7 @@
 reference/
 doc/
 htmldocs/
+media/*.ai
+media/*.psd
+media/ChalkDartHuge.png
+media/AFontsTestVSCodeHuge.png
