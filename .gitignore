@@ -25,3 +25,6 @@ htmldocs/
 reference/
 remakeDocs.bat
 
+# Claude Code
+CLAUDE.md
+.claude/
