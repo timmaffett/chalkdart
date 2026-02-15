@@ -2,6 +2,7 @@
 reference/
 doc/
 htmldocs/
+test/
 media/*.ai
 media/*.psd
 media/ChalkDartHuge.png
