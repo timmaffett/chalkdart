@@ -32,6 +32,12 @@ print('Hello ${'beautiful'.blue.onGreen.bold} world!'.yellow.onBlue);
 ![Hello beautiful world](https://github.com/timmaffett/chalkdart/raw/master/media/hello_beautiful_world_example.png)
 
 
+## ChalkDart 3.1 Performance Update
+
+Version 3.1.0 brings major performance improvements across the board: string extension getters are now **7-10x faster**, Chalk getter chains are **4-6x faster**, multi-line text processing is **4-6x faster**, and hex color parsing is **13x faster**. See [PERF_RECOMMENDATIONS_AND_IMPROVEMENTS.md](PERF_RECOMMENDATIONS_AND_IMPROVEMENTS.md) for benchmarks and tips on getting the best performance.
+
+For the highest performance (**30-90x faster**), check out my new [quectocolors](https://github.com/timmaffett/quectocolors) package — a lightweight, zero-allocation ANSI styling library designed for hot paths and performance-critical code.  For ChalkDart string extension users it is essentially a drop in replacement for ChalkDart!
+
 ## 🎉 ChalkDart 3.0 - Now with HTML Output Support! 
 
 ChalkDart 3.0 introduces groundbreaking HTML output capabilities, making it the most versatile text styling solution for Dart.  HTML output capabilities allows the option of generating colorized/styled output for server/web based logging.  While other packages like AnsiColors only handle ANSI terminal output, ChalkDart now offers:
